@@ -21,6 +21,9 @@ module.exports = class Document extends CollectionsContainer {
       const [methodName, method]
       of Object.entries(model.__additionalMethods)
     ) {
+      if (this[methodName]) {
+        throw new Error(`The document already has a ${methodName} property`)
+      }
       this[methodName] = method.bind(this)
     }
   }
