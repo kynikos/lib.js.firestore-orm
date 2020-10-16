@@ -1,0 +1,20 @@
+{
+  "name": "@kynikos/firestore-orm",
+  "version": "1.0.0",
+  "author": "Dario Giovannetti <dev@dariogiovannetti.net>",
+  "description": "Firebase Firestore ORM wrapper",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kynikos/lib.js.firestore-orm.git"
+  },
+  "keywords": [
+    "firebase",
+    "firestore",
+    "nosql",
+    "orm"
+  ],
+  "dependencies": {
+    "eslint": "^7.0.0"
+  }
+}
