@@ -41,6 +41,9 @@ module.exports = class Document extends CollectionsContainer {
 
   async read() {
     const doc = await this.__fsDocument.get()
-    return this.model.schema.deserialize(doc.data())
+    if (doc.exists) {
+      return this.model.schema.deserialize(doc.data())
+    }
+    return null
   }
 }

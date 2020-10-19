@@ -9,18 +9,18 @@ const Field = require('./_Field')
 module.exports = class FieldDateTime extends Field {
   constructor(fieldName, options = {}) {
     const {autoNow, ...commonOptions} = options
-    super(commonOptions)
+    super(fieldName, commonOptions)
     this.autoNow = Boolean(autoNow)
   }
 
   serializeNotNull(value, {coerce = true}) {
-    let sData
+    let sData = value
 
-    if (!(value instanceof Date)) {
+    if (!(sData instanceof Date)) {
       if (!coerce) {
         throw new Error(`Value for ${this.name} is not a valid Date object`)
       }
-      sData = new Date(value)
+      sData = new Date(sData)
     }
 
     if (

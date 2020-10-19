@@ -61,7 +61,7 @@ module.exports = class DocumentSchema {
     return this.__iterateFields({
       data,
       handleFound: (field, value) => {
-        field.deserialize(value, fieldOptions)
+        return field.deserialize(value, fieldOptions)
       },
       handleNotFound: fillWithDefaults && ((field) => {
         return field.deserializeNoValue(fieldOptions)

@@ -8,12 +8,7 @@ const Field = require('./_Field')
 
 module.exports = class FieldMap extends Field {
   serializeNotNull(value) {
-    let sData
-
-    if (!(value instanceof Map)) {
-      throw new Error(`Value for ${this.name} is not a Map object`)
-    }
-
+    const sData = value
     return sData
   }
 

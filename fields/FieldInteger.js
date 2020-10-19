@@ -8,10 +8,10 @@ const Field = require('./_Field')
 
 module.exports = class FieldInteger extends Field {
   serializeNotNull(value, {coerce = true}) {
-    let sData
+    let sData = value
 
-    if (!(Number.isInteger(value))) {
-      sData = Number.parseInt(value, 10)
+    if (!(Number.isInteger(sData))) {
+      sData = Number.parseInt(sData, 10)
 
       if (!coerce || !(Number.isInteger(sData))) {
         throw new Error(`Value for ${this.name} is not an integer number`)
