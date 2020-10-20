@@ -5,8 +5,8 @@
 
 
 module.exports = class DocumentModel {
-  constructor({fsPath, schema, collections, methods}) {
-    this.__makeFsPath = fsPath
+  constructor({fsRelPath, schema, collections, methods}) {
+    this.__makeFsRelPath = fsRelPath
     this.schema = schema
     this.__mapCollectionModels = collections
     this.__additionalMethods = methods

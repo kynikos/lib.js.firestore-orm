@@ -16,7 +16,7 @@ module.exports = class CollectionsContainer {
     const model = this.__mapCollectionModels(args)
 
     return new this.__Collection({
-      path: model.__makeFsPath(args),
+      path: model.__makeFsRelPath(args),
       parent: this,
       model,
     })

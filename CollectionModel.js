@@ -5,8 +5,8 @@
 
 
 module.exports = class CollectionModel {
-  constructor({fsPath, documents}) {
-    this.__makeFsPath = fsPath
+  constructor({fsRelPath, documents}) {
+    this.__makeFsRelPath = fsRelPath
     this.__mapDocumentModels = documents
   }
 }

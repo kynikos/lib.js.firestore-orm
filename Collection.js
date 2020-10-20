@@ -18,7 +18,7 @@ module.exports = class Collection {
     const model = this.model.__mapDocumentModels(args)
 
     return new Document({
-      path: model.__makeFsPath(args),
+      path: model.__makeFsRelPath(args),
       parent: this,
       model,
     })
