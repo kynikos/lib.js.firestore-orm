@@ -8,18 +8,18 @@ const FieldString = require('./FieldString')
 
 module.exports = class FieldStringArray extends FieldString {
   serializeNotNull(value, {coerce = true}) {
-    // super cannot be used inside the reducer function
-    const superS = super.serializeNotNull
-
     if (!Array.isArray(value)) {
       throw new Error(`Value for ${this.name} is not an Array`)
     }
 
-    const sData = Object.entries(value).reduce((acc, [key, val]) => {
-      acc[key] = superS(val, {coerce})
-      return acc
-    }, {})
+    const sData = value.map((item) => {
+      return super.serializeNotNull(item, {coerce})
+    })
 
     return sData
+  }
+
+  deserialize(value) {
+    return value
   }
 }

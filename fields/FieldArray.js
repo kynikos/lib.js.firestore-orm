@@ -16,4 +16,8 @@ module.exports = class FieldArray extends Field {
 
     return sData
   }
+
+  deserialize(value) {
+    return value
+  }
 }

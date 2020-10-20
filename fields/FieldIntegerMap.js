@@ -8,14 +8,15 @@ const FieldInteger = require('./FieldInteger')
 
 module.exports = class FieldIntegerMap extends FieldInteger {
   serializeNotNull(value, {coerce = true}) {
-    // super cannot be used inside the reducer function
-    const superS = super.serializeNotNull
-
     const sData = Object.entries(value).reduce((acc, [key, val]) => {
-      acc[key] = superS(val, {coerce})
+      acc[key] = super.serializeNotNull(val, {coerce})
       return acc
     }, {})
 
     return sData
+  }
+
+  deserialize(value) {
+    return value
   }
 }

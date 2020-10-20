@@ -11,7 +11,7 @@ module.exports = class Document extends CollectionsContainer {
   constructor({path, parent, model}) {
     // Do not require the Collection class directly in this module, or it will
     // cause a circular reference with the other modules
-    super(Collection, model.__mapDocumentModels)
+    super(Collection, model.__mapCollectionModels)
     this.database = parent.database
     this.parent = parent
     this.model = model
@@ -19,7 +19,7 @@ module.exports = class Document extends CollectionsContainer {
 
     for (
       const [methodName, method]
-      of Object.entries(model.__additionalMethods)
+      of Object.entries(model.__additionalMethods || [])
     ) {
       if (this[methodName]) {
         throw new Error(`The document already has a ${methodName} property`)

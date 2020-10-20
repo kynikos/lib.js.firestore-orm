@@ -10,7 +10,12 @@ module.exports = {
   DocumentModel: require('./DocumentModel'),
   DocumentSchema: require('./DocumentSchema'),
   Document: require('./Document'),
+  FieldArray: require('./fields/FieldArray'),
+  FieldDate: require('./fields/FieldDate'),
   FieldDateTime: require('./fields/FieldDateTime'),
-  FieldMap: require('./fields/FieldMap'),
   FieldInteger: require('./fields/FieldInteger'),
+  FieldIntegerMap: require('./fields/FieldIntegerMap'),
+  FieldMap: require('./fields/FieldMap'),
+  FieldString: require('./fields/FieldString'),
+  FieldStringArray: require('./fields/FieldStringArray'),
 }

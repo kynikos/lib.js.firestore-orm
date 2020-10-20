@@ -8,11 +8,11 @@ const FieldDateTime = require('./FieldDateTime')
 
 module.exports = class FieldDate extends FieldDateTime {
   serializeNotNull(value, {coerce = true}) {
-    const sData = super(value, {coerce})
+    const sData = super.serializeNotNull(value, {coerce})
     return sData
   }
 
   deserialize(value) {
-    return super(value)
+    return super.deserialize(value)
   }
 }

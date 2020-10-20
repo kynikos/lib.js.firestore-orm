@@ -39,6 +39,6 @@ module.exports = class FieldDateTime extends Field {
   }
 
   deserialize(value) {
-    return value
+    return value && value.toDate()
   }
 }
