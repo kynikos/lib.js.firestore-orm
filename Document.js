@@ -28,18 +28,25 @@ module.exports = class Document extends CollectionsContainer {
     }
   }
 
-  async write(data, options) {
+  async create(data, options = {}) {
     const vData = this.model.schema.serialize(data)
 
-    await this.__fsDocument.set(vData, {
-      merge: true,
-      ...options,
-    })
+    await this.__fsDocument.create(vData, options)
 
     return vData
   }
 
-  async read() {
+  async update(data, options = {}) {
+    // Use 'ignoreMissingNames' when updating, otherwise any unspecified fields
+    // would be overwritten with their default values
+    const vData = this.model.schema.serialize(data, {ignoreMissingNames: true})
+
+    await this.__fsDocument.update(vData, options)
+
+    return vData
+  }
+
+  async get() {
     const doc = await this.__fsDocument.get()
     if (doc.exists) {
       return this.model.schema.deserialize(doc.data())

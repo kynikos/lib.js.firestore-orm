@@ -35,6 +35,7 @@ module.exports = class DocumentSchema {
 
   serialize(data, options = {}) {
     const {
+      ignoreMissingNames = false,
       ignoreExtraneousNames = false,
       ...fieldOptions
     } = options
@@ -44,9 +45,9 @@ module.exports = class DocumentSchema {
       handleFound: (field, value) => {
         return field.serialize(value, fieldOptions)
       },
-      handleNotFound: (field) => {
+      handleNotFound: !ignoreMissingNames && ((field) => {
         return field.serializeNoValue(fieldOptions)
-      },
+      }),
       ignoreExtraneousNames,
     })
   }
