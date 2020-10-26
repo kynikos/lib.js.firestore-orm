@@ -6,6 +6,7 @@
 const admin = require('firebase-admin')
 const CollectionsContainer = require('./CollectionsContainer')
 const Collection = require('./Collection')
+const WriteBatch = require('./WriteBatch')
 
 
 module.exports = class Database extends CollectionsContainer {
@@ -17,5 +18,9 @@ module.exports = class Database extends CollectionsContainer {
     admin.initializeApp()
     this.__firestore = admin.firestore()
     this.__fsDocument = this.__firestore
+  }
+
+  batch() {
+    return new WriteBatch(this)
   }
 }

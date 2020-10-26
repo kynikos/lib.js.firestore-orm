@@ -14,11 +14,12 @@ module.exports = class CollectionsContainer {
 
   collection(args) {
     const model = this.__mapCollectionModels(args)
+    const collectionPath = model.__makeFsRelPath(args)
 
     return new this.__Collection({
-      path: model.__makeFsRelPath(args),
       parent: this,
       model,
+      __fsCollection: parent.__fsDocument.collection(collectionPath)
     })
   }
 }
