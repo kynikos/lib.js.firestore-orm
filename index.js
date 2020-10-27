@@ -6,10 +6,10 @@
 module.exports = {
   Database: require('./Database'),
   CollectionModel: require('./CollectionModel'),
-  Collection: require('./Collection'),
+  CollectionReference: require('./CollectionReference'),
   DocumentModel: require('./DocumentModel'),
   DocumentSchema: require('./DocumentSchema'),
-  Document: require('./Document'),
+  DocumentReference: require('./DocumentReference'),
   FieldArray: require('./fields/FieldArray'),
   FieldDate: require('./fields/FieldDate'),
   FieldDateTime: require('./fields/FieldDateTime'),

@@ -3,12 +3,11 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
+const CollectionReference = require('./CollectionReference')
+
 
 module.exports = class CollectionsContainer {
-  constructor(Collection, mapCollectionModels) {
-    // Do not require the Collection class directly in this module, or it will
-    // cause a circular reference with the other modules
-    this.__Collection = Collection
+  constructor(mapCollectionModels) {
     this.__mapCollectionModels = mapCollectionModels
   }
 
@@ -16,10 +15,10 @@ module.exports = class CollectionsContainer {
     const model = this.__mapCollectionModels(args)
     const collectionPath = model.__makeFsRelPath(args)
 
-    return new this.__Collection({
+    return new CollectionReference({
       parent: this,
       model,
-      __fsCollection: parent.__fsDocument.collection(collectionPath)
+      __fsCollection: this.__fsDocument.collection(collectionPath),
     })
   }
 }

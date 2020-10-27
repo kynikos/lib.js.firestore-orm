@@ -5,15 +5,14 @@
 
 const admin = require('firebase-admin')
 const CollectionsContainer = require('./CollectionsContainer')
-const Collection = require('./Collection')
 const WriteBatch = require('./WriteBatch')
 
 
 module.exports = class Database extends CollectionsContainer {
   constructor({collections}) {
-    // Do not require the Collection class directly in this module, or it will
+    // Do not require the CollectionReference class directly in this module, or it will
     // cause a circular reference with the other modules
-    super(Collection, collections)
+    super(collections)
     this.database = this
     admin.initializeApp()
     this.__firestore = admin.firestore()
@@ -22,5 +21,11 @@ module.exports = class Database extends CollectionsContainer {
 
   batch() {
     return new WriteBatch(this)
+  }
+
+  async batchCommit(callBack) {
+    const batch = this.batch()
+    await callBack(batch)
+    return batch.commit()
   }
 }
