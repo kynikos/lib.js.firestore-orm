@@ -15,6 +15,6 @@
     "orm"
   ],
   "dependencies": {
-    "eslint": "^7.12.0"
+    "eslint": "^7.12.1"
   }
 }
