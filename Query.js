@@ -1,4 +1,9 @@
-const QuerySnapshot = require('./QuerySnapshot')
+// This file is part of firestore-orm
+// Copyright (C) 2020-present Dario Giovannetti <dev@dariogiovannetti.net>
+// Licensed under MIT
+// https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
+
+const {QuerySnapshot} = require('./_internal')
 
 
 module.exports = class Query {
@@ -21,8 +26,16 @@ module.exports = class Query {
     yield* docs
   }
 
-  async where(fieldPath, opStr, value) {
-    const __fsQuery = await this.__fsQuery.where(fieldPath, opStr, value)
+  limit(limit) {
+    const __fsQuery = this.__fsQuery.limit(limit)
+    return new Query({
+      collection: this.collection,
+      __fsQuery,
+    })
+  }
+
+  where(fieldPath, opStr, value) {
+    const __fsQuery = this.__fsQuery.where(fieldPath, opStr, value)
     return new Query({
       collection: this.collection,
       __fsQuery,

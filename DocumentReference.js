@@ -3,14 +3,11 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const CollectionsContainer = require('./CollectionsContainer')
-const DocumentSnapshot = require('./DocumentSnapshot')
+const {oneLine, CollectionsContainer, DocumentSnapshot} = require('./_internal')
 
 
 module.exports = class DocumentReference extends CollectionsContainer {
   constructor({parent, model, __fsDocument}) {
-    // Do not require the CollectionReference class directly in this module, or it will
-    // cause a circular reference with the other modules
     super(model.__mapCollectionModels)
     this.database = parent.database
     this.parent = parent
@@ -28,34 +25,10 @@ module.exports = class DocumentReference extends CollectionsContainer {
     }
   }
 
-  async create(data, options = {}) {
+  async create(data) {
     const vData = this.model.schema.serialize(data)
 
-    await this.__fsDocument.create(vData, options)
-
-    // TODO: Return the native WriteResult object in a custom class with the
-    //        vData?
-    return vData
-  }
-
-  async update(data, options = {}) {
-    // Use 'ignoreMissingNames' when updating, otherwise any unspecified fields
-    // would be overwritten with their default values
-    const vData = this.model.schema.serialize(data, {ignoreMissingNames: true})
-
-    await this.__fsDocument.update(vData, options)
-
-    // TODO: Return the native WriteResult object in a custom class with the
-    //        vData?
-    return vData
-  }
-
-  async set(data, options = {}) {
-    // Use 'ignoreMissingNames' when updating, otherwise any unspecified fields
-    // would be overwritten with their default values
-    const vData = this.model.schema.serialize(data, {ignoreMissingNames: true})
-
-    await this.__fsDocument.set(vData, options)
+    await this.__fsDocument.create(vData)
 
     // TODO: Return the native WriteResult object in a custom class with the
     //        vData?
@@ -74,5 +47,51 @@ module.exports = class DocumentReference extends CollectionsContainer {
       chooseModel: this.model,
       documentReference: this,
     })
+  }
+
+  async set(data, options) {
+    let sOptions
+
+    if (
+      !options ||
+      // XOR
+      ((options.merge == null) === (options.mergeFields == null))
+    ) {
+      throw new Error(oneLine`set() must explicitly specify either the 'merge'
+        or the 'mergeFields' option, not both or neither`)
+    } else if (options.mergeFields == null) {
+      sOptions = {
+        ignoreAllMissingFields: options.merge,
+        onlyTheseFields: false,
+      }
+    } else {
+      sOptions = {
+        ignoreAllMissingFields: false,
+        onlyTheseFields: options.mergeFields,
+      }
+    }
+
+    const vData = this.model.schema.serialize(data, sOptions)
+
+    await this.__fsDocument.set(vData, options)
+
+    // TODO: Return the native WriteResult object in a custom class with the
+    //        vData?
+    return vData
+  }
+
+  async update(data, ...preconditionOrValues) {
+    // Use 'ignoreAllMissingFields' when updating, otherwise any unspecified fields
+    // would be overwritten with their default values
+    const vData = this.model.schema.serialize(data, {
+      ignoreAllMissingFields: true,
+      onlyTheseFields: false,
+    })
+
+    await this.__fsDocument.update(vData, ...preconditionOrValues)
+
+    // TODO: Return the native WriteResult object in a custom class with the
+    //        vData?
+    return vData
   }
 }

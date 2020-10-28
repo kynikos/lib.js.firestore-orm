@@ -3,7 +3,6 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-
 module.exports = class CollectionModel {
   constructor({fsRelPath, documents, methods}) {
     this.__makeFsRelPath = fsRelPath

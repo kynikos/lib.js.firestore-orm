@@ -3,7 +3,6 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-
 module.exports = class Field {
   constructor(fieldName, options = {}) {
     const {required, nullable, default: default_} = options

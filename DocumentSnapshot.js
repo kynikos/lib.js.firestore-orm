@@ -1,4 +1,9 @@
-const DocumentReference = require('./DocumentReference')
+// This file is part of firestore-orm
+// Copyright (C) 2020-present Dario Giovannetti <dev@dariogiovannetti.net>
+// Licensed under MIT
+// https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
+
+const {deferredModules} = require('./_internal')
 
 
 module.exports = class DocumentSnapshot {
@@ -18,7 +23,7 @@ module.exports = class DocumentSnapshot {
       if (documentReference) {
         this.ref = documentReference
       } else {
-        this.ref = new DocumentReference({
+        this.ref = new deferredModules.DocumentReference({
           parent,
           model: this.model,
           __fsDocument: __fsDocumentSnapshot.ref,
@@ -35,6 +40,6 @@ module.exports = class DocumentSnapshot {
 
   get(field) {
     return this.model.schema
-      .deserialize(this.__fsDocumentSnapshot.get(field))
+      .deserialize({[field]: this.__fsDocumentSnapshot.get(field)})
   }
 }

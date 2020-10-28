@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const CollectionReference = require('./CollectionReference')
+const {deferredModules} = require('./_internal')
 
 
 module.exports = class CollectionsContainer {
@@ -15,7 +15,7 @@ module.exports = class CollectionsContainer {
     const model = this.__mapCollectionModels(args)
     const collectionPath = model.__makeFsRelPath(args)
 
-    return new CollectionReference({
+    return new deferredModules.CollectionReference({
       parent: this,
       model,
       __fsCollection: this.__fsDocument.collection(collectionPath),

@@ -3,9 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const DocumentReference = require('./DocumentReference')
-const Query = require('./Query')
-const QuerySnapshot = require('./QuerySnapshot')
+const {deferredModules, Query, QuerySnapshot} = require('./_internal')
 
 
 module.exports = class CollectionReference {
@@ -36,7 +34,7 @@ module.exports = class CollectionReference {
     const model = this.model.__mapDocumentModels(args)
     const docPath = model.__makeFsRelPath(args)
 
-    return new DocumentReference({
+    return new deferredModules.DocumentReference({
       parent: this,
       model,
       __fsDocument: this.__fsCollection.doc(docPath),
@@ -44,7 +42,7 @@ module.exports = class CollectionReference {
   }
 
   docAutoId(model) {
-    return new DocumentReference({
+    return new deferredModules.DocumentReference({
       parent: this,
       model,
       __fsDocument: this.__fsCollection.doc(),
@@ -53,7 +51,7 @@ module.exports = class CollectionReference {
 
   add(model, data) {
     const doc = this.docAutoId(model)
-    return doc.set(data)
+    return doc.set(data, {merge: false})
   }
 
   async deleteAll(chooseModel) {
@@ -80,8 +78,16 @@ module.exports = class CollectionReference {
     yield* docs
   }
 
-  async where(fieldPath, opStr, value) {
-    const __fsQuery = await this.__fsCollection.where(fieldPath, opStr, value)
+  limit(limit) {
+    const __fsQuery = this.__fsCollection.limit(limit)
+    return new Query({
+      collection: this,
+      __fsQuery,
+    })
+  }
+
+  where(fieldPath, opStr, value) {
+    const __fsQuery = this.__fsCollection.where(fieldPath, opStr, value)
     return new Query({
       collection: this,
       __fsQuery,

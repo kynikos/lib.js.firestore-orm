@@ -3,13 +3,14 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-
 module.exports = class DocumentSchema {
   constructor(...fields) {
     this.fields = fields
   }
 
-  __iterateFields({data, handleFound, handleNotFound, ignoreExtraneousNames}) {
+  __iterateFields({
+    data, handleFound, handleNotFound, onlyTheseFields, ignoreExtraneousFields,
+  }) {
     const cData = {...data}
 
     const sData = this.fields.reduce(
@@ -17,7 +18,10 @@ module.exports = class DocumentSchema {
         if (field.name in cData) {
           acc[field.name] = handleFound(field, cData[field.name])
           delete cData[field.name]
-        } else if (handleNotFound) {
+        } else if (
+          handleNotFound &&
+          (!onlyTheseFields || onlyTheseFields.includes(field.name))
+        ) {
           acc[field.name] = handleNotFound(field)
         }
         return acc
@@ -25,7 +29,7 @@ module.exports = class DocumentSchema {
       {},
     )
 
-    if (!ignoreExtraneousNames && Object.keys(cData).length > 0) {
+    if (!ignoreExtraneousFields && Object.keys(cData).length > 0) {
       throw new Error(`Extraneous field names:
         ${Object.keys(cData).join(', ')}`)
     }
@@ -35,8 +39,9 @@ module.exports = class DocumentSchema {
 
   serialize(data, options = {}) {
     const {
-      ignoreMissingNames = false,
-      ignoreExtraneousNames = false,
+      ignoreAllMissingFields = false,
+      onlyTheseFields = false,
+      ignoreExtraneousFields = false,
       ...fieldOptions
     } = options
 
@@ -45,17 +50,19 @@ module.exports = class DocumentSchema {
       handleFound: (field, value) => {
         return field.serialize(value, fieldOptions)
       },
-      handleNotFound: !ignoreMissingNames && ((field) => {
+      handleNotFound: !ignoreAllMissingFields && ((field) => {
         return field.serializeNoValue(fieldOptions)
       }),
-      ignoreExtraneousNames,
+      onlyTheseFields,
+      ignoreExtraneousFields,
     })
   }
 
   deserialize(data, options = {}) {
     const {
       fillWithDefaults = false,
-      ignoreExtraneousNames = false,
+      onlyTheseFields = false,
+      ignoreExtraneousFields = false,
       ...fieldOptions
     } = options
 
@@ -67,7 +74,8 @@ module.exports = class DocumentSchema {
       handleNotFound: fillWithDefaults && ((field) => {
         return field.deserializeNoValue(fieldOptions)
       }),
-      ignoreExtraneousNames,
+      onlyTheseFields,
+      ignoreExtraneousFields,
     })
   }
 }

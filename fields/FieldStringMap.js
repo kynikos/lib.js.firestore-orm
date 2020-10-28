@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const FieldString = require('./FieldString')
+const {FieldString} = require('./_internal')
 
 
 module.exports = class FieldStringMap extends FieldString {

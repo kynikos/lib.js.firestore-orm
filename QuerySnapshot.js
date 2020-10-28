@@ -1,4 +1,9 @@
-const QueryDocumentSnapshot = require('./QueryDocumentSnapshot')
+// This file is part of firestore-orm
+// Copyright (C) 2020-present Dario Giovannetti <dev@dariogiovannetti.net>
+// Licensed under MIT
+// https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
+
+const {QueryDocumentSnapshot} = require('./_internal')
 
 
 module.exports = class QuerySnapshot {
@@ -20,7 +25,7 @@ module.exports = class QuerySnapshot {
 
   forEach(callback, thisArgopt) {
     return this.docs.forEach((queryDocumentSnapshot) => {
-      return callback(queryDocumentSnapshot).bind(thisArgopt)
+      return callback.bind(thisArgopt)(queryDocumentSnapshot)
     })
   }
 }

@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const Field = require('./_Field')
+const {Field} = require('./_internal')
 
 
 module.exports = class FieldArray extends Field {

@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const FieldInteger = require('./FieldInteger')
+const {FieldInteger} = require('./_internal')
 
 
 module.exports = class FieldIntegerMap extends FieldInteger {

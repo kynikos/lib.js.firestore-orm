@@ -3,19 +3,15 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const admin = require('firebase-admin')
-const CollectionsContainer = require('./CollectionsContainer')
-const WriteBatch = require('./WriteBatch')
+const {firebaseAdmin, CollectionsContainer, WriteBatch} = require('./_internal')
 
 
 module.exports = class Database extends CollectionsContainer {
   constructor({collections}) {
-    // Do not require the CollectionReference class directly in this module, or it will
-    // cause a circular reference with the other modules
     super(collections)
     this.database = this
-    admin.initializeApp()
-    this.__firestore = admin.firestore()
+    firebaseAdmin.initializeApp()
+    this.__firestore = firebaseAdmin.firestore()
     this.__fsDocument = this.__firestore
   }
 
