@@ -7,7 +7,8 @@ const {firebaseAdmin, CollectionsContainer, WriteBatch} = require('./index')
 
 
 module.exports = class Database extends CollectionsContainer {
-  constructor({collections}) {
+  constructor(options = {}) {
+    const {collections} = options
     super(collections)
     this.database = this
     firebaseAdmin.initializeApp()
