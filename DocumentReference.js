@@ -14,15 +14,13 @@ module.exports = class DocumentReference extends CollectionsContainer {
     this.model = model
     this.__fsDocument = __fsDocument
 
-    for (
-      const [methodName, method]
-      of Object.entries(model.__additionalMethods || [])
-    ) {
-      if (this[methodName]) {
-        throw new Error(`The document already has a ${methodName} property`)
-      }
-      this[methodName] = method.bind(this)
-    }
+    this.x = Object.entries(model.__additionalMethods || {}).reduce(
+      (acc, [methodName, method]) => {
+        acc[methodName] = method.bind(this)
+        return acc
+      },
+      {},
+    )
   }
 
   async create(data) {

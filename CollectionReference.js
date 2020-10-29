@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {deferredModules, Query, QuerySnapshot} = require('./_internal')
+const {oneLine, deferredModules, Query, QuerySnapshot} = require('./_internal')
 
 
 module.exports = class CollectionReference {
@@ -13,26 +13,35 @@ module.exports = class CollectionReference {
     this.model = model
     this.__fsCollection = __fsCollection
 
-    for (
-      const [methodName, method]
-      of Object.entries(model.__additionalMethods || [])
-    ) {
-      if (this[methodName]) {
-        throw new Error(`The collection already has a ${methodName} property`)
-      }
-      this[methodName] = method.bind(this)
-    }
+    this.x = Object.entries(model.__additionalMethods || {}).reduce(
+      (acc, [methodName, method]) => {
+        acc[methodName] = method.bind(this)
+        return acc
+      },
+      {},
+    )
   }
 
-  doc(args) {
-    if (!args) {
+  doc(...args) {
+    if (!args.length) {
       // The native collection objects support calling doc() without arguments
       // to auto-generate a document ID, but I need a model with this ORM
       throw new Error('To auto-generate a document ID, call docAutoId(model)')
     }
 
-    const model = this.model.__mapDocumentModels(args)
-    const docPath = model.__makeFsRelPath(args)
+    const model = this.model.__mapDocumentModels(...args)
+
+    if (!model) {
+      throw new Error(oneLine`No document models found for this pattern:
+        ${args.join(', ')}`)
+    }
+
+    const docPath = model.__makeFsRelPath(...args)
+
+    if (!docPath) {
+      throw new Error(oneLine`No document ID defined for this pattern:
+        ${args.join(', ')}`)
+    }
 
     return new deferredModules.DocumentReference({
       parent: this,
