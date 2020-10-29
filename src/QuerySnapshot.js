@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {QueryDocumentSnapshot} = require('./_internal')
+const {QueryDocumentSnapshot} = require('./index')
 
 
 module.exports = class QuerySnapshot {

@@ -3,25 +3,16 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {Field} = require('./_internal')
+const {FieldDateTime} = require('./index')
 
 
-module.exports = class FieldBoolean extends Field {
+module.exports = class FieldDate extends FieldDateTime {
   serializeNotNull(value, {coerce = true}) {
-    let sData = value
-
-    if (typeof sData !== 'boolean') {
-      if (!coerce) {
-        throw new Error(`Value for ${this.name} is not a boolean`)
-      }
-
-      sData = Boolean(sData)
-    }
-
+    const sData = super.serializeNotNull(value, {coerce})
     return sData
   }
 
   deserialize(value) {
-    return value
+    return super.deserialize(value)
   }
 }

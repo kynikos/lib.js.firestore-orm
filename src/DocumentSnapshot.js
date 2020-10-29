@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {deferredModules} = require('./_internal')
+const {deferredModules} = require('./index')
 
 
 module.exports = class DocumentSnapshot {

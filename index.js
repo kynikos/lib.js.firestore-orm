@@ -18,7 +18,7 @@ const {
   FieldString,
   FieldStringArray,
   FieldStringMap,
-} = require('./_internal')
+} = require('./src/index')
 
 module.exports = {
   Database,

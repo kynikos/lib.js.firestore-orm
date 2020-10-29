@@ -3,18 +3,18 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {Field} = require('./_internal')
+const {Field} = require('./index')
 
 
-module.exports = class FieldInteger extends Field {
+module.exports = class FieldString extends Field {
   serializeNotNull(value, {coerce = true}) {
     let sData = value
 
-    if (!(Number.isInteger(sData))) {
-      sData = Number.parseInt(sData, 10)
-
-      if (!coerce || !(Number.isInteger(sData))) {
-        throw new Error(`Value for ${this.name} is not an integer number`)
+    if (!(typeof sData === 'string' || sData instanceof String)) {
+      if (coerce) {
+        sData = String(sData, 10)
+      } else {
+        throw new Error(`Value for ${this.name} is not a string`)
       }
     }
 

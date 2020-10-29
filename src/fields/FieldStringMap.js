@@ -3,18 +3,15 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {FieldString} = require('./_internal')
+const {FieldString} = require('./index')
 
 
-module.exports = class FieldStringArray extends FieldString {
+module.exports = class FieldStringMap extends FieldString {
   serializeNotNull(value, {coerce = true}) {
-    if (!Array.isArray(value)) {
-      throw new Error(`Value for ${this.name} is not an Array`)
-    }
-
-    const sData = value.map((item) => {
-      return super.serializeNotNull(item, {coerce})
-    })
+    const sData = Object.entries(value).reduce((acc, [key, val]) => {
+      acc[key] = super.serializeNotNull(val, {coerce})
+      return acc
+    }, {})
 
     return sData
   }

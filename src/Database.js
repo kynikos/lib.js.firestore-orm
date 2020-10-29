@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {firebaseAdmin, CollectionsContainer, WriteBatch} = require('./_internal')
+const {firebaseAdmin, CollectionsContainer, WriteBatch} = require('./index')
 
 
 module.exports = class Database extends CollectionsContainer {

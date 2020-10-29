@@ -7,7 +7,7 @@
 module.exports = {
   // deferredModules is needed to work around circular dependencies
   deferredModules: {},
-  ...require('./fields/_internal'),
+  ...require('./fields/index'),
   oneLine: require('common-tags/lib/oneLine'),
 }
 module.exports.firebaseAdmin = require('firebase-admin')

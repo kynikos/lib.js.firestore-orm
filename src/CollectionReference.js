@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {oneLine, deferredModules, Query, QuerySnapshot} = require('./_internal')
+const {oneLine, deferredModules, Query, QuerySnapshot} = require('./index')
 
 
 module.exports = class CollectionReference {
