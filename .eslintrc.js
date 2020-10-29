@@ -6,9 +6,14 @@ module.exports = {
   },
   env: {
     node: true,
+    'jest/globals': true,
   },
+  plugins: [
+    'jest',
+  ],
   extends: [
     'eslint:all',
+    'plugin:jest/all',
   ],
   rules: {
     'array-bracket-newline': ['error', 'consistent'],
@@ -29,6 +34,7 @@ module.exports = {
     'id-length': 'off',
     indent: ['error', 2],
     'init-declarations': 'off',
+    'jest/consistent-test-it': ['warn', {fn: 'test'}],
     'line-comment-position': 'off',
     'linebreak-style': ['error', 'unix'],
     'lines-around-comment': 'off',
