@@ -70,7 +70,7 @@ module.exports = {
       allowTaggedTemplates: true,
     }],
     'no-unused-vars': 'warn',
-    'no-use-before-define': 'warn',
+    'no-use-before-define': 'off',
     'no-warning-comments': 'off',
     'object-curly-newline': 'off',
     'object-property-newline': ['error', {
