@@ -12,17 +12,17 @@ module.exports = class Query {
     this.__fsQuery = __fsQuery
   }
 
-  async get(chooseModel) {
+  async get(chooseSchema) {
     const __fsQuerySnapshot = await this.__fsQuery.get()
     return new QuerySnapshot({
       collection: this.collection,
-      chooseModel,
+      chooseSchema,
       __fsQuerySnapshot,
     })
   }
 
-  async *iter(chooseModel) {
-    const {docs} = await this.get(chooseModel)
+  async *iter(chooseSchema) {
+    const {docs} = await this.get(chooseSchema)
     yield* docs
   }
 

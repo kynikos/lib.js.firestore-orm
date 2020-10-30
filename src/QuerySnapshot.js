@@ -7,16 +7,16 @@ const {QueryDocumentSnapshot} = require('./index')
 
 
 module.exports = class QuerySnapshot {
-  constructor({collection, chooseModel, __fsQuerySnapshot}) {
+  constructor({collection, chooseSchema, __fsQuerySnapshot}) {
     this.collection = collection
-    this.__chooseModel = chooseModel
+    this.__chooseSchema = chooseSchema
     this.__fsQuerySnapshot = __fsQuerySnapshot
     this.empty = __fsQuerySnapshot.empty
     this.readTime = __fsQuerySnapshot.readTime
     this.size = __fsQuerySnapshot.size
     this.docs = __fsQuerySnapshot.docs.map((__fsQueryDocumentSnapshot) => {
       return new QueryDocumentSnapshot({
-        chooseModel: this.__chooseModel,
+        chooseSchema: this.__chooseSchema,
         parentCollection: this.collection,
         __fsQueryDocumentSnapshot,
       })

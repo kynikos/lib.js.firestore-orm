@@ -7,10 +7,10 @@ const {DocumentSnapshot} = require('./index')
 
 
 module.exports = class QueryDocumentSnapshot extends DocumentSnapshot {
-  constructor({chooseModel, parentCollection, __fsQueryDocumentSnapshot}) {
+  constructor({chooseSchema, parentCollection, __fsQueryDocumentSnapshot}) {
     super({
       __fsDocumentSnapshot: __fsQueryDocumentSnapshot,
-      chooseModel,
+      chooseSchema,
       parent: parentCollection,
     })
     this.__fsQueryDocumentSnapshot = __fsQueryDocumentSnapshot

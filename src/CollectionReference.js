@@ -3,68 +3,26 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {oneLine, deferredModules, Query, QuerySnapshot} = require('./index')
+const {fn, deferredModules, DocumentSetup, Query, QuerySnapshot} =
+  require('./index')
 
 
 module.exports = class CollectionReference {
-  constructor({parent, model, __fsCollection}) {
+  constructor({id, parent, references}) {
     this.database = parent.database
     this.parent = parent
-    this.model = model
-    this.__fsCollection = __fsCollection
-
-    this.x = Object.entries(model.__additionalMethods || {}).reduce(
-      (acc, [methodName, method]) => {
-        acc[methodName] = method.bind(this)
-        return acc
-      },
-      {},
-    )
+    this.__fsCollection = parent.__fsDocument.collection(id)
+    this.structure = references &&
+      fn.makeStructure(this, references, DocumentSetup)
   }
 
-  doc(...args) {
-    if (!args.length) {
-      // The native collection objects support calling doc() without arguments
-      // to auto-generate a document ID, but I need a model with this ORM
-      throw new Error('To auto-generate a document ID, call docAutoId(model)')
-    }
-
-    const model = this.model.__mapDocumentModels(...args)
-
-    if (!model) {
-      throw new Error(oneLine`No document models found for this pattern:
-        ${args.join(', ')}`)
-    }
-
-    const docPath = model.__makeFsRelPath(...args)
-
-    if (!docPath) {
-      throw new Error(oneLine`No document ID defined for this pattern:
-        ${args.join(', ')}`)
-    }
-
-    return new deferredModules.DocumentReference({
-      parent: this,
-      model,
-      __fsDocument: this.__fsCollection.doc(docPath),
-    })
-  }
-
-  docAutoId(model) {
-    return new deferredModules.DocumentReference({
-      parent: this,
-      model,
-      __fsDocument: this.__fsCollection.doc(),
-    })
-  }
-
-  add(model, data) {
-    const doc = this.docAutoId(model)
+  add(schema, data) {
+    const doc = this.docAutoId(schema)
     return doc.set(data, {merge: false})
   }
 
-  async deleteAll(chooseModel) {
-    const docs = await this.get(chooseModel)
+  async deleteAll(chooseSchema) {
+    const docs = await this.get(chooseSchema)
 
     return this.database.batchCommit((batch) => {
       docs.forEach((doc) => {
@@ -73,17 +31,38 @@ module.exports = class CollectionReference {
     })
   }
 
-  async get(chooseModel) {
+  doc(docPath, schema) {
+    if (!docPath) {
+      // The native collection objects support calling doc() without arguments
+      // to auto-generate a document ID, but I need a schema with this ORM
+      throw new Error('To auto-generate a document ID, call docAutoId(schema)')
+    }
+
+    return new deferredModules.DocumentReference({
+      id: docPath,
+      parent: this,
+      schema,
+    })
+  }
+
+  docAutoId(schema) {
+    return new deferredModules.DocumentReference({
+      parent: this,
+      schema,
+    })
+  }
+
+  async get(chooseSchema) {
     const __fsQuerySnapshot = await this.__fsCollection.get()
     return new QuerySnapshot({
       collection: this,
-      chooseModel,
+      chooseSchema,
       __fsQuerySnapshot,
     })
   }
 
-  async *iter(chooseModel) {
-    const {docs} = await this.get(chooseModel)
+  async *iter(chooseSchema) {
+    const {docs} = await this.get(chooseSchema)
     yield* docs
   }
 

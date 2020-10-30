@@ -3,28 +3,33 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {oneLine, CollectionsContainer, DocumentSnapshot} = require('./index')
+const {fn, deferredModules, CollectionSetup, DocumentSnapshot} =
+  require('./index')
 
 
-module.exports = class DocumentReference extends CollectionsContainer {
-  constructor({parent, model, __fsDocument}) {
-    super(model.__mapCollectionModels)
+module.exports = class DocumentReference {
+  constructor({id, __fsDocument, parent, schema, references}) {
     this.database = parent.database
     this.parent = parent
-    this.model = model
-    this.__fsDocument = __fsDocument
+    this.schema = schema
+    this.__fsDocument = __fsDocument || (id
+      ? parent.__fsCollection.doc(id)
+      // Even passing id=undefined would cause an error, so use a separate call
+      // to doc() to auto-generate an ID
+      : parent.__fsCollection.doc())
+    this.structure = references &&
+      fn.makeStructure(this, references, CollectionSetup)
+  }
 
-    this.x = Object.entries(model.__additionalMethods || {}).reduce(
-      (acc, [methodName, method]) => {
-        acc[methodName] = method.bind(this)
-        return acc
-      },
-      {},
-    )
+  collection(collectionPath) {
+    return new deferredModules.CollectionReference({
+      id: collectionPath,
+      parent: this,
+    })
   }
 
   async create(data) {
-    const vData = this.model.schema.serialize(data)
+    const vData = this.schema.serialize(data)
 
     await this.__fsDocument.create(vData)
 
@@ -42,7 +47,7 @@ module.exports = class DocumentReference extends CollectionsContainer {
     const __fsDocumentSnapshot = await this.__fsDocument.get()
     return new DocumentSnapshot({
       __fsDocumentSnapshot,
-      chooseModel: this.model,
+      chooseSchema: this.schema,
       documentReference: this,
     })
   }
@@ -55,8 +60,8 @@ module.exports = class DocumentReference extends CollectionsContainer {
       // XOR
       ((options.merge == null) === (options.mergeFields == null))
     ) {
-      throw new Error(oneLine`set() must explicitly specify either the 'merge'
-        or the 'mergeFields' option, not both or neither`)
+      throw new Error("set() must explicitly specify either the 'merge' " +
+        "or the 'mergeFields' option, not both or neither")
     } else if (options.mergeFields == null) {
       sOptions = {
         ignoreAllMissingFields: options.merge,
@@ -69,7 +74,7 @@ module.exports = class DocumentReference extends CollectionsContainer {
       }
     }
 
-    const vData = this.model.schema.serialize(data, sOptions)
+    const vData = this.schema.serialize(data, sOptions)
 
     await this.__fsDocument.set(vData, options)
 
@@ -81,7 +86,7 @@ module.exports = class DocumentReference extends CollectionsContainer {
   async update(data, ...preconditionOrValues) {
     // Use 'ignoreAllMissingFields' when updating, otherwise any unspecified fields
     // would be overwritten with their default values
-    const vData = this.model.schema.serialize(data, {
+    const vData = this.schema.serialize(data, {
       ignoreAllMissingFields: true,
       onlyTheseFields: false,
     })

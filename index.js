@@ -5,9 +5,12 @@
 
 const {
   Database,
-  CollectionModel,
-  DocumentModel,
+  CollectionSetup,
+  DocumentSetup,
   DocumentSchema,
+} = require('./src/index')
+
+const {
   FieldArray,
   FieldBoolean,
   FieldDate,
@@ -18,12 +21,12 @@ const {
   FieldString,
   FieldStringArray,
   FieldStringMap,
-} = require('./src/index')
+} = require('./src/fields/index')
 
 module.exports = {
   Database,
-  CollectionModel,
-  DocumentModel,
+  CollectionSetup,
+  DocumentSetup,
   DocumentSchema,
   FieldArray,
   FieldBoolean,

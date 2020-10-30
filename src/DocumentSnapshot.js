@@ -7,10 +7,10 @@ const {deferredModules} = require('./index')
 
 
 module.exports = class DocumentSnapshot {
-  constructor({__fsDocumentSnapshot, chooseModel, documentReference, parent}) {
-    this.model = typeof chooseModel === 'function'
-      ? chooseModel(__fsDocumentSnapshot.ref)
-      : chooseModel
+  constructor({__fsDocumentSnapshot, chooseSchema, documentReference, parent}) {
+    this.schema = typeof chooseSchema === 'function'
+      ? chooseSchema(__fsDocumentSnapshot.ref)
+      : chooseSchema
 
     this.__fsDocumentSnapshot = __fsDocumentSnapshot
     this.createTime = __fsDocumentSnapshot.createTime
@@ -24,9 +24,9 @@ module.exports = class DocumentSnapshot {
         this.ref = documentReference
       } else {
         this.ref = new deferredModules.DocumentReference({
-          parent,
-          model: this.model,
           __fsDocument: __fsDocumentSnapshot.ref,
+          parent,
+          schema: this.schema,
         })
       }
     } else {
@@ -35,11 +35,12 @@ module.exports = class DocumentSnapshot {
   }
 
   data() {
-    return this.model.schema.deserialize(this.__fsDocumentSnapshot.data())
+    return this.schema.deserialize(this.__fsDocumentSnapshot.data())
   }
 
   get(field) {
-    return this.model.schema
-      .deserialize({[field]: this.__fsDocumentSnapshot.get(field)})
+    return this.schema.deserialize({
+      [field]: this.__fsDocumentSnapshot.get(field),
+    })[field]
   }
 }

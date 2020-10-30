@@ -3,17 +3,21 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {firebaseAdmin, CollectionsContainer, WriteBatch} = require('./index')
+const {fn, firebaseAdmin, deferredModules, CollectionSetup, WriteBatch} =
+  require('./index')
 
 
-module.exports = class Database extends CollectionsContainer {
-  constructor(options = {}) {
-    const {collections} = options
-    super(collections)
-    this.database = this
+module.exports = class Database {
+  constructor(references, options) {
     firebaseAdmin.initializeApp()
     this.__firestore = firebaseAdmin.firestore()
+    // CollectionReference needs this.database to be defined
+    this.database = this
+    this.parent = null
+    // CollectionReference needs this.__fsDocument to be defined
     this.__fsDocument = this.__firestore
+    this.structure = references &&
+      fn.makeStructure(this, references, CollectionSetup)
   }
 
   batch() {
@@ -24,5 +28,12 @@ module.exports = class Database extends CollectionsContainer {
     const batch = this.batch()
     await callBack(batch)
     return batch.commit()
+  }
+
+  collection(collectionPath) {
+    return new deferredModules.CollectionReference({
+      id: collectionPath,
+      parent: this,
+    })
   }
 }

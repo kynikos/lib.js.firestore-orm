@@ -15,7 +15,6 @@
     "orm"
   ],
   "dependencies": {
-    "common-tags": "^1.8.0",
     "eslint": "^7.12.1",
     "firebase-admin": "^9.3.0"
   },
