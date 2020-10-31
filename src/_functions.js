@@ -8,6 +8,8 @@ exports.makeStructure = function makeStructure(
   subReferences,
   SubRefClass,
 ) {
+  if (subReferences == null) return null
+
   const structure = {}
 
   for (const [subRefName, subReference] of Object.entries(subReferences)) {

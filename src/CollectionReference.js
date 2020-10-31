@@ -12,8 +12,7 @@ module.exports = class CollectionReference {
     this.database = parent.database
     this.parent = parent
     this.__fsCollection = parent.__fsDocument.collection(id)
-    this.structure = references &&
-      fn.makeStructure(this, references, DocumentSetup)
+    this.structure = fn.makeStructure(this, references, DocumentSetup)
   }
 
   add(schema, data) {

@@ -16,8 +16,7 @@ module.exports = class Database {
     this.parent = null
     // CollectionReference needs this.__fsDocument to be defined
     this.__fsDocument = this.__firestore
-    this.structure = references &&
-      fn.makeStructure(this, references, CollectionSetup)
+    this.structure = fn.makeStructure(this, references, CollectionSetup)
   }
 
   batch() {

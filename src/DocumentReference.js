@@ -17,8 +17,7 @@ module.exports = class DocumentReference {
       // Even passing id=undefined would cause an error, so use a separate call
       // to doc() to auto-generate an ID
       : parent.__fsCollection.doc())
-    this.structure = references &&
-      fn.makeStructure(this, references, CollectionSetup)
+    this.structure = fn.makeStructure(this, references, CollectionSetup)
   }
 
   collection(collectionPath) {
