@@ -15,7 +15,7 @@ module.exports = class DocumentSetup {
 
   make(parent, ...args) {
     const document = new deferredModules.DocumentReference({
-      id: args.length === 0 ? this.__id : this.__id(args[1]),
+      id: args.length === 0 ? this.__id : this.__id(args[0]),
       parent,
       schema: this.__schema,
       references: this.__references,
