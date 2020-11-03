@@ -3,16 +3,22 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {fn, deferredModules, DocumentSetup, Query, QuerySnapshot} =
-  require('./index')
+const {fn, deferredModules, DocumentSetup, Query} = require('./index')
 
 
-module.exports = class CollectionReference {
-  constructor({id, parent, references}) {
+module.exports = class CollectionReference extends Query {
+  constructor({path, parent, references}) {
+    super({__callPostConstructor: true})
     this.database = parent.database
     this.parent = parent
-    this.__fsCollection = parent.__fsDocument.collection(id)
+    this.__fsCollection = parent.__fsDocument.collection(path)
+    this.id = this.__fsCollection.id
+    this.path = this.__fsCollection.path
     this.structure = fn.makeStructure(this, references, DocumentSetup)
+    this.__Query_postConstructor({
+      collection: this,
+      __fsQueryOrCollection: this.__fsCollection,
+    })
   }
 
   add(schema, data) {
@@ -38,7 +44,7 @@ module.exports = class CollectionReference {
     }
 
     return new deferredModules.DocumentReference({
-      id: docPath,
+      path: docPath,
       parent: this,
       schema,
     })
@@ -48,36 +54,6 @@ module.exports = class CollectionReference {
     return new deferredModules.DocumentReference({
       parent: this,
       schema,
-    })
-  }
-
-  async get(chooseSchema) {
-    const __fsQuerySnapshot = await this.__fsCollection.get()
-    return new QuerySnapshot({
-      collection: this,
-      chooseSchema,
-      __fsQuerySnapshot,
-    })
-  }
-
-  async *iter(chooseSchema) {
-    const {docs} = await this.get(chooseSchema)
-    yield* docs
-  }
-
-  limit(limit) {
-    const __fsQuery = this.__fsCollection.limit(limit)
-    return new Query({
-      collection: this,
-      __fsQuery,
-    })
-  }
-
-  where(fieldPath, opStr, value) {
-    const __fsQuery = this.__fsCollection.where(fieldPath, opStr, value)
-    return new Query({
-      collection: this,
-      __fsQuery,
     })
   }
 }

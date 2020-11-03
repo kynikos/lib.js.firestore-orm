@@ -16,7 +16,7 @@ exports.makeStructure = function makeStructure(
     structure[subRefName] = subReference instanceof SubRefClass
       ? subReference.make(reference)
       : (typeof subReference === 'function'
-        ? subReference.bind(reference)
+        ? (...args) => subReference(...args, reference)
         : subReference
       )
   }

@@ -8,21 +8,23 @@ const {fn, deferredModules, CollectionSetup, DocumentSnapshot} =
 
 
 module.exports = class DocumentReference {
-  constructor({id, __fsDocument, parent, schema, references}) {
+  constructor({path, __fsDocument, parent, schema, references}) {
     this.database = parent.database
     this.parent = parent
     this.schema = schema
-    this.__fsDocument = __fsDocument || (id
-      ? parent.__fsCollection.doc(id)
+    this.__fsDocument = __fsDocument || (path
+      ? parent.__fsCollection.doc(path)
       // Even passing id=undefined would cause an error, so use a separate call
       // to doc() to auto-generate an ID
       : parent.__fsCollection.doc())
+    this.id = this.__fsDocument.id
+    this.path = this.__fsDocument.path
     this.structure = fn.makeStructure(this, references, CollectionSetup)
   }
 
   collection(collectionPath) {
     return new deferredModules.CollectionReference({
-      id: collectionPath,
+      path: collectionPath,
       parent: this,
     })
   }

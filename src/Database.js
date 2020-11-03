@@ -8,8 +8,8 @@ const {fn, firebaseAdmin, deferredModules, CollectionSetup, WriteBatch} =
 
 
 module.exports = class Database {
-  constructor(references, options) {
-    firebaseAdmin.initializeApp()
+  constructor(references, options = {}) {
+    this.__app = firebaseAdmin.initializeApp(options.firebase)
     this.__firestore = firebaseAdmin.firestore()
     // CollectionReference needs this.database to be defined
     this.database = this
@@ -31,7 +31,7 @@ module.exports = class Database {
 
   collection(collectionPath) {
     return new deferredModules.CollectionReference({
-      id: collectionPath,
+      path: collectionPath,
       parent: this,
     })
   }

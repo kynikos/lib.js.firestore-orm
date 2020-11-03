@@ -8,6 +8,8 @@ module.exports.fn = require('./_functions')
 // deferredModules is needed to work around circular dependencies
 module.exports.deferredModules = {}
 module.exports.firebaseAdmin = require('firebase-admin')
+module.exports.streamToGenerator =
+  require('@kynikos/misc/src/streamToGenerator').streamToGenerator
 module.exports.DocumentSetup = require('./DocumentSetup')
 module.exports.CollectionSetup = require('./CollectionSetup')
 module.exports.DocumentSchema = require('./DocumentSchema')

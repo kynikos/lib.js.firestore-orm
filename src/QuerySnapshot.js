@@ -14,13 +14,21 @@ module.exports = class QuerySnapshot {
     this.empty = __fsQuerySnapshot.empty
     this.readTime = __fsQuerySnapshot.readTime
     this.size = __fsQuerySnapshot.size
-    this.docs = __fsQuerySnapshot.docs.map((__fsQueryDocumentSnapshot) => {
-      return new QueryDocumentSnapshot({
-        chooseSchema: this.__chooseSchema,
-        parentCollection: this.collection,
-        __fsQueryDocumentSnapshot,
-      })
-    })
+    this.__docs = false
+  }
+
+  get docs() {
+    if (this.__docs === false) {
+      this.__docs = this.__fsQuerySnapshot.docs
+        .map((__fsQueryDocumentSnapshot) => {
+          return new QueryDocumentSnapshot({
+            chooseSchema: this.__chooseSchema,
+            parentCollection: this.collection,
+            __fsQueryDocumentSnapshot,
+          })
+        })
+    }
+    return this.__docs
   }
 
   forEach(callback, thisArgopt) {
