@@ -3,8 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {fn, deferredModules, CollectionSetup, DocumentSnapshot} =
-  require('./index')
+const {fn, CollectionSetup, DocumentSnapshot} = require('./index')
 
 
 module.exports = class DocumentReference {
@@ -22,11 +21,10 @@ module.exports = class DocumentReference {
     this.structure = fn.makeStructure(this, structure, CollectionSetup)
   }
 
-  collection(collectionPath) {
-    return new deferredModules.CollectionReference({
-      path: collectionPath,
-      parent: this,
-    })
+  // eslint-disable-next-line class-methods-use-this
+  collection() {
+    throw new Error('Not implemented: use CollectionSetup and the structure ' +
+      'objects')
   }
 
   async create(data) {

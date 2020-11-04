@@ -3,8 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {fn, firebaseAdmin, deferredModules, CollectionSetup, WriteBatch} =
-  require('./index')
+const {fn, firebaseAdmin, CollectionSetup, WriteBatch} = require('./index')
 
 
 module.exports = class Database {
@@ -29,10 +28,9 @@ module.exports = class Database {
     return batch.commit()
   }
 
-  collection(collectionPath) {
-    return new deferredModules.CollectionReference({
-      path: collectionPath,
-      parent: this,
-    })
+  // eslint-disable-next-line class-methods-use-this
+  collection() {
+    throw new Error('Not implemented: use CollectionSetup and the structure ' +
+      'objects')
   }
 }
