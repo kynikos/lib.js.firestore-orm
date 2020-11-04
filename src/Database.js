@@ -8,7 +8,8 @@ const {fn, firebaseAdmin, CollectionSetup, WriteBatch} = require('./index')
 
 module.exports = class Database {
   constructor(structure, options = {}) {
-    this.__app = firebaseAdmin.initializeApp(options.firebase)
+    const {firebase: firebaseOptions, hooks = {}} = options
+    this.__app = firebaseAdmin.initializeApp(firebaseOptions)
     this.__firestore = firebaseAdmin.firestore()
     // CollectionReference needs this.database to be defined
     this.database = this
@@ -16,6 +17,9 @@ module.exports = class Database {
     // CollectionReference needs this.__fsDocument to be defined
     this.__fsDocument = this.__firestore
     this.structure = fn.makeStructure(this, structure, CollectionSetup)
+    this.__hooks = {
+      afterWritingDocument: hooks.afterWritingDocument,
+    }
   }
 
   batch() {

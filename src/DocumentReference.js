@@ -7,7 +7,7 @@ const {fn, CollectionSetup, DocumentSnapshot} = require('./index')
 
 
 module.exports = class DocumentReference {
-  constructor({path, __fsDocument, parent, schema, structure}) {
+  constructor({path, __fsDocument, parent, schema, structure, hooks}) {
     this.database = parent.database
     this.parent = parent
     this.schema = schema
@@ -19,6 +19,7 @@ module.exports = class DocumentReference {
     this.id = this.__fsDocument.id
     this.path = this.__fsDocument.path
     this.structure = fn.makeStructure(this, structure, CollectionSetup)
+    this.__hooks = hooks
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -32,14 +33,28 @@ module.exports = class DocumentReference {
 
     await this.__fsDocument.create(vData)
 
+    await this.__hooks.afterWritingDocument &&
+      this.__hooks.afterWritingDocument(this)
+
+    await this.database.__hooks.afterWritingDocument &&
+      this.database.__hooks.afterWritingDocument(this)
+
     // TODO: Return the native WriteResult object in a custom class with the
     //        vData?
     return vData
   }
 
-  delete(precondition) {
+  async delete(precondition) {
     // TODO: Wrap the returned native WriteResult object in a custom class?
-    return this.__fsDocument.delete(precondition)
+    const res = await this.__fsDocument.delete(precondition)
+
+    await this.__hooks.afterWritingDocument &&
+      this.__hooks.afterWritingDocument(this)
+
+    await this.database.__hooks.afterWritingDocument &&
+      this.database.__hooks.afterWritingDocument(this)
+
+    return res
   }
 
   async get() {
@@ -76,6 +91,12 @@ module.exports = class DocumentReference {
 
     await this.__fsDocument.set(vData, options)
 
+    await this.__hooks.afterWritingDocument &&
+      this.__hooks.afterWritingDocument(this)
+
+    await this.database.__hooks.afterWritingDocument &&
+      this.database.__hooks.afterWritingDocument(this)
+
     // TODO: Return the native WriteResult object in a custom class with the
     //        vData?
     return vData
@@ -90,6 +111,12 @@ module.exports = class DocumentReference {
     })
 
     await this.__fsDocument.update(vData, ...preconditionOrValues)
+
+    await this.__hooks.afterWritingDocument &&
+      this.__hooks.afterWritingDocument(this)
+
+    await this.database.__hooks.afterWritingDocument &&
+      this.database.__hooks.afterWritingDocument(this)
 
     // TODO: Return the native WriteResult object in a custom class with the
     //        vData?
