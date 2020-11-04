@@ -7,11 +7,19 @@ const {DocumentSnapshot} = require('./index')
 
 
 module.exports = class QueryDocumentSnapshot extends DocumentSnapshot {
-  constructor({chooseSchema, parentCollection, __fsQueryDocumentSnapshot}) {
+  constructor({chooseSetup, parentCollection, __fsQueryDocumentSnapshot}) {
+    const setup = typeof chooseSetup === 'function'
+      ? chooseSetup(__fsQueryDocumentSnapshot.id)
+      : chooseSetup
+
+    const documentReference = setup.__make({
+      parent: parentCollection,
+      __fsDocument: __fsQueryDocumentSnapshot.ref,
+    })
+
     super({
       __fsDocumentSnapshot: __fsQueryDocumentSnapshot,
-      chooseSchema,
-      parent: parentCollection,
+      documentReference,
     })
     this.__fsQueryDocumentSnapshot = __fsQueryDocumentSnapshot
   }

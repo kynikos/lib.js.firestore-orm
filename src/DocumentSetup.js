@@ -9,17 +9,44 @@ const {deferredModules} = require('./index')
 module.exports = class DocumentSetup {
   constructor({path, schema, structure}) {
     this.__path = path
-    this.schema = schema
+    this.__schema = schema
     this.__structure = structure
   }
 
-  make(parent, ...args) {
-    const document = new deferredModules.DocumentReference({
-      path: args.length === 0 ? this.__path : this.__path(args[0]),
+  __make({parent, path, __fsDocument}) {
+    let pPath
+    let pFsDocument
+
+    if (__fsDocument) {
+      if (path) {
+        throw new Error('Ambiguous document path: __fsDocument cannot be ' +
+          'defined in make() if already set when instantiating DocumentSetup')
+      }
+      pFsDocument = __fsDocument
+    } else if (this.__path) {
+      if (typeof this.__path === 'function') {
+        pPath = this.__path(path)
+      } else if (path) {
+        throw new Error('Ambiguous document path: path cannot be defined ' +
+          'both when instantiating DocumentSetup and when running make()')
+      } else {
+        pPath = this.__path
+      }
+    } else {
+      pPath = path
+    }
+
+    return new deferredModules.DocumentReference({
+      path: pPath,
+      __fsDocument: pFsDocument,
       parent,
-      schema: this.schema,
+      schema: this.__schema,
       structure: this.__structure,
     })
+  }
+
+  make(parent, path) {
+    const document = this.__make({parent, path})
     return document.structure
   }
 }

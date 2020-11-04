@@ -12,12 +12,31 @@ module.exports = class CollectionSetup {
     this.__structure = structure
   }
 
-  make(parent, ...args) {
-    const collection = new deferredModules.CollectionReference({
-      path: args.length === 0 ? this.__path : this.__path(args[1]),
+  __make({parent, path}) {
+    let pPath
+
+    if (this.__path) {
+      if (typeof this.__path === 'function') {
+        pPath = this.__path(path)
+      } else if (path) {
+        throw new Error('Ambiguous collection path: path cannot be defined ' +
+          'both when instantiating CollectionSetup and when running make()')
+      } else {
+        pPath = this.__path
+      }
+    } else {
+      pPath = path
+    }
+
+    return new deferredModules.CollectionReference({
+      path: pPath,
       parent,
       structure: this.__structure,
     })
+  }
+
+  make(parent, path) {
+    const collection = this.__make({parent, path})
     return collection.structure
   }
 }

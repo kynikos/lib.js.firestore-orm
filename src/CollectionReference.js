@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {fn, deferredModules, DocumentSetup, Query} = require('./index')
+const {fn, DocumentSetup, Query} = require('./index')
 
 
 module.exports = class CollectionReference extends Query {
@@ -21,13 +21,13 @@ module.exports = class CollectionReference extends Query {
     })
   }
 
-  add(schema, data) {
-    const doc = this.docAutoId(schema)
+  add(setup, data) {
+    const doc = this.docAutoId(setup)
     return doc.set(data, {merge: false})
   }
 
-  async deleteAll(chooseSchema) {
-    const docs = await this.get(chooseSchema)
+  async deleteAll(chooseSetup) {
+    const docs = await this.get(chooseSetup)
 
     return this.database.batchCommit((batch) => {
       docs.forEach((doc) => {
@@ -36,24 +36,17 @@ module.exports = class CollectionReference extends Query {
     })
   }
 
-  doc(docPath, schema) {
+  doc(docPath, setup) {
     if (!docPath) {
       // The native collection objects support calling doc() without arguments
-      // to auto-generate a document ID, but I need a schema with this ORM
-      throw new Error('To auto-generate a document ID, call docAutoId(schema)')
+      // to auto-generate a document ID, but I need a setup with this ORM
+      throw new Error('To auto-generate a document ID, call docAutoId(setup)')
     }
 
-    return new deferredModules.DocumentReference({
-      path: docPath,
-      parent: this,
-      schema,
-    })
+    return setup.__make({parent: this, path: docPath})
   }
 
-  docAutoId(schema) {
-    return new deferredModules.DocumentReference({
-      parent: this,
-      schema,
-    })
+  docAutoId(setup) {
+    return setup.__make({parent: this})
   }
 }

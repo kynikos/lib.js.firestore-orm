@@ -20,21 +20,21 @@ module.exports = class Query {
     this.collection = collection
   }
 
-  async get(chooseSchema) {
+  async get(chooseSetup) {
     const __fsQuerySnapshot = await this.__fsQueryOrCollection.get()
     return new QuerySnapshot({
       collection: this.collection,
-      chooseSchema,
+      chooseSetup,
       __fsQuerySnapshot,
     })
   }
 
-  async *iter(chooseSchema) {
+  async *iter(chooseSetup) {
     const stream = this.__fsQueryOrCollection.stream()
 
     for await (const __fsQueryDocumentSnapshot of streamToGenerator(stream)) {
       yield new QueryDocumentSnapshot({
-        chooseSchema,
+        chooseSetup,
         parentCollection: this.collection,
         __fsQueryDocumentSnapshot,
       })

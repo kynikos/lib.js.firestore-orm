@@ -48,7 +48,6 @@ module.exports = class DocumentReference {
     const __fsDocumentSnapshot = await this.__fsDocument.get()
     return new DocumentSnapshot({
       __fsDocumentSnapshot,
-      chooseSchema: this.schema,
       documentReference: this,
     })
   }
@@ -85,8 +84,8 @@ module.exports = class DocumentReference {
   }
 
   async update(data, ...preconditionOrValues) {
-    // Use 'ignoreAllMissingFields' when updating, otherwise any unspecified fields
-    // would be overwritten with their default values
+    // Use 'ignoreAllMissingFields' when updating, otherwise any unspecified
+    // fields would be overwritten with their default values
     const vData = this.schema.serialize(data, {
       ignoreAllMissingFields: true,
       onlyTheseFields: false,
