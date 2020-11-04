@@ -8,7 +8,7 @@ const {fn, deferredModules, CollectionSetup, DocumentSnapshot} =
 
 
 module.exports = class DocumentReference {
-  constructor({path, __fsDocument, parent, schema, references}) {
+  constructor({path, __fsDocument, parent, schema, structure}) {
     this.database = parent.database
     this.parent = parent
     this.schema = schema
@@ -19,7 +19,7 @@ module.exports = class DocumentReference {
       : parent.__fsCollection.doc())
     this.id = this.__fsDocument.id
     this.path = this.__fsDocument.path
-    this.structure = fn.makeStructure(this, references, CollectionSetup)
+    this.structure = fn.makeStructure(this, structure, CollectionSetup)
   }
 
   collection(collectionPath) {

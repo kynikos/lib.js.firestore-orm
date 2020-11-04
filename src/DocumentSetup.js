@@ -7,10 +7,10 @@ const {deferredModules} = require('./index')
 
 
 module.exports = class DocumentSetup {
-  constructor(path, schema, references) {
+  constructor({path, schema, structure}) {
     this.__path = path
     this.schema = schema
-    this.__references = references
+    this.__structure = structure
   }
 
   make(parent, ...args) {
@@ -18,7 +18,7 @@ module.exports = class DocumentSetup {
       path: args.length === 0 ? this.__path : this.__path(args[0]),
       parent,
       schema: this.schema,
-      references: this.__references,
+      structure: this.__structure,
     })
     return document.structure
   }

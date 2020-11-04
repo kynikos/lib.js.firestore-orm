@@ -7,14 +7,14 @@ const {fn, deferredModules, DocumentSetup, Query} = require('./index')
 
 
 module.exports = class CollectionReference extends Query {
-  constructor({path, parent, references}) {
+  constructor({path, parent, structure}) {
     super({__callPostConstructor: true})
     this.database = parent.database
     this.parent = parent
     this.__fsCollection = parent.__fsDocument.collection(path)
     this.id = this.__fsCollection.id
     this.path = this.__fsCollection.path
-    this.structure = fn.makeStructure(this, references, DocumentSetup)
+    this.structure = fn.makeStructure(this, structure, DocumentSetup)
     this.__Query_postConstructor({
       collection: this,
       __fsQueryOrCollection: this.__fsCollection,

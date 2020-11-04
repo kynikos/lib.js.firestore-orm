@@ -8,7 +8,7 @@ const {fn, firebaseAdmin, deferredModules, CollectionSetup, WriteBatch} =
 
 
 module.exports = class Database {
-  constructor(references, options = {}) {
+  constructor(structure, options = {}) {
     this.__app = firebaseAdmin.initializeApp(options.firebase)
     this.__firestore = firebaseAdmin.firestore()
     // CollectionReference needs this.database to be defined
@@ -16,7 +16,7 @@ module.exports = class Database {
     this.parent = null
     // CollectionReference needs this.__fsDocument to be defined
     this.__fsDocument = this.__firestore
-    this.structure = fn.makeStructure(this, references, CollectionSetup)
+    this.structure = fn.makeStructure(this, structure, CollectionSetup)
   }
 
   batch() {

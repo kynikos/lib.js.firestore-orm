@@ -7,16 +7,16 @@ const {deferredModules} = require('./index')
 
 
 module.exports = class CollectionSetup {
-  constructor(path, references) {
+  constructor({path, structure}) {
     this.__path = path
-    this.__references = references
+    this.__structure = structure
   }
 
   make(parent, ...args) {
     const collection = new deferredModules.CollectionReference({
       path: args.length === 0 ? this.__path : this.__path(args[1]),
       parent,
-      references: this.__references,
+      structure: this.__structure,
     })
     return collection.structure
   }

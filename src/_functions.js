@@ -5,14 +5,14 @@
 
 exports.makeStructure = function makeStructure(
   reference,
-  subReferences,
+  subStructure,
   SubRefClass,
 ) {
-  if (subReferences == null) return null
+  if (subStructure == null) return null
 
   const structure = {}
 
-  for (const [subRefName, subReference] of Object.entries(subReferences)) {
+  for (const [subRefName, subReference] of Object.entries(subStructure)) {
     structure[subRefName] = subReference instanceof SubRefClass
       ? subReference.make(reference)
       : (typeof subReference === 'function'
