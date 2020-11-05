@@ -12,31 +12,21 @@ module.exports = class CollectionSetup {
     this.__structure = structure
   }
 
-  __make({parent, path}) {
-    let pPath
-
-    if (this.__path) {
-      if (typeof this.__path === 'function') {
-        pPath = this.__path(path)
-      } else if (path) {
-        throw new Error('Ambiguous collection path: path cannot be defined ' +
-          'both when instantiating CollectionSetup and when running make()')
-      } else {
-        pPath = this.__path
-      }
-    } else {
-      pPath = path
+  __install(parent) {
+    // It's especially important to avoid installing a document with an
+    // auto-generated ID (an empty 'path'), or the user may think that a new
+    // document is generated every time one of its functions is called, but
+    // that wouldn't be the case
+    if (typeof this.__path !== 'string' && !(this.__path instanceof String)) {
+      throw new Error("Installing a CollectionSetup requires 'path' to be " +
+        'statically defined as a string')
     }
 
     return new deferredModules.CollectionReference({
-      path: pPath,
+      path: this.__path,
       parent,
       structure: this.__structure,
+      __calledBySetup: true,
     })
-  }
-
-  make(parent, path) {
-    const collection = this.__make({parent, path})
-    return collection.structure
   }
 }

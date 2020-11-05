@@ -7,7 +7,12 @@ const {fn, DocumentSetup, Query} = require('./index')
 
 
 module.exports = class CollectionReference extends Query {
-  constructor({path, parent, structure}) {
+  constructor({path, parent, structure, __calledBySetup}) {
+    if (__calledBySetup !== true) {
+      throw new Error('CollectionReference should only be instantiated ' +
+        'internally by a CollectionSetup object')
+    }
+
     super({__callPostConstructor: true})
     this.database = parent.database
     this.parent = parent
@@ -21,32 +26,26 @@ module.exports = class CollectionReference extends Query {
     })
   }
 
+  // eslint-disable-next-line class-methods-use-this
   add(setup, data) {
-    const doc = this.docAutoId(setup)
-    return doc.set(data, {merge: false})
+    throw new Error('Not implemented: to add a document with an ' +
+      'auto-generated ID, use a DocumentSetup object with makeAutoId() ' +
+      'method, then either create() or set() the document reference')
   }
 
-  async deleteAll(chooseSetup) {
+  async deleteAllDocuments(chooseSetup) {
     const docs = await this.get(chooseSetup)
 
     return this.database.batchCommit((batch) => {
       docs.forEach((doc) => {
-        batch.delete(doc.ref)
+        batch.delete(doc)
       })
     })
   }
 
-  doc(docPath, setup) {
-    if (!docPath) {
-      // The native collection objects support calling doc() without arguments
-      // to auto-generate a document ID, but I need a setup with this ORM
-      throw new Error('To auto-generate a document ID, call docAutoId(setup)')
-    }
-
-    return setup.__make({parent: this, path: docPath})
-  }
-
-  docAutoId(setup) {
-    return setup.__make({parent: this})
+  // eslint-disable-next-line class-methods-use-this
+  doc() {
+    throw new Error('Not implemented: to get a reference to a document, use ' +
+      'a DocumentSetup object, possibly with its make() or makeAutoId() method')
   }
 }

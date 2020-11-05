@@ -7,7 +7,14 @@ const {fn, CollectionSetup, DocumentSnapshot} = require('./index')
 
 
 module.exports = class DocumentReference {
-  constructor({path, __fsDocument, parent, schema, structure, hooks}) {
+  constructor({
+    path, __fsDocument, parent, schema, structure, __calledBySetup,
+  }) {
+    if (__calledBySetup !== true) {
+      throw new Error('DocumentReference should only be instantiated ' +
+        'internally by a DocumentSetup object')
+    }
+
     this.database = parent.database
     this.parent = parent
     this.schema = schema
@@ -19,7 +26,6 @@ module.exports = class DocumentReference {
     this.id = this.__fsDocument.id
     this.path = this.__fsDocument.path
     this.structure = fn.makeStructure(this, structure, CollectionSetup)
-    this.__hooks = hooks
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -28,33 +34,20 @@ module.exports = class DocumentReference {
       'objects')
   }
 
-  async create(data) {
-    const vData = this.schema.serialize(data)
-
-    await this.__fsDocument.create(vData)
-
-    await this.__hooks.afterWritingDocument &&
-      this.__hooks.afterWritingDocument(this)
-
-    await this.database.__hooks.afterWritingDocument &&
-      this.database.__hooks.afterWritingDocument(this)
-
-    // TODO: Return the native WriteResult object in a custom class with the
-    //        vData?
-    return vData
+  create(data) {
+    return fn.createDocument({
+      docRef: this,
+      data,
+      createFn: (data_) => this.__fsDocument.create(data_),
+    })
   }
 
-  async delete(precondition) {
-    // TODO: Wrap the returned native WriteResult object in a custom class?
-    const res = await this.__fsDocument.delete(precondition)
-
-    await this.__hooks.afterWritingDocument &&
-      this.__hooks.afterWritingDocument(this)
-
-    await this.database.__hooks.afterWritingDocument &&
-      this.database.__hooks.afterWritingDocument(this)
-
-    return res
+  delete(precondition) {
+    return fn.deleteDocument({
+      docRef: this,
+      precondition,
+      deleteFn: (precondition_) => this.__fsDocument.delete(precondition_),
+    })
   }
 
   async get() {
@@ -65,61 +58,23 @@ module.exports = class DocumentReference {
     })
   }
 
-  async set(data, options) {
-    let sOptions
-
-    if (
-      !options ||
-      // XOR
-      ((options.merge == null) === (options.mergeFields == null))
-    ) {
-      throw new Error("set() must explicitly specify either the 'merge' " +
-        "or the 'mergeFields' option, not both or neither")
-    } else if (options.mergeFields == null) {
-      sOptions = {
-        ignoreAllMissingFields: options.merge,
-        onlyTheseFields: false,
-      }
-    } else {
-      sOptions = {
-        ignoreAllMissingFields: false,
-        onlyTheseFields: options.mergeFields,
-      }
-    }
-
-    const vData = this.schema.serialize(data, sOptions)
-
-    await this.__fsDocument.set(vData, options)
-
-    await this.__hooks.afterWritingDocument &&
-      this.__hooks.afterWritingDocument(this)
-
-    await this.database.__hooks.afterWritingDocument &&
-      this.database.__hooks.afterWritingDocument(this)
-
-    // TODO: Return the native WriteResult object in a custom class with the
-    //        vData?
-    return vData
+  set(data, options) {
+    return fn.setDocument({
+      docRef: this,
+      data,
+      options,
+      setFn: (data_, options_) => this.__fsDocument.set(data_, options_),
+    })
   }
 
-  async update(data, ...preconditionOrValues) {
-    // Use 'ignoreAllMissingFields' when updating, otherwise any unspecified
-    // fields would be overwritten with their default values
-    const vData = this.schema.serialize(data, {
-      ignoreAllMissingFields: true,
-      onlyTheseFields: false,
+  update(dataOrField, ...preconditionOrValues) {
+    return fn.updateDocument({
+      docRef: this,
+      dataOrField,
+      preconditionOrValues,
+      updateFn: (dataOrField_, ...preconditionOrValues_) => {
+        return this.__fsDocument.update(dataOrField_, ...preconditionOrValues_)
+      },
     })
-
-    await this.__fsDocument.update(vData, ...preconditionOrValues)
-
-    await this.__hooks.afterWritingDocument &&
-      this.__hooks.afterWritingDocument(this)
-
-    await this.database.__hooks.afterWritingDocument &&
-      this.database.__hooks.afterWritingDocument(this)
-
-    // TODO: Return the native WriteResult object in a custom class with the
-    //        vData?
-    return vData
   }
 }

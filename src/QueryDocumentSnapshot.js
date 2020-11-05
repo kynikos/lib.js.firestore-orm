@@ -12,10 +12,10 @@ module.exports = class QueryDocumentSnapshot extends DocumentSnapshot {
       ? chooseSetup(__fsQueryDocumentSnapshot.id)
       : chooseSetup
 
-    const documentReference = setup.__make({
-      parent: parentCollection,
-      __fsDocument: __fsQueryDocumentSnapshot.ref,
-    })
+    const documentReference = setup.__makeFromReference(
+      parentCollection,
+      __fsQueryDocumentSnapshot.ref,
+    )
 
     super({
       __fsDocumentSnapshot: __fsQueryDocumentSnapshot,

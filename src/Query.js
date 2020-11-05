@@ -74,7 +74,7 @@ module.exports = class Query {
 
   // eslint-disable-next-line class-methods-use-this
   stream() {
-    throw new Error('Not implemented, use *iter()')
+    throw new Error('Not implemented: use *iter()')
   }
 
   where(fieldPath, opStr, value) {
