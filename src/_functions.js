@@ -29,37 +29,54 @@ exports.makeStructure = function makeStructure(
 exports.createDocument = async function createDocument({
   docRef, data, batch, createFn,
 }) {
-  const sData = docRef.schema.serialize(data)
+  const serializedData = docRef.schema.serialize(data)
 
-  const res = await createFn(sData)
-
-  await docRef.database.__hooks.afterCreatingDocument &&
-    docRef.database.__hooks.afterCreatingDocument({
+  const beforeData = docRef.database.__hooks.beforeCreatingDocument &&
+    await docRef.database.__hooks.beforeCreatingDocument({
       document: docRef,
-      sData,
+      serializedData,
       batch,
     })
 
-  // TODO: Return the native WriteResult object in a custom class with the
-  //       sData?
-  // return res
-  return sData
+  const writeResult = await createFn(serializedData)
+
+  docRef.database.__hooks.afterCreatingDocument &&
+    await docRef.database.__hooks.afterCreatingDocument({
+      document: docRef,
+      beforeData,
+      serializedData,
+      writeResult,
+      batch,
+    })
+
+  // TODO: Return the native WriteResult object wrapped in a custom class with
+  //       the serializedData?
+  // return writeResult
+  return serializedData
 }
 
 
 exports.deleteDocument = async function deleteDocument({
   docRef, precondition, batch, deleteFn,
 }) {
-  // TODO: Wrap the returned native WriteResult object in a custom class?
-  const res = await deleteFn(precondition)
-
-  await docRef.database.__hooks.afterDeletingDocument &&
-    docRef.database.__hooks.afterDeletingDocument({
+  const beforeData = docRef.database.__hooks.beforeDeletingDocument &&
+    await docRef.database.__hooks.beforeDeletingDocument({
       document: docRef,
       batch,
     })
 
-  return res
+  const writeResult = await deleteFn(precondition)
+
+  docRef.database.__hooks.afterDeletingDocument &&
+    await docRef.database.__hooks.afterDeletingDocument({
+      document: docRef,
+      beforeData,
+      writeResult,
+      batch,
+    })
+
+  // TODO: Return the native WriteResult object wrapped in a custom class?
+  return writeResult
 }
 
 
@@ -87,21 +104,30 @@ exports.setDocument = async function setDocument({
     }
   }
 
-  const sData = docRef.schema.serialize(data, sOptions)
+  const serializedData = docRef.schema.serialize(data, sOptions)
 
-  const res = await setFn(sData, options)
-
-  await docRef.database.__hooks.afterSettingDocument &&
-    docRef.database.__hooks.afterSettingDocument({
+  const beforeData = docRef.database.__hooks.beforeSettingDocument &&
+    await docRef.database.__hooks.beforeSettingDocument({
       document: docRef,
-      sData,
+      serializedData,
       batch,
     })
 
-  // TODO: Return the native WriteResult object in a custom class with the
-  //       sData?
-  // return res
-  return sData
+  const writeResult = await setFn(serializedData, options)
+
+  docRef.database.__hooks.afterSettingDocument &&
+    await docRef.database.__hooks.afterSettingDocument({
+      document: docRef,
+      beforeData,
+      serializedData,
+      writeResult,
+      batch,
+    })
+
+  // TODO: Return the native WriteResult object wrapped in a custom class with
+  //       the serializedData?
+  // return writeResult
+  return serializedData
 }
 
 
@@ -110,22 +136,31 @@ exports.updateDocument = async function updateDocument({
 }) {
   // Use 'ignoreAllMissingFields' when updating, otherwise any unspecified
   // fields would be overwritten with their default values
-  const sData = docRef.schema.serialize(dataOrField, {
+  const serializedData = docRef.schema.serialize(dataOrField, {
     ignoreAllMissingFields: true,
     onlyTheseFields: false,
   })
 
-  const res = await updateFn(sData, ...preconditionOrValues)
-
-  await docRef.database.__hooks.afterUpdatingDocument &&
-    docRef.database.__hooks.afterUpdatingDocument({
+  const beforeData = docRef.database.__hooks.beforeUpdatingDocument &&
+    await docRef.database.__hooks.beforeUpdatingDocument({
       document: docRef,
-      sData,
+      serializedData,
       batch,
     })
 
-  // TODO: Return the native WriteResult object in a custom class with the
-  //       sData?
-  // return res
-  return sData
+  const writeResult = await updateFn(serializedData, ...preconditionOrValues)
+
+  docRef.database.__hooks.afterUpdatingDocument &&
+    await docRef.database.__hooks.afterUpdatingDocument({
+      document: docRef,
+      beforeData,
+      serializedData,
+      writeResult,
+      batch,
+    })
+
+  // TODO: Return the native WriteResult object wrapped in a custom class with
+  //       the serializedData?
+  // return writeResult
+  return serializedData
 }

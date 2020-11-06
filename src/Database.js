@@ -18,9 +18,13 @@ module.exports = class Database {
     this.__fsDocument = this.__firestore
     this.structure = fn.makeStructure(this, structure, CollectionSetup)
     this.__hooks = {
+      beforeCreatingDocument: hooks.beforeCreatingDocument,
       afterCreatingDocument: hooks.afterCreatingDocument,
+      beforeDeletingDocument: hooks.beforeDeletingDocument,
       afterDeletingDocument: hooks.afterDeletingDocument,
+      beforeSettingDocument: hooks.beforeSettingDocument,
       afterSettingDocument: hooks.afterSettingDocument,
+      beforeUpdatingDocument: hooks.beforeUpdatingDocument,
       afterUpdatingDocument: hooks.afterUpdatingDocument,
     }
   }
