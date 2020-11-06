@@ -38,7 +38,7 @@ module.exports = class CollectionReference extends Query {
 
     return this.database.batchCommit((batch) => {
       docs.forEach((doc) => {
-        batch.delete(doc)
+        batch.delete(doc.ref)
       })
     })
   }
