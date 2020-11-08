@@ -16,7 +16,14 @@ module.exports = class Database {
     this.parent = null
     // CollectionReference needs this.__fsDocument to be defined
     this.__fsDocument = this.__firestore
-    this.structure = fn.makeStructure(this, structure, CollectionSetup)
+
+    try {
+      this.structure = fn.makeStructure(this, structure, CollectionSetup)
+    } catch (error) {
+      this.__app.delete()
+      throw error
+    }
+
     this.__hooks = {
       beforeCreatingDocument: hooks.beforeCreatingDocument,
       afterCreatingDocument: hooks.afterCreatingDocument,
