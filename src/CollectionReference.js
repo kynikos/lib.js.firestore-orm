@@ -34,12 +34,12 @@ module.exports = class CollectionReference extends Query {
   }
 
   async deleteAllDocuments(chooseSetup) {
-    const docs = await this.get(chooseSetup)
+    const res = await this.get(chooseSetup)
 
     return this.database.batchCommit((batch) => {
-      docs.forEach((doc) => {
-        batch.delete(doc.ref)
-      })
+      return Promise.all(res.docs.map((doc) => {
+        return batch.delete(doc.ref)
+      }))
     })
   }
 

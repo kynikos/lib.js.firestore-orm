@@ -19,21 +19,39 @@ module.exports = class QuerySnapshot {
 
   get docs() {
     if (this.__docs === false) {
-      this.__docs = this.__fsQuerySnapshot.docs
-        .map((__fsQueryDocumentSnapshot) => {
-          return new QueryDocumentSnapshot({
-            chooseSetup: this.__chooseSetup,
-            parentCollection: this.collection,
-            __fsQueryDocumentSnapshot,
-          })
-        })
+      // this.iter() creates this.__docs as a side effect
+      Array.from(this.iter())
     }
     return this.__docs
   }
 
-  forEach(callback, thisArgopt) {
-    return this.docs.forEach((queryDocumentSnapshot) => {
-      return callback.bind(thisArgopt)(queryDocumentSnapshot)
-    })
+  forEach(callback, thisArg) {
+    return this.docs.forEach(callback, thisArg)
+  }
+
+  *iter() {
+    if (this.__docs === false) {
+      const docs = []
+
+      for (const __fsQueryDocumentSnapshot of this.__fsQuerySnapshot.docs) {
+        const queryDocumentSnapshot = new QueryDocumentSnapshot({
+          chooseSetup: this.__chooseSetup,
+          parentCollection: this.collection,
+          __fsQueryDocumentSnapshot,
+        })
+
+        yield queryDocumentSnapshot
+
+        docs.push(queryDocumentSnapshot)
+      }
+
+      // Save 'docs' to this.__docs only after the loop, to protect it from
+      // exceptions raised in callback
+      this.__docs = docs
+    } else {
+      for (const queryDocumentSnapshot of this.__docs) {
+        yield queryDocumentSnapshot
+      }
+    }
   }
 }
