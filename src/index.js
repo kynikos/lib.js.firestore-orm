@@ -24,4 +24,4 @@ module.exports.deferredModules.CollectionReference = CollectionReference
 const DocumentReference = require('./DocumentReference')
 module.exports.DocumentReference = DocumentReference
 module.exports.deferredModules.DocumentReference = DocumentReference
-module.exports.Database = require('./Database')
+module.exports.DatabaseConnection = require('./DatabaseConnection')
