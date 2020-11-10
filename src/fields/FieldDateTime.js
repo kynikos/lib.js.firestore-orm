@@ -8,9 +8,10 @@ const {Field} = require('./index')
 
 module.exports = class FieldDateTime extends Field {
   constructor(fieldName, options = {}) {
-    const {autoNow, ...commonOptions} = options
+    const {autoNow, autoNowAdd, ...commonOptions} = options
     super(fieldName, commonOptions)
     this.autoNow = Boolean(autoNow)
+    this.autoNowAdd = Boolean(autoNowAdd)
   }
 
   serializeNotNull(value, {coerce = true}) {
@@ -34,7 +35,7 @@ module.exports = class FieldDateTime extends Field {
   }
 
   serializeNoValueAlt() {
-    if (this.autoNow) return new Date()
+    if (this.autoNow || this.autoNowAdd) return new Date()
     return null
   }
 
