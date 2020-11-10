@@ -25,3 +25,4 @@ const DocumentReference = require('./DocumentReference')
 module.exports.DocumentReference = DocumentReference
 module.exports.deferredModules.DocumentReference = DocumentReference
 module.exports.DatabaseConnection = require('./DatabaseConnection')
+module.exports.AppManager = require('./AppManager')

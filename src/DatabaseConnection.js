@@ -3,50 +3,22 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {fn, firebaseAdmin, CollectionSetup, WriteBatch} = require('./index')
+const {fn, CollectionSetup, WriteBatch} = require('./index')
 
 
 module.exports = class DatabaseConnection {
-  static makeFactory(structure, options = {}) {
-    const {firebase: firebaseOptions} = options
-    const app = firebaseAdmin.initializeApp(firebaseOptions)
-    const firestore = firebaseAdmin.firestore()
-
-    return (connectionData) => {
-      return new DatabaseConnection({
-        app,
-        firestore,
-        structure,
-        options,
-        connectionData,
-      })
-    }
-  }
-
-  static makeUnique(structure, options, connectionData) {
-    return DatabaseConnection.makeFactory(structure, options)(connectionData)
-  }
-
-  constructor({app, firestore, structure, options = {}, connectionData}) {
+  constructor({appManager, structure, options = {}, connectionData}) {
     const {hooks = {}} = options
-    this.__app = app
-    this.__firestore = firestore
+    this.__appManager = appManager
     // CollectionReference needs this.database to be defined
     this.database = this
     this.parent = null
     // CollectionReference needs this.__fsDocument to be defined
-    this.__fsDocument = this.__firestore
-
+    this.__fsDocument = this.__appManager.firestore
     // 'structure' must be recreated for every connection, since it's
     // specifically related to 'this' object, so it cannot be created in
     // makeFactory()
-    try {
-      this.structure = fn.makeStructure(this, structure, CollectionSetup)
-    } catch (error) {
-      this.__app.delete()
-      throw error
-    }
-
+    this.structure = fn.makeStructure(this, structure, CollectionSetup)
     this.connectionData = connectionData
     this.__hooks = {
       beforeCreatingDocument: hooks.beforeCreatingDocument,
