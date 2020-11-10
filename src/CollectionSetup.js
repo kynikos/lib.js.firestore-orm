@@ -29,4 +29,18 @@ module.exports = class CollectionSetup {
       __calledBySetup: true,
     })
   }
+
+  __makeFromPath(parent, path) {
+    if (path !== this.__path) {
+      throw new Error("The provided 'path' does not match the configured " +
+        "setup's path")
+    }
+
+    return new deferredModules.CollectionReference({
+      path,
+      parent,
+      structure: this.__structure,
+      __calledBySetup: true,
+    })
+  }
 }
