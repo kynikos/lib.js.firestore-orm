@@ -13,6 +13,7 @@ const {
 const {
   FieldArray,
   FieldBoolean,
+  FieldChoice,
   FieldDate,
   FieldDateTime,
   FieldInteger,
@@ -30,6 +31,7 @@ module.exports = {
   DocumentSchema,
   FieldArray,
   FieldBoolean,
+  FieldChoice,
   FieldDate,
   FieldDateTime,
   FieldInteger,

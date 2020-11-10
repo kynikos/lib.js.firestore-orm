@@ -7,6 +7,7 @@
 exports.Field = require('./_Field')
 exports.FieldArray = require('./FieldArray')
 exports.FieldBoolean = require('./FieldBoolean')
+exports.FieldChoice = require('./FieldChoice')
 exports.FieldDateTime = require('./FieldDateTime')
 exports.FieldDate = require('./FieldDate')
 exports.FieldInteger = require('./FieldInteger')
