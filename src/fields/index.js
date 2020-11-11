@@ -8,6 +8,7 @@ exports.Field = require('./_Field')
 exports.FieldArray = require('./FieldArray')
 exports.FieldBoolean = require('./FieldBoolean')
 exports.FieldChoice = require('./FieldChoice')
+exports.FieldChoiceArray = require('./FieldChoiceArray')
 exports.FieldCollectionReference = require('./FieldCollectionReference')
 exports.FieldCollectionReferenceArray =
   require('./FieldCollectionReferenceArray')
