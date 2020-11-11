@@ -19,6 +19,7 @@ exports.FieldDocumentReferenceArray =
   require('./FieldDocumentReferenceArray')
 exports.FieldInteger = require('./FieldInteger')
 exports.FieldIntegerMap = require('./FieldIntegerMap')
+exports.FieldJson = require('./FieldJson')
 exports.FieldMap = require('./FieldMap')
 exports.FieldString = require('./FieldString')
 exports.FieldStringArray = require('./FieldStringArray')
