@@ -72,6 +72,17 @@ module.exports = class Query {
     return query
   }
 
+  select(...fieldPaths) {
+    const query = new Query({__callPostConstructor: true})
+    const __fsQuery =
+      this.__fsQueryOrCollection.select(...fieldPaths)
+    query.__Query_postConstructor({
+      collection: this.collection,
+      __fsQueryOrCollection: __fsQuery,
+    })
+    return query
+  }
+
   // eslint-disable-next-line class-methods-use-this
   stream() {
     throw new Error('Not implemented: use *iter()')
