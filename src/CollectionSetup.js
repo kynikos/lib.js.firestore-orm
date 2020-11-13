@@ -7,38 +7,16 @@ const {deferredModules} = require('./index')
 
 
 module.exports = class CollectionSetup {
-  constructor({path, structure}) {
-    this.__path = path
+  constructor({getDocumentSetup, structure}) {
+    this.__getDocumentSetup = getDocumentSetup
     this.__structure = structure
   }
 
-  __install(parent) {
-    // It's especially important to avoid installing a document with an
-    // auto-generated ID (an empty 'path'), or the user may think that a new
-    // document is generated every time one of its functions is called, but
-    // that wouldn't be the case
-    if (typeof this.__path !== 'string' && !(this.__path instanceof String)) {
-      throw new Error("Installing a CollectionSetup requires 'path' to be " +
-        'statically defined as a string')
-    }
-
+  __makeFromId(parent, id) {
     return new deferredModules.CollectionReference({
-      path: this.__path,
+      id,
       parent,
-      structure: this.__structure,
-      __calledBySetup: true,
-    })
-  }
-
-  __makeFromPath(parent, path) {
-    if (path !== this.__path) {
-      throw new Error("The provided 'path' does not match the configured " +
-        "setup's path")
-    }
-
-    return new deferredModules.CollectionReference({
-      path,
-      parent,
+      getDocumentSetup: this.__getDocumentSetup,
       structure: this.__structure,
       __calledBySetup: true,
     })

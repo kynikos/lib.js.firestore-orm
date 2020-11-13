@@ -31,7 +31,7 @@ module.exports = class FieldCollectionReference extends Field {
   deserialize(value) {
     return (database) => {
       const {setup, parent} = this.pathToSetupAndParent(database, value)
-      return setup.__makeFromPath(parent, value)
+      return setup.__makeFromId(parent, value)
     }
   }
 }

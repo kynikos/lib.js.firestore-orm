@@ -7,7 +7,9 @@ const {fn, CollectionSetup, WriteBatch} = require('./index')
 
 
 module.exports = class DatabaseConnection {
-  constructor({appManager, structure, options = {}, connectionData}) {
+  constructor({
+    appManager, getCollectionSetup, structure, options = {}, connectionData,
+  }) {
     const {hooks = {}} = options
     this.__appManager = appManager
     // CollectionReference needs this.database to be defined
@@ -15,6 +17,7 @@ module.exports = class DatabaseConnection {
     this.parent = null
     // CollectionReference needs this.__fsDocument to be defined
     this.__fsDocument = this.__appManager.firestore
+    this.getCollectionSetup = getCollectionSetup
     // 'structure' must be recreated for every connection, since it's
     // specifically related to 'this' object, so it cannot be created in
     // makeFactory()
@@ -42,9 +45,7 @@ module.exports = class DatabaseConnection {
     return batch.commit()
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  collection() {
-    throw new Error('Not implemented: use CollectionSetup and the structure ' +
-      'objects')
+  collection(path) {
+    return fn.getCollection(this, path)
   }
 }

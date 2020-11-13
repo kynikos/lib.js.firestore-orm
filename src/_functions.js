@@ -15,7 +15,7 @@ exports.makeStructure = function makeStructure(
 
   for (const [subRefName, subReference] of Object.entries(subStructure)) {
     structure[subRefName] = subReference instanceof SubRefClass
-      ? subReference.__install(reference).structure
+      ? subReference.__makeFromId(reference, subRefName).structure
       : (typeof subReference === 'function'
         ? (...args) => subReference(...args, reference)
         : subReference
@@ -23,6 +23,52 @@ exports.makeStructure = function makeStructure(
   }
 
   return structure
+}
+
+
+function getSubReference({baseRef, relPath, getSetup, getSubRef}) {
+  let id
+  let subPath
+  const slashIndex = relPath.indexOf('/')
+
+  if (slashIndex > -1) {
+    id = relPath.slice(0, slashIndex)
+    subPath = relPath.slice(slashIndex + 1)
+  } else {
+    id = relPath
+    subPath = null
+  }
+
+  const subRef = getSetup(id).__makeFromId(baseRef, id)
+
+  // subPath may also be an empty string, don't just test it against 'null'
+  if (subPath) return getSubRef(subRef)(subPath)
+
+  return subRef
+}
+
+
+exports.getCollection = function getCollection(baseDocument, relPath) {
+  return getSubReference({
+    baseRef: baseDocument,
+    relPath,
+    getSetup: baseDocument.getCollectionSetup,
+    getSubRef: (collection) => collection.doc,
+  })
+}
+
+
+exports.getDocument = function getDocument(baseCollection, relPath) {
+  if (!relPath) {
+    return baseCollection.getDocumentSetup(relPath).__makeAutoId(baseCollection)
+  }
+
+  return getSubReference({
+    baseRef: baseCollection,
+    relPath,
+    getSetup: baseCollection.getDocumentSetup,
+    getSubRef: (document) => document.collection,
+  })
 }
 
 

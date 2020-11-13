@@ -7,26 +7,36 @@ const {deferredModules} = require('./index')
 
 
 module.exports = class DocumentSetup {
-  constructor({path, schema, structure}) {
-    this.__path = path
+  constructor({schema, getCollectionSetup, structure}) {
     this.__schema = schema
+    this.__getCollectionSetup = getCollectionSetup
     this.__structure = structure
   }
 
-  __install(parent) {
-    // It's especially important to avoid installing a document with an
-    // auto-generated ID (an empty 'path'), or the user may think that a new
-    // document is generated every time one of its functions is called, but
+  __makeFromId(parent, id) {
+    // It's especially important to avoid installing in the structure a document
+    // with an auto-generated ID (an empty 'id'), or the user may think that a
+    // new document is generated every time one of its functions is called, but
     // that wouldn't be the case
-    if (typeof this.__path !== 'string' && !(this.__path instanceof String)) {
-      throw new Error("Installing a DocumentSetup requires 'path' to be " +
-        'statically defined as a string')
+    if (!id) {
+      throw new Error("Making a DocumentSetup requires 'id' to be defined")
     }
 
     return new deferredModules.DocumentReference({
-      path: this.__path,
+      id,
       parent,
       schema: this.__schema,
+      getCollectionSetup: this.__getCollectionSetup,
+      structure: this.__structure,
+      __calledBySetup: true,
+    })
+  }
+
+  __makeAutoId(parent) {
+    return new deferredModules.DocumentReference({
+      parent,
+      schema: this.__schema,
+      getCollectionSetup: this.__getCollectionSetup,
       structure: this.__structure,
       __calledBySetup: true,
     })
@@ -37,41 +47,19 @@ module.exports = class DocumentSetup {
       __fsDocument,
       parent,
       schema: this.__schema,
+      getCollectionSetup: this.__getCollectionSetup,
       structure: this.__structure,
       __calledBySetup: true,
     })
   }
 
-  make(parent, path) {
-    if (typeof this.__path !== 'function') {
-      throw new Error("DocumentSetup must be instantiated with 'path' as a " +
-        'function when using it with make()')
-    }
-
-    const document = new deferredModules.DocumentReference({
-      path: this.__path(path),
-      parent,
-      schema: this.__schema,
-      structure: this.__structure,
-      __calledBySetup: true,
-    })
-
+  make(parent, id) {
+    const document = this.__makeFromId(parent, id)
     return document.structure
   }
 
   makeAutoId(parent) {
-    if (this.__path) {
-      throw new Error("DocumentSetup must be instantiated without 'path' " +
-        'when using it with makeAutoId()')
-    }
-
-    const document = new deferredModules.DocumentReference({
-      parent,
-      schema: this.__schema,
-      structure: this.__structure,
-      __calledBySetup: true,
-    })
-
+    const document = this.__makeAutoId(parent)
     return document.structure
   }
 }

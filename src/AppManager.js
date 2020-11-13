@@ -16,9 +16,10 @@ module.exports = class AppManager {
     // this.connections = []
   }
 
-  connectDatabase(structure, options, connectionData) {
+  connectDatabase(getCollectionSetup, structure, options, connectionData) {
     return new DatabaseConnection({
       appManager: this,
+      getCollectionSetup,
       structure,
       options,
       connectionData,
