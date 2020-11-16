@@ -67,7 +67,7 @@ module.exports = class WriteBatch {
       preconditionOrValues,
       batch: this,
       updateFn: (dataOrField_, ...preconditionOrValues_) => {
-        return this.__fsWriteBatch.delete(
+        return this.__fsWriteBatch.update(
           document.__fsDocument,
           dataOrField_,
           ...preconditionOrValues_,
