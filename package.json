@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "@kynikos/misc": "^0.7.0",
-    "firebase-admin": "^9.4.0"
+    "firebase-admin": "^9.4.1"
   },
   "devDependencies": {
     "@kynikos/tasks": "^1.3.0",
