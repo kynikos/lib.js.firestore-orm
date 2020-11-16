@@ -47,7 +47,15 @@ module.exports = class CollectionReference extends Query {
     })
   }
 
-  doc(path) {
-    return fn.getDocument(this, path)
+  collection(...pathSegments) {
+    return fn.getCollectionStructureFromCollection(this, pathSegments)
+  }
+
+  doc(...pathSegments) {
+    return fn.getDocumentStructureFromCollection(this, pathSegments)
+  }
+
+  docAutoId() {
+    return this.getDocumentSetup().makeAutoId(this)
   }
 }

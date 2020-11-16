@@ -33,8 +33,8 @@ module.exports = class DocumentReference {
     this.structure = fn.makeStructure(this, structure, CollectionSetup)
   }
 
-  collection(path) {
-    return fn.getCollection(this, path)
+  collection(...pathSegments) {
+    return fn.getCollectionStructureFromDocument(this, pathSegments)
   }
 
   create(data) {
@@ -51,6 +51,10 @@ module.exports = class DocumentReference {
       precondition,
       deleteFn: (precondition_) => this.__fsDocument.delete(precondition_),
     })
+  }
+
+  doc(...pathSegments) {
+    return fn.getDocumentStructureFromDocument(this, pathSegments)
   }
 
   async get() {

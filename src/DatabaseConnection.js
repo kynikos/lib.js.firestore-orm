@@ -45,7 +45,11 @@ module.exports = class DatabaseConnection {
     return batch.commit()
   }
 
-  collection(path) {
-    return fn.getCollection(this, path)
+  collection(...pathSegments) {
+    return fn.getCollectionStructureFromDocument(this, pathSegments)
+  }
+
+  doc(...pathSegments) {
+    return fn.getDocumentStructureFromDocument(this, pathSegments)
   }
 }

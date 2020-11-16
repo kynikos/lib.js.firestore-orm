@@ -4,9 +4,9 @@
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
 // The order of requires is significant
-module.exports.fn = require('./_functions')
 // deferredModules is needed to work around circular dependencies
 module.exports.deferredModules = {}
+module.exports.fn = require('./_functions')
 module.exports.firebaseAdmin = require('firebase-admin')
 module.exports.streamToGenerator =
   require('@kynikos/misc/src/streamToGenerator').streamToGenerator

@@ -3,6 +3,8 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
+const {deferredModules} = require('./index')
+
 
 exports.makeStructure = function makeStructure(
   reference,
@@ -26,49 +28,144 @@ exports.makeStructure = function makeStructure(
 }
 
 
-function getSubReference({baseRef, relPath, getSetup, getSubRef}) {
-  let id
-  let subPath
-  const slashIndex = relPath.indexOf('/')
-
-  if (slashIndex > -1) {
-    id = relPath.slice(0, slashIndex)
-    subPath = relPath.slice(slashIndex + 1)
-  } else {
-    id = relPath
-    subPath = null
-  }
+function getSubReference({baseRef, relPathSegments, getSetup, getSubRef}) {
+  const [id, ...subPath] = [
+    ...relPathSegments[0].split('/'),
+    ...relPathSegments.slice(1),
+  ]
 
   const subRef = getSetup(id).__makeFromId(baseRef, id)
 
-  // subPath may also be an empty string, don't just test it against 'null'
-  if (subPath) return getSubRef(subRef)(subPath)
+  if (subPath.length) {
+    return getSubRef(subRef, subPath)
+  }
 
   return subRef
 }
 
 
-exports.getCollection = function getCollection(baseDocument, relPath) {
+function getCollectionFromCollection(baseRef, relPathSegments) {
   return getSubReference({
-    baseRef: baseDocument,
-    relPath,
-    getSetup: baseDocument.getCollectionSetup,
-    getSubRef: (collection) => collection.doc,
+    baseRef,
+    relPathSegments,
+    getSetup: baseRef.getDocumentSetup,
+    getSubRef: (document, subPath) => {
+      return getCollectionFromDocument(document, subPath)
+    },
   })
 }
 
 
-exports.getDocument = function getDocument(baseCollection, relPath) {
-  if (!relPath) {
-    return baseCollection.getDocumentSetup(relPath).__makeAutoId(baseCollection)
+function getCollectionFromDocument(baseRef, relPathSegments) {
+  return getSubReference({
+    baseRef,
+    relPathSegments,
+    getSetup: baseRef.getCollectionSetup,
+    getSubRef: (collection, subPath) => {
+      return getDocumentFromCollection(collection, subPath)
+    },
+  })
+}
+
+
+function getDocumentFromCollection(baseRef, relPathSegments) {
+  return getSubReference({
+    baseRef,
+    relPathSegments,
+    getSetup: baseRef.getDocumentSetup,
+    getSubRef: (document, subPath) => {
+      return getCollectionFromDocument(document, subPath)
+    },
+  })
+}
+
+
+function getDocumentFromDocument(baseRef, relPathSegments) {
+  return getSubReference({
+    baseRef,
+    relPathSegments,
+    getSetup: baseRef.getCollectionSetup,
+    getSubRef: (collection, subPath) => {
+      return getDocumentFromCollection(collection, subPath)
+    },
+  })
+}
+
+
+function getCollectionStructure(fromFn, baseRef, relPathSegments) {
+  if (
+    !relPathSegments.length ||
+    (relPathSegments.length === 1 && !relPathSegments[0])
+  ) {
+    throw new Error('Invalid collection path')
   }
 
-  return getSubReference({
-    baseRef: baseCollection,
-    relPath,
-    getSetup: baseCollection.getDocumentSetup,
-    getSubRef: (document) => document.collection,
-  })
+  const collection = fromFn(baseRef, relPathSegments)
+
+  // The path may unexpectedly resolve to a document, not a collection, for
+  // example if the resolved number of segments is even
+  if (!(collection instanceof deferredModules.CollectionReference)) {
+    throw new Error('The path resolves to a document, not a collection')
+  }
+
+  return collection.structure
+}
+
+
+function getDocumentStructure(fromFn, baseRef, relPathSegments) {
+  if (
+    !relPathSegments.length ||
+    (relPathSegments.length === 1 && !relPathSegments[0])
+  ) {
+    throw new Error('Invalid document path; use docAutoId() to auto-generate ' +
+      'a document ID')
+  }
+
+  const document = fromFn(baseRef, relPathSegments)
+
+  // The path may unexpectedly resolve to a collection, not a document, for
+  // example if the resolved number of segments is even
+  if (!(document instanceof deferredModules.DocumentReference)) {
+    throw new Error('The path resolves to a collection, not a document')
+  }
+
+  return document.structure
+}
+
+
+exports.getCollectionStructureFromCollection = function getCollectionStructureFromCollection(baseRef, relPathSegments) {
+  return getCollectionStructure(
+    getCollectionFromCollection,
+    baseRef,
+    relPathSegments,
+  )
+}
+
+
+exports.getCollectionStructureFromDocument = function getCollectionStructureFromDocument(baseRef, relPathSegments) {
+  return getCollectionStructure(
+    getCollectionFromDocument,
+    baseRef,
+    relPathSegments,
+  )
+}
+
+
+exports.getDocumentStructureFromCollection = function getDocumentStructureFromCollection(baseRef, relPathSegments) {
+  return getDocumentStructure(
+    getDocumentFromCollection,
+    baseRef,
+    relPathSegments,
+  )
+}
+
+
+exports.getDocumentStructureFromDocument = function getDocumentStructureFromDocument(baseRef, relPathSegments) {
+  return getDocumentStructure(
+    getDocumentFromDocument,
+    baseRef,
+    relPathSegments,
+  )
 }
 
 
