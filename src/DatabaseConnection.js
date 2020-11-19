@@ -9,7 +9,6 @@ const {fn, WriteBatch} = require('./index')
 module.exports = class DatabaseConnection {
   constructor({
     appManager, collectionSetups, structure, userData, options = {},
-    connectionData,
   }) {
     const {hooks = {}} = options
     this.__appManager = appManager
@@ -27,7 +26,6 @@ module.exports = class DatabaseConnection {
       structure,
       this.collection.bind(this),
     )
-    this.connectionData = connectionData
     this.userData = userData
     this.__hooks = {
       beforeCreatingDocument: hooks.beforeCreatingDocument,
