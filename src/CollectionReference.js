@@ -3,12 +3,12 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {fn, DocumentSetup, Query} = require('./index')
+const {fn, Query} = require('./index')
 
 
 module.exports = class CollectionReference extends Query {
   constructor({
-    id, parent, getDocumentSetup, structure, userData, __calledBySetup,
+    id, parent, documentSetups, structure, userData, __calledBySetup,
   }) {
     if (__calledBySetup !== true) {
       throw new Error('CollectionReference should only be instantiated ' +
@@ -24,8 +24,8 @@ module.exports = class CollectionReference extends Query {
     this.__fsCollection = parent.__fsDocument.collection(id)
     this.id = this.__fsCollection.id
     this.path = this.__fsCollection.path
-    this.getDocumentSetup = getDocumentSetup
-    this.structure = fn.makeStructure(this, structure, DocumentSetup)
+    this.documentSetups = documentSetups
+    this.structure = fn.makeStructure(this, structure, this.doc.bind(this))
     this.userData = userData
     this.__Query_postConstructor({
       collection: this,
@@ -59,6 +59,6 @@ module.exports = class CollectionReference extends Query {
   }
 
   docAutoId() {
-    return this.getDocumentSetup().makeAutoId(this)
+    return fn.resolveSetup(this.documentSetups).makeAutoId(this)
   }
 }

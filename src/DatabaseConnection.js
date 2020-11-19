@@ -3,12 +3,12 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {fn, CollectionSetup, WriteBatch} = require('./index')
+const {fn, WriteBatch} = require('./index')
 
 
 module.exports = class DatabaseConnection {
   constructor({
-    appManager, getCollectionSetup, structure, userData, options = {},
+    appManager, collectionSetups, structure, userData, options = {},
     connectionData,
   }) {
     const {hooks = {}} = options
@@ -18,11 +18,15 @@ module.exports = class DatabaseConnection {
     this.parent = null
     // CollectionReference needs this.__fsDocument to be defined
     this.__fsDocument = this.__appManager.firestore
-    this.getCollectionSetup = getCollectionSetup
+    this.collectionSetups = collectionSetups
     // 'structure' must be recreated for every connection, since it's
     // specifically related to 'this' object, so it cannot be created in
     // makeFactory()
-    this.structure = fn.makeStructure(this, structure, CollectionSetup)
+    this.structure = fn.makeStructure(
+      this,
+      structure,
+      this.collection.bind(this),
+    )
     this.connectionData = connectionData
     this.userData = userData
     this.__hooks = {

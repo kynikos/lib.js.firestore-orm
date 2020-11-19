@@ -7,8 +7,9 @@ const {deferredModules} = require('./index')
 
 
 module.exports = class CollectionSetup {
-  constructor({getDocumentSetup, structure, userData}) {
-    this.__getDocumentSetup = getDocumentSetup
+  constructor({match, documents, structure, userData}) {
+    this.__match = match
+    this.__documentSetups = documents
     this.__structure = structure
     this.__userData = userData
   }
@@ -17,7 +18,7 @@ module.exports = class CollectionSetup {
     return new deferredModules.CollectionReference({
       id,
       parent,
-      getDocumentSetup: this.__getDocumentSetup,
+      documentSetups: this.__documentSetups,
       structure: this.__structure,
       userData: this.__userData,
       __calledBySetup: true,

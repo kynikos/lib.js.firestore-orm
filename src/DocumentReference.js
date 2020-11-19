@@ -3,12 +3,12 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {fn, CollectionSetup, DocumentSnapshot} = require('./index')
+const {fn, DocumentSnapshot} = require('./index')
 
 
 module.exports = class DocumentReference {
   constructor({
-    id, __fsDocument, parent, schema, getCollectionSetup, structure, userData,
+    id, __fsDocument, parent, schema, collectionSetups, structure, userData,
     __calledBySetup,
   }) {
     if (__calledBySetup !== true) {
@@ -29,8 +29,12 @@ module.exports = class DocumentReference {
       : parent.__fsCollection.doc())
     this.id = this.__fsDocument.id
     this.path = this.__fsDocument.path
-    this.getCollectionSetup = getCollectionSetup
-    this.structure = fn.makeStructure(this, structure, CollectionSetup)
+    this.collectionSetups = collectionSetups
+    this.structure = fn.makeStructure(
+      this,
+      structure,
+      this.collection.bind(this),
+    )
     this.userData = userData
   }
 

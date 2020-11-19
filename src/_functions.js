@@ -9,32 +9,51 @@ const {deferredModules} = require('./index')
 exports.makeStructure = function makeStructure(
   reference,
   subStructure,
-  SubRefClass,
+  getSubRef,
 ) {
   if (subStructure == null) return null
 
   const structure = {}
 
   for (const [subRefName, subReference] of Object.entries(subStructure)) {
-    structure[subRefName] = subReference instanceof SubRefClass
-      ? subReference.__makeFromId(reference, subRefName).structure
-      : (typeof subReference === 'function'
-        ? (...args) => subReference(...args, reference)
-        : subReference
-      )
+    structure[subRefName] = typeof subReference === 'function'
+      ? (...args) => subReference(...args, reference)
+      : getSubRef(subReference)
   }
 
   return structure
 }
 
 
-function getSubReference({baseRef, relPathSegments, getSetup, getSubRef}) {
+function matchSetup(setup, id) {
+  if (setup.__match === true) return true
+  if (setup.__match === id) return true
+  if (typeof setup.__match === 'function') return setup.__match(id)
+  if (
+    setup.__match instanceof RegExp &&
+    (typeof id === 'string' || id instanceof String)
+  ) return setup.__match.test(id)
+  return false
+}
+
+
+function resolveSetup(setups, id) {
+  for (const setup of setups) {
+    if (matchSetup(setup, id)) return setup
+  }
+  throw new Error(`Unexpected collection or document id: ${id}`)
+}
+exports.resolveSetup = resolveSetup
+
+
+function getSubReference({baseRef, relPathSegments, setups, getSubRef}) {
   const [id, ...subPath] = [
     ...relPathSegments[0].split('/'),
     ...relPathSegments.slice(1),
   ]
 
-  const subRef = getSetup(id).__makeFromId(baseRef, id)
+  const setup = resolveSetup(setups, id)
+  const subRef = setup.__makeFromId(baseRef, id)
 
   if (subPath.length) {
     return getSubRef(subRef, subPath)
@@ -48,7 +67,7 @@ function getCollectionFromCollection(baseRef, relPathSegments) {
   return getSubReference({
     baseRef,
     relPathSegments,
-    getSetup: baseRef.getDocumentSetup,
+    setups: baseRef.documentSetups,
     getSubRef: (document, subPath) => {
       return getCollectionFromDocument(document, subPath)
     },
@@ -60,7 +79,7 @@ function getCollectionFromDocument(baseRef, relPathSegments) {
   return getSubReference({
     baseRef,
     relPathSegments,
-    getSetup: baseRef.getCollectionSetup,
+    setups: baseRef.collectionSetups,
     getSubRef: (collection, subPath) => {
       return getDocumentFromCollection(collection, subPath)
     },
@@ -72,7 +91,7 @@ function getDocumentFromCollection(baseRef, relPathSegments) {
   return getSubReference({
     baseRef,
     relPathSegments,
-    getSetup: baseRef.getDocumentSetup,
+    setups: baseRef.documentSetups,
     getSubRef: (document, subPath) => {
       return getCollectionFromDocument(document, subPath)
     },
@@ -84,7 +103,7 @@ function getDocumentFromDocument(baseRef, relPathSegments) {
   return getSubReference({
     baseRef,
     relPathSegments,
-    getSetup: baseRef.getCollectionSetup,
+    setups: baseRef.collectionSetups,
     getSubRef: (collection, subPath) => {
       return getDocumentFromCollection(collection, subPath)
     },
