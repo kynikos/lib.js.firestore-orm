@@ -8,7 +8,8 @@ const {fn, CollectionSetup, WriteBatch} = require('./index')
 
 module.exports = class DatabaseConnection {
   constructor({
-    appManager, getCollectionSetup, structure, options = {}, connectionData,
+    appManager, getCollectionSetup, structure, userData, options = {},
+    connectionData,
   }) {
     const {hooks = {}} = options
     this.__appManager = appManager
@@ -23,6 +24,7 @@ module.exports = class DatabaseConnection {
     // makeFactory()
     this.structure = fn.makeStructure(this, structure, CollectionSetup)
     this.connectionData = connectionData
+    this.userData = userData
     this.__hooks = {
       beforeCreatingDocument: hooks.beforeCreatingDocument,
       afterCreatingDocument: hooks.afterCreatingDocument,

@@ -8,7 +8,7 @@ const {fn, CollectionSetup, DocumentSnapshot} = require('./index')
 
 module.exports = class DocumentReference {
   constructor({
-    id, __fsDocument, parent, schema, getCollectionSetup, structure,
+    id, __fsDocument, parent, schema, getCollectionSetup, structure, userData,
     __calledBySetup,
   }) {
     if (__calledBySetup !== true) {
@@ -31,6 +31,7 @@ module.exports = class DocumentReference {
     this.path = this.__fsDocument.path
     this.getCollectionSetup = getCollectionSetup
     this.structure = fn.makeStructure(this, structure, CollectionSetup)
+    this.userData = userData
   }
 
   collection(...pathSegments) {

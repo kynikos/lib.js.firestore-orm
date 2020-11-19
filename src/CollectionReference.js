@@ -7,7 +7,9 @@ const {fn, DocumentSetup, Query} = require('./index')
 
 
 module.exports = class CollectionReference extends Query {
-  constructor({id, parent, getDocumentSetup, structure, __calledBySetup}) {
+  constructor({
+    id, parent, getDocumentSetup, structure, userData, __calledBySetup,
+  }) {
     if (__calledBySetup !== true) {
       throw new Error('CollectionReference should only be instantiated ' +
         'internally by a CollectionSetup object')
@@ -24,6 +26,7 @@ module.exports = class CollectionReference extends Query {
     this.path = this.__fsCollection.path
     this.getDocumentSetup = getDocumentSetup
     this.structure = fn.makeStructure(this, structure, DocumentSetup)
+    this.userData = userData
     this.__Query_postConstructor({
       collection: this,
       __fsQueryOrCollection: this.__fsCollection,

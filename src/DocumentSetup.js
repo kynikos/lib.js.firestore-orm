@@ -7,10 +7,11 @@ const {deferredModules} = require('./index')
 
 
 module.exports = class DocumentSetup {
-  constructor({schema, getCollectionSetup, structure}) {
+  constructor({schema, getCollectionSetup, structure, userData}) {
     this.__schema = schema
     this.__getCollectionSetup = getCollectionSetup
     this.__structure = structure
+    this.__userData = userData
   }
 
   __makeFromId(parent, id) {
@@ -28,6 +29,7 @@ module.exports = class DocumentSetup {
       schema: this.__schema,
       getCollectionSetup: this.__getCollectionSetup,
       structure: this.__structure,
+      userData: this.__userData,
       __calledBySetup: true,
     })
   }
@@ -38,6 +40,7 @@ module.exports = class DocumentSetup {
       schema: this.__schema,
       getCollectionSetup: this.__getCollectionSetup,
       structure: this.__structure,
+      userData: this.__userData,
       __calledBySetup: true,
     })
   }
@@ -49,6 +52,7 @@ module.exports = class DocumentSetup {
       schema: this.__schema,
       getCollectionSetup: this.__getCollectionSetup,
       structure: this.__structure,
+      userData: this.__userData,
       __calledBySetup: true,
     })
   }
