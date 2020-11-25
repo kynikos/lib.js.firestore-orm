@@ -11,12 +11,12 @@ module.exports = class DatabaseConnection {
     firebaseAdminApp, collectionSetups, structure, userData, options = {},
   }) {
     const {hooks = {}} = options
-    this.app = firebaseAdminApp
+    this.__app = firebaseAdminApp
     // CollectionReference needs this.database to be defined
     this.database = this
     this.parent = null
     // CollectionReference needs this.__fsDocument to be defined
-    this.__fsDocument = this.app.firestore()
+    this.__fsDocument = firebaseAdminApp.firestore()
     this.collectionSetups = collectionSetups
     // 'structure' must be recreated for every connection, since it's
     // specifically related to 'this' object, so it cannot be created in
