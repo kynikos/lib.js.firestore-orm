@@ -9,12 +9,17 @@ const {Field} = require('./index')
 module.exports = class FieldDateTime extends Field {
   constructor(fieldName, options = {}) {
     const {autoNow, autoNowAdd, ...commonOptions} = options
-    super(fieldName, commonOptions)
-    this.autoNow = Boolean(autoNow)
-    this.autoNowAdd = Boolean(autoNowAdd)
+    super(fieldName, {
+      computeNoValue: (options_, data) => {
+        if (autoNow || autoNowAdd) return new Date()
+        return null
+      },
+      // Let commonOptions possibly override computeNoValue
+      ...commonOptions,
+    })
   }
 
-  serializeNotNull(value, {coerce = true}) {
+  serializeNotNull(value, {coerce = true}, data) {
     let sData = value
 
     if (!(sData instanceof Date)) {
@@ -34,12 +39,7 @@ module.exports = class FieldDateTime extends Field {
     return sData
   }
 
-  serializeNoValueAlt() {
-    if (this.autoNow || this.autoNowAdd) return new Date()
-    return null
-  }
-
-  deserialize(value) {
+  deserialize(value, options, data) {
     return value && value.toDate()
   }
 }

@@ -7,12 +7,12 @@ const {FieldDateTime} = require('./index')
 
 
 module.exports = class FieldDate extends FieldDateTime {
-  serializeNotNull(value, {coerce = true}) {
-    const sData = super.serializeNotNull(value, {coerce})
+  serializeNotNull(value, {coerce = true}, data) {
+    const sData = super.serializeNotNull(value, {coerce}, data)
     return sData
   }
 
-  deserialize(value) {
-    return super.deserialize(value)
+  deserialize(value, options, data) {
+    return super.deserialize(value, options, data)
   }
 }

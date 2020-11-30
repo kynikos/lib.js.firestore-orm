@@ -7,7 +7,7 @@ const {Field} = require('./index')
 
 
 module.exports = class FieldBoolean extends Field {
-  serializeNotNull(value, {coerce = true}) {
+  serializeNotNull(value, {coerce = true}, data) {
     let sData = value
 
     if (typeof sData !== 'boolean') {
@@ -19,9 +19,5 @@ module.exports = class FieldBoolean extends Field {
     }
 
     return sData
-  }
-
-  deserialize(value) {
-    return value
   }
 }

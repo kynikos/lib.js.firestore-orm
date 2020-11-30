@@ -7,7 +7,7 @@ const {Field} = require('./index')
 
 
 module.exports = class FieldArray extends Field {
-  serializeNotNull(value) {
+  serializeNotNull(value, options, data) {
     const sData = value
 
     if (!Array.isArray(sData)) {
@@ -15,9 +15,5 @@ module.exports = class FieldArray extends Field {
     }
 
     return sData
-  }
-
-  deserialize(value) {
-    return value
   }
 }

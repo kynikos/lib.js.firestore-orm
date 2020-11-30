@@ -7,7 +7,7 @@ const {Field} = require('./index')
 
 
 module.exports = class FieldString extends Field {
-  serializeNotNull(value, {coerce = true}) {
+  serializeNotNull(value, {coerce = true}, data) {
     let sData = value
 
     if (!(typeof sData === 'string' || sData instanceof String)) {
@@ -19,9 +19,5 @@ module.exports = class FieldString extends Field {
     }
 
     return sData
-  }
-
-  deserialize(value) {
-    return value
   }
 }

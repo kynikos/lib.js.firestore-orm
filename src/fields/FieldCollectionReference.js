@@ -17,7 +17,7 @@ module.exports = class FieldCollectionReference extends Field {
     this.pathToSetupAndParent = pathToSetupAndParent
   }
 
-  serializeNotNull(value) {
+  serializeNotNull(value, options, data) {
     if (!(value instanceof CollectionReference)) {
       throw new Error(`Value for ${this.name} is not a CollectionReference ` +
         'object')
@@ -28,7 +28,7 @@ module.exports = class FieldCollectionReference extends Field {
     return value.__fsCollection.path
   }
 
-  deserialize(value) {
+  deserialize(value, options, data) {
     return (database) => {
       const {setup, parent} = this.pathToSetupAndParent(database, value)
       return setup.__makeFromId(parent, value)

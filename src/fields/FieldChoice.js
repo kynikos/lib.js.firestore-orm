@@ -16,7 +16,7 @@ module.exports = class FieldChoice extends Field {
     this.choices = choices
   }
 
-  serializeNotNull(value, {coerce = true}) {
+  serializeNotNull(value, {coerce = true}, data) {
     const sData = value
 
     if (!(this.choices.includes(sData))) {
@@ -24,9 +24,5 @@ module.exports = class FieldChoice extends Field {
     }
 
     return sData
-  }
-
-  deserialize(value) {
-    return value
   }
 }

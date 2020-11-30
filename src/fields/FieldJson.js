@@ -7,11 +7,11 @@ const {Field} = require('./index')
 
 
 module.exports = class FieldJson extends Field {
-  serializeNotNull(value) {
+  serializeNotNull(value, options, data) {
     return JSON.stringify(value)
   }
 
-  deserialize(value) {
+  deserialize(value, options, data) {
     return JSON.parse(value)
   }
 }

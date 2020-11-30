@@ -5,26 +5,38 @@
 
 module.exports = class Field {
   constructor(fieldName, options = {}) {
-    const {required, nullable, default: default_} = options
+    const {
+      required,
+      nullable,
+      default: default_,
+      computeNoValue,
+      computeNoValueOnly,
+    } = options
     this.name = fieldName
     this.required = required == null ? true : Boolean(required)
     this.default = default_ == null ? null : default_
     this.nullable = nullable == null ? true : Boolean(nullable)
+    this.computeNoValue = computeNoValue == null ? null : computeNoValue
+    this.computeNoValueOnly = Boolean(computeNoValueOnly)
   }
 
-  serialize(value, options) {
+  __serialize(value, options, data) {
+    if (this.computeNoValueOnly) {
+      throw new Error(`Field ${this.name} is computed dynamically, it rejects
+        any explicitly assigned value`)
+    }
+
     if (!this.nullable && value == null) {
       throw new Error(`Field ${this.name} requires a non-null value`)
     }
 
     // Implement serializeNotNull() in subclasses
-    return this.serializeNotNull(value, options)
+    return this.serializeNotNull(value, options, data)
   }
 
-  serializeNoValue() {
-    if (this.serializeNoValueAlt) {
-      // Optionally implement serializeNoValueAlt() in subclasses
-      const sData = this.serializeNoValueAlt()
+  __serializeNoValue(options, data) {
+    if (this.computeNoValue) {
+      const sData = this.computeNoValue(options, data)
       if (sData != null) return sData
     }
 
@@ -35,7 +47,11 @@ module.exports = class Field {
     return this.default
   }
 
-  deserializeNoValue() {
+  __deserialize(value, options, data) {
+    return this.deserialize ? this.deserialize(value) : value
+  }
+
+  __deserializeNoValue(options, data) {
     return this.default
   }
 }

@@ -7,16 +7,12 @@ const {FieldString} = require('./index')
 
 
 module.exports = class FieldStringMap extends FieldString {
-  serializeNotNull(value, {coerce = true}) {
+  serializeNotNull(value, {coerce = true}, data) {
     const sData = Object.entries(value).reduce((acc, [key, val]) => {
-      acc[key] = super.serializeNotNull(val, {coerce})
+      acc[key] = super.serializeNotNull(val, {coerce}, data)
       return acc
     }, {})
 
     return sData
-  }
-
-  deserialize(value) {
-    return value
   }
 }

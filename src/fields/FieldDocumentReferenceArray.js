@@ -7,21 +7,21 @@ const {FieldDocumentReference} = require('./index')
 
 
 module.exports = class FieldDocumentReferenceArray extends FieldDocumentReference {
-  serializeNotNull(value, {coerce = true}) {
+  serializeNotNull(value, {coerce = true}, data) {
     if (!Array.isArray(value)) {
       throw new Error(`Value for ${this.name} is not an Array`)
     }
 
     const sData = value.map((item) => {
-      return super.serializeNotNull(item, {coerce})
+      return super.serializeNotNull(item, {coerce}, data)
     })
 
     return sData
   }
 
-  deserialize(value) {
+  deserialize(value, options, data) {
     return (database) => {
-      return value.map((ref) => super.deserialize(ref)(database))
+      return value.map((ref) => super.deserialize(ref, options, data)(database))
     }
   }
 }

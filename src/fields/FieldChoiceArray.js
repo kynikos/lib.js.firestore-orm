@@ -7,19 +7,15 @@ const {FieldChoice} = require('./index')
 
 
 module.exports = class FieldChoiceArray extends FieldChoice {
-  serializeNotNull(value, {coerce = true}) {
+  serializeNotNull(value, {coerce = true}, data) {
     if (!Array.isArray(value)) {
       throw new Error(`Value for ${this.name} is not an Array`)
     }
 
     const sData = value.map((item) => {
-      return super.serializeNotNull(item, {coerce})
+      return super.serializeNotNull(item, {coerce}, data)
     })
 
     return sData
-  }
-
-  deserialize(value) {
-    return value
   }
 }

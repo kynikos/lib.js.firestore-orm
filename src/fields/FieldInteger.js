@@ -7,7 +7,7 @@ const {Field} = require('./index')
 
 
 module.exports = class FieldInteger extends Field {
-  serializeNotNull(value, {coerce = true}) {
+  serializeNotNull(value, {coerce = true}, data) {
     let sData = value
 
     if (!(Number.isInteger(sData))) {
@@ -19,9 +19,5 @@ module.exports = class FieldInteger extends Field {
     }
 
     return sData
-  }
-
-  deserialize(value) {
-    return value
   }
 }

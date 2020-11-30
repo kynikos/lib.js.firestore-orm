@@ -16,13 +16,13 @@ module.exports = class DocumentSchema {
     const sData = this.fields.reduce(
       (acc, field) => {
         if (field.name in cData) {
-          acc[field.name] = handleFound(field, cData[field.name])
+          acc[field.name] = handleFound(field, cData[field.name], cData)
           delete cData[field.name]
         } else if (
           handleNotFound &&
           (!onlyTheseFields || onlyTheseFields.includes(field.name))
         ) {
-          acc[field.name] = handleNotFound(field)
+          acc[field.name] = handleNotFound(field, cData)
         }
         return acc
       },
@@ -47,11 +47,11 @@ module.exports = class DocumentSchema {
 
     return this.__iterateFields({
       data,
-      handleFound: (field, value) => {
-        return field.serialize(value, fieldOptions)
+      handleFound: (field, value, cData) => {
+        return field.__serialize(value, fieldOptions, cData)
       },
-      handleNotFound: !ignoreAllMissingFields && ((field) => {
-        return field.serializeNoValue(fieldOptions)
+      handleNotFound: !ignoreAllMissingFields && ((field, cData) => {
+        return field.__serializeNoValue(fieldOptions, cData)
       }),
       onlyTheseFields,
       ignoreExtraneousFields,
@@ -68,11 +68,11 @@ module.exports = class DocumentSchema {
 
     return this.__iterateFields({
       data,
-      handleFound: (field, value) => {
-        return field.deserialize(value, fieldOptions)
+      handleFound: (field, value, cData) => {
+        return field.__deserialize(value, fieldOptions, cData)
       },
-      handleNotFound: fillWithDefaults && ((field) => {
-        return field.deserializeNoValue(fieldOptions)
+      handleNotFound: fillWithDefaults && ((field, cData) => {
+        return field.__deserializeNoValue(fieldOptions, cData)
       }),
       onlyTheseFields,
       ignoreExtraneousFields,

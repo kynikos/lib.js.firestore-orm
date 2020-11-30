@@ -7,12 +7,8 @@ const {Field} = require('./index')
 
 
 module.exports = class FieldMap extends Field {
-  serializeNotNull(value) {
+  serializeNotNull(value, options, data) {
     const sData = value
     return sData
-  }
-
-  deserialize(value) {
-    return value
   }
 }

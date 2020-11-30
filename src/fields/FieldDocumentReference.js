@@ -17,7 +17,7 @@ module.exports = class FieldDocumentReference extends Field {
     this.pathToSetupAndParent = pathToSetupAndParent
   }
 
-  serializeNotNull(value) {
+  serializeNotNull(value, options, data) {
     if (!(value instanceof DocumentReference)) {
       throw new Error(`Value for ${this.name} is not a DocumentReference ` +
         'object')
@@ -26,7 +26,7 @@ module.exports = class FieldDocumentReference extends Field {
     return value.__fsDocument
   }
 
-  deserialize(value) {
+  deserialize(value, options, data) {
     return (database) => {
       const {setup, parent} = this.pathToSetupAndParent(
         database,
