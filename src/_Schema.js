@@ -15,7 +15,8 @@ module.exports = class _Schema {
   }
 
   __iterateFields({
-    data, handleFound, handleNotFound, onlyTheseFields, ignoreExtraneousFields,
+    data, handleFound, shouldHandleNotFound, handleNotFound, onlyTheseFields,
+    ignoreExtraneousFields,
   }) {
     const cData = {...data}
 
@@ -25,7 +26,7 @@ module.exports = class _Schema {
           acc[field.name] = handleFound(field, cData[field.name])
           delete cData[field.name]
         } else if (
-          handleNotFound &&
+          shouldHandleNotFound(field) &&
           (!onlyTheseFields || onlyTheseFields.includes(field.name))
         ) {
           acc[field.name] = handleNotFound(field)
@@ -56,7 +57,10 @@ module.exports = class _Schema {
       handleFound: (field, value) => {
         return field.__serialize(value, fieldOptions, data)
       },
-      handleNotFound: !ignoreAllMissingFields && ((field) => {
+      shouldHandleNotFound: (field) => {
+        return !ignoreAllMissingFields && !field.allowNoValue
+      },
+      handleNotFound: ((field) => {
         return field.__serializeNoValue(fieldOptions, data)
       }),
       onlyTheseFields,
@@ -77,7 +81,10 @@ module.exports = class _Schema {
       handleFound: (field, value) => {
         return field.__deserialize(value, fieldOptions, data)
       },
-      handleNotFound: fillWithDefaults && ((field) => {
+      shouldHandleNotFound: (field) => {
+        return fillWithDefaults
+      },
+      handleNotFound: ((field) => {
         return field.__deserializeNoValue(fieldOptions, data)
       }),
       onlyTheseFields,

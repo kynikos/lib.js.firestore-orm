@@ -7,6 +7,7 @@ module.exports = class Field {
   constructor(fieldName, options = {}) {
     const {
       required,
+      allowNoValue,
       nullable,
       default: default_,
       computeNoValue,
@@ -14,6 +15,7 @@ module.exports = class Field {
     } = options
     this.name = fieldName
     this.required = required == null ? true : Boolean(required)
+    this.allowNoValue = allowNoValue == null ? true : Boolean(allowNoValue)
     this.default = default_ == null ? null : default_
     this.nullable = nullable == null ? true : Boolean(nullable)
     this.computeNoValue = computeNoValue == null ? null : computeNoValue
