@@ -10,7 +10,7 @@ module.exports = class FieldDateTime extends Field {
   constructor(fieldName, options = {}) {
     const {autoNow, autoNowAdd, ...commonOptions} = options
     super(fieldName, {
-      computeNoValue: (options_, data) => {
+      computeNoValue: (data, options_) => {
         if (autoNow || autoNowAdd) return new Date()
         return null
       },

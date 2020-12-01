@@ -42,7 +42,7 @@ module.exports = class Field {
 
   __serializeNoValue(options, data) {
     if (this.computeNoValue) {
-      const sData = this.computeNoValue(options, data)
+      const sData = this.computeNoValue(data, options)
       if (sData != null) return sData
     }
 
