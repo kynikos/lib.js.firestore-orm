@@ -11,6 +11,7 @@ module.exports.streamToGenerator =
   require('@kynikos/misc/src/streamToGenerator').streamToGenerator
 module.exports.DocumentSetup = require('./DocumentSetup')
 module.exports.CollectionSetup = require('./CollectionSetup')
+module.exports._Schema = require('./_Schema')
 module.exports.DocumentSchema = require('./DocumentSchema')
 module.exports.WriteBatch = require('./WriteBatch')
 module.exports.DocumentSnapshot = require('./DocumentSnapshot')
