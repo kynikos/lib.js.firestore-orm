@@ -25,7 +25,10 @@ module.exports = class Field {
       throw new Error(`Field ${this.name} is computed dynamically, it rejects
         any explicitly assigned value`)
     }
+    return this.__serializeAny(value, options, data)
+  }
 
+  __serializeAny(value, options, data) {
     if (!this.nullable && value == null) {
       throw new Error(`Field ${this.name} requires a non-null value`)
     }
@@ -43,7 +46,7 @@ module.exports = class Field {
   __serializeNoValue(options, data) {
     if (this.computeNoValue) {
       const sData = this.computeNoValue(data, options)
-      if (sData != null) return sData
+      if (sData != null) return this.__serializeAny(sData, options, data)
     }
 
     if (this.required) {
