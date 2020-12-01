@@ -17,6 +17,7 @@ exports.FieldDate = require('./FieldDate')
 exports.FieldDocumentReference = require('./FieldDocumentReference')
 exports.FieldDocumentReferenceArray =
   require('./FieldDocumentReferenceArray')
+exports.FieldFixed = require('./FieldFixed')
 exports.FieldInteger = require('./FieldInteger')
 exports.FieldIntegerMap = require('./FieldIntegerMap')
 exports.FieldJson = require('./FieldJson')
