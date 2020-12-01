@@ -22,13 +22,13 @@ module.exports = class _Schema {
     const sData = Object.values(this.fields).reduce(
       (acc, field) => {
         if (field.name in cData) {
-          acc[field.name] = handleFound(field, cData[field.name], cData)
+          acc[field.name] = handleFound(field, cData[field.name])
           delete cData[field.name]
         } else if (
           handleNotFound &&
           (!onlyTheseFields || onlyTheseFields.includes(field.name))
         ) {
-          acc[field.name] = handleNotFound(field, cData)
+          acc[field.name] = handleNotFound(field)
         }
         return acc
       },
@@ -53,11 +53,11 @@ module.exports = class _Schema {
 
     return this.__iterateFields({
       data,
-      handleFound: (field, value, cData) => {
-        return field.__serialize(value, fieldOptions, cData)
+      handleFound: (field, value) => {
+        return field.__serialize(value, fieldOptions, data)
       },
-      handleNotFound: !ignoreAllMissingFields && ((field, cData) => {
-        return field.__serializeNoValue(fieldOptions, cData)
+      handleNotFound: !ignoreAllMissingFields && ((field) => {
+        return field.__serializeNoValue(fieldOptions, data)
       }),
       onlyTheseFields,
       ignoreExtraneousFields,
@@ -74,11 +74,11 @@ module.exports = class _Schema {
 
     return this.__iterateFields({
       data,
-      handleFound: (field, value, cData) => {
-        return field.__deserialize(value, fieldOptions, cData)
+      handleFound: (field, value) => {
+        return field.__deserialize(value, fieldOptions, data)
       },
-      handleNotFound: fillWithDefaults && ((field, cData) => {
-        return field.__deserializeNoValue(fieldOptions, cData)
+      handleNotFound: fillWithDefaults && ((field) => {
+        return field.__deserializeNoValue(fieldOptions, data)
       }),
       onlyTheseFields,
       ignoreExtraneousFields,
