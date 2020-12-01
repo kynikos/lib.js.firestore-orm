@@ -29,12 +29,21 @@ module.exports = class Field {
   }
 
   __serializeAny(value, options, data) {
-    if (!this.nullable && value == null) {
+    if (value == null) {
+      if (this.nullable) {
+        return this.serializeNull(value, options, data)
+      }
       throw new Error(`Field ${this.name} requires a non-null value`)
     }
 
     // Possibly implement serializeNotNull() in subclasses
     return this.serializeNotNull(value, options, data)
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  serializeNull(value, options, data) {
+    // Let subclasses implement their own serializeNull()
+    return null
   }
 
   // eslint-disable-next-line class-methods-use-this
