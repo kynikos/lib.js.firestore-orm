@@ -30,8 +30,14 @@ module.exports = class Field {
       throw new Error(`Field ${this.name} requires a non-null value`)
     }
 
-    // Implement serializeNotNull() in subclasses
+    // Possibly implement serializeNotNull() in subclasses
     return this.serializeNotNull(value, options, data)
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  serializeNotNull(value, options, data) {
+    // Let subclasses implement their own serializeNotNull()
+    return value
   }
 
   __serializeNoValue(options, data) {
@@ -48,7 +54,14 @@ module.exports = class Field {
   }
 
   __deserialize(value, options, data) {
-    return this.deserialize ? this.deserialize(value) : value
+    // Possibly implement deserialize() in subclasses
+    return this.deserialize(value, options, data)
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  deserialize(value, options, data) {
+    // Let subclasses implement their own deserialize()
+    return value
   }
 
   __deserializeNoValue(options, data) {

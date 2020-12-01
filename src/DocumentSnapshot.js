@@ -20,8 +20,11 @@ module.exports = class DocumentSnapshot {
   }
 
   get(field) {
-    return this.ref.schema.deserialize({
-      [field]: this.__fsDocumentSnapshot.get(field),
-    })[field]
+    const data = this.__fsDocumentSnapshot.data()
+    return this.ref.schema.deserializeField(
+      field,
+      data[field],
+      data,
+    )
   }
 }

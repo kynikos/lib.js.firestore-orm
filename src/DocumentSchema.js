@@ -5,7 +5,13 @@
 
 module.exports = class DocumentSchema {
   constructor(...fields) {
-    this.fields = fields
+    this.fields = fields.reduce((acc, field) => {
+      if (field.name in acc) {
+        throw new Error(`Duplicated field name: ${field.name}`)
+      }
+      acc[field.name] = field
+      return acc
+    }, {})
   }
 
   __iterateFields({
@@ -13,8 +19,8 @@ module.exports = class DocumentSchema {
   }) {
     const cData = {...data}
 
-    const sData = this.fields.reduce(
-      (acc, field) => {
+    const sData = Object.values(this.fields).reduce(
+      (acc, [field]) => {
         if (field.name in cData) {
           acc[field.name] = handleFound(field, cData[field.name], cData)
           delete cData[field.name]
@@ -77,5 +83,9 @@ module.exports = class DocumentSchema {
       onlyTheseFields,
       ignoreExtraneousFields,
     })
+  }
+
+  deserializeField(fieldName, value, data, fieldOptions) {
+    return this.fields[fieldName].__deserialize(value, fieldOptions, data)
   }
 }
