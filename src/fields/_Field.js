@@ -3,6 +3,10 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
+// TODO: Support excluding fields from indexes, and verifying or regenerating
+//       firestore.indexes.json automatically
+
+
 module.exports = class Field {
   constructor(fieldName, options = {}) {
     const {
@@ -15,10 +19,15 @@ module.exports = class Field {
     } = options
     this.name = fieldName
     this.required = required == null ? true : Boolean(required)
+    // TODO: For the moment it's necessary to set allowNoValue:false with computeNoValue, but it shouldn't be necessary
     this.allowNoValue = allowNoValue == null ? true : Boolean(allowNoValue)
+    // TODO: Is 'default' redundant with 'computeNoValue'?
     this.default = default_ == null ? null : default_
+    // TODO: Rename 'nullable' to 'allowNull'?
     this.nullable = nullable == null ? true : Boolean(nullable)
+    // TODO: Is 'computeNoValue' redundant with 'default'?
     this.computeNoValue = computeNoValue == null ? null : computeNoValue
+    // TODO: Rename 'computeNoValueOnly' if 'computeNoValue' is merged with 'default'
     this.computeNoValueOnly = Boolean(computeNoValueOnly)
   }
 

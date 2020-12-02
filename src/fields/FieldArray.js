@@ -6,6 +6,7 @@
 const {Field} = require('./index')
 
 
+// TODO: Allow specifying the sub-schema of each array item?
 module.exports = class FieldArray extends Field {
   serializeNotNull(value, options, data) {
     const sData = value

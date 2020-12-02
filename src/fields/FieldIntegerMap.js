@@ -8,6 +8,7 @@ const {FieldInteger} = require('./index')
 
 module.exports = class FieldIntegerMap extends FieldInteger {
   serializeNotNull(value, {coerce = true}, data) {
+    // TODO: Verify that 'value' is an object literal
     const sData = Object.entries(value).reduce((acc, [key, val]) => {
       acc[key] = super.serializeNotNull(val, {coerce}, data)
       return acc

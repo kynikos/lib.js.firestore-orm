@@ -59,11 +59,13 @@ module.exports = class DocumentSetup {
   }
 
   make(parent, id) {
+    // TODO: Deprecate this method in favor of collection.doc(id)?
     const document = this.__makeFromId(parent, id)
     return document.structure
   }
 
   makeAutoId(parent) {
+    // TODO: Deprecate this method in favor of collection.doc()?
     const document = this.__makeAutoId(parent)
     return document.structure
   }

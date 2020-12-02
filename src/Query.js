@@ -6,6 +6,8 @@
 const {streamToGenerator, QuerySnapshot, QueryDocumentSnapshot} =
   require('./index')
 
+// TODO: Use Query.withConverter() to apply the schemas
+
 
 module.exports = class Query {
   constructor({__callPostConstructor}) {
@@ -67,6 +69,7 @@ module.exports = class Query {
   }
 
   orderBy(fieldPath, directionStr) {
+    // TODO: Support FieldPath
     const query = new Query({__callPostConstructor: true})
     const __fsQuery =
       this.__fsQueryOrCollection.orderBy(fieldPath, directionStr)
@@ -78,6 +81,7 @@ module.exports = class Query {
   }
 
   select(...fieldPaths) {
+    // TODO: Support FieldPath
     const query = new Query({__callPostConstructor: true})
     const __fsQuery =
       this.__fsQueryOrCollection.select(...fieldPaths)
@@ -94,6 +98,7 @@ module.exports = class Query {
   }
 
   where(fieldPath, opStr, value) {
+    // TODO: Support FieldPath
     const query = new Query({__callPostConstructor: true})
     const __fsQuery = this.__fsQueryOrCollection.where(fieldPath, opStr, value)
     query.__Query_postConstructor({

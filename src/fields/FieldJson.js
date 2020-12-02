@@ -12,6 +12,7 @@ module.exports = class FieldJson extends Field {
   }
 
   deserialize(value, options, data) {
+    // TODO: Use super.deserialize()
     return JSON.parse(value)
   }
 }

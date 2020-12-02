@@ -28,6 +28,7 @@ module.exports = class WriteBatch {
     })
 
     // Yes, also the native create() returns the WriteBatch instance
+    // TODO: Return createDocument's return, like DocumentReference's create()?
     return this
   }
 
@@ -57,6 +58,7 @@ module.exports = class WriteBatch {
     })
 
     // Yes, also the native set() returns the WriteBatch instance
+    // TODO: Return setDocument's return, like DocumentReference's set()?
     return this
   }
 
@@ -76,6 +78,7 @@ module.exports = class WriteBatch {
     })
 
     // Yes, also the native update() returns the WriteBatch instance
+    // TODO: Return updateDocument's return, like DocumentReference's update()?
     return this
   }
 }

@@ -8,6 +8,7 @@ const {Field} = require('./index')
 
 module.exports = class FieldDateTime extends Field {
   constructor(fieldName, options = {}) {
+    // TODO: 'autoNow' should also be used when setting/updating (not creating) a document
     const {autoNow, autoNowAdd, ...commonOptions} = options
     super(fieldName, {
       computeNoValue: (data, options_) => {
@@ -40,6 +41,10 @@ module.exports = class FieldDateTime extends Field {
   }
 
   deserialize(value, options, data) {
+    // TODO: Firestore stores Timestamp objects; the docs say that toDate()
+    //       may lose precision
+    //       https://googleapis.dev/nodejs/firestore/latest/Timestamp.html#toDate
+    //       Optionally keep it as a Timestamp?
     return value && value.toDate()
   }
 }

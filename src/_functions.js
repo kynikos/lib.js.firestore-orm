@@ -245,6 +245,7 @@ exports.deleteDocument = async function deleteDocument({
 exports.setDocument = async function setDocument({
   docRef, data, options, batch, setFn,
 }) {
+  // TODO: Support options.mergeFields with FieldPath objects
   let sOptions
 
   if (
@@ -262,6 +263,7 @@ exports.setDocument = async function setDocument({
   } else {
     sOptions = {
       ignoreAllMissingFields: false,
+      // TODO: Support FieldPath in onlyTheseFields
       onlyTheseFields: options.mergeFields,
     }
   }
@@ -296,6 +298,7 @@ exports.setDocument = async function setDocument({
 exports.updateDocument = async function updateDocument({
   docRef, dataOrField, preconditionOrValues, batch, updateFn,
 }) {
+  // TODO: Support dataOrField and preconditionOrValues with FieldPath objects
   // Use 'ignoreAllMissingFields' when updating, otherwise any unspecified
   // fields would be overwritten with their default values
   const serializedData = docRef.schema.serialize(dataOrField, {

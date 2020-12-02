@@ -27,6 +27,7 @@ module.exports = class _Schema {
           delete cData[field.name]
         } else if (
           shouldHandleNotFound(field) &&
+          // TODO: Support FieldPath in onlyTheseFields
           (!onlyTheseFields || onlyTheseFields.includes(field.name))
         ) {
           acc[field.name] = handleNotFound(field)
