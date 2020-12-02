@@ -30,15 +30,20 @@ module.exports = class Query {
   }
 
   async *iter(chooseSetup) {
-    const stream = this.__fsQueryOrCollection.stream()
+    // BUG: Using the streamToGenerator() method below seems to raise
+    //      MaxListenersExceededWarning and only yield an inconsistent subset of
+    //      the results
+    const querySnapshot = await this.get(chooseSetup)
+    yield* querySnapshot.iter()
 
-    for await (const __fsQueryDocumentSnapshot of streamToGenerator(stream)) {
-      yield new QueryDocumentSnapshot({
-        chooseSetup,
-        parentCollection: this.collection,
-        __fsQueryDocumentSnapshot,
-      })
-    }
+    // const stream = this.__fsQueryOrCollection.stream()
+    // for await (const __fsQueryDocumentSnapshot of streamToGenerator(stream)) {
+    //   yield new QueryDocumentSnapshot({
+    //     chooseSetup,
+    //     parentCollection: this.collection,
+    //     __fsQueryDocumentSnapshot,
+    //   })
+    // }
   }
 
   limit(limit) {
