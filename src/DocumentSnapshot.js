@@ -13,18 +13,26 @@ module.exports = class DocumentSnapshot {
     this.readTime = __fsDocumentSnapshot.readTime
     this.updateTime = __fsDocumentSnapshot.updateTime
     this.ref = __fsDocumentSnapshot.exists ? documentReference : null
+    this.__data = false
   }
 
   data() {
-    return this.ref.schema.deserialize(this.__fsDocumentSnapshot.data())
+    if (this.__data === false) {
+      this.__data =
+        this.ref.schema.deserialize(this.__fsDocumentSnapshot.data())
+    }
+    return this.__data
   }
 
   get(field) {
-    const data = this.__fsDocumentSnapshot.data()
-    return this.ref.schema.deserializeField(
-      field,
-      data[field],
-      data,
-    )
+    if (this.__data === false) {
+      const data = this.__fsDocumentSnapshot.data()
+      return this.ref.schema.deserializeField(
+        field,
+        data[field],
+        data,
+      )
+    }
+    return this.__data[field]
   }
 }
