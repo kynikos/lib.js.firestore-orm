@@ -18,4 +18,8 @@ module.exports = class FieldSchemaArray extends FieldSchema {
 
     return sData
   }
+
+  deserialize(value, options, data) {
+    return value.map((item) => super.deserialize(item, options, data))
+  }
 }
