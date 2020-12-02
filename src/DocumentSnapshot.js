@@ -13,6 +13,7 @@ module.exports = class DocumentSnapshot {
     this.readTime = __fsDocumentSnapshot.readTime
     this.updateTime = __fsDocumentSnapshot.updateTime
     this.ref = __fsDocumentSnapshot.exists ? documentReference : null
+    this.schema = this.ref.schema.__installSnapshotFunctions(this)
     this.__data = false
   }
 
