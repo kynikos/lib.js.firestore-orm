@@ -13,6 +13,10 @@ module.exports = class DocumentSetup {
     collections,
     structure,
     snapshotFunctions = {},
+    enableCreate = true,
+    enableDelete = true,
+    enableSet = true,
+    enableUpdate = true,
     userData,
   }) {
     this.__match = match
@@ -20,6 +24,10 @@ module.exports = class DocumentSetup {
     this.__collectionSetups = collections
     this.__structure = structure
     this.__snapshotFunctions = snapshotFunctions
+    this.__enableCreate = enableCreate
+    this.__enableDelete = enableDelete
+    this.__enableSet = enableSet
+    this.__enableUpdate = enableUpdate
     this.__userData = userData
   }
 
@@ -39,6 +47,10 @@ module.exports = class DocumentSetup {
       collectionSetups: this.__collectionSetups,
       structure: this.__structure,
       snapshotFunctions: this.__snapshotFunctions,
+      enableCreate: this.__enableCreate,
+      enableDelete: this.__enableDelete,
+      enableSet: this.__enableSet,
+      enableUpdate: this.__enableUpdate,
       userData: this.__userData,
       __calledBySetup: true,
     })
@@ -51,6 +63,10 @@ module.exports = class DocumentSetup {
       collectionSetups: this.__collectionSetups,
       structure: this.__structure,
       snapshotFunctions: this.__snapshotFunctions,
+      enableCreate: this.__enableCreate,
+      enableDelete: this.__enableDelete,
+      enableSet: this.__enableSet,
+      enableUpdate: this.__enableUpdate,
       userData: this.__userData,
       __calledBySetup: true,
     })
@@ -64,6 +80,10 @@ module.exports = class DocumentSetup {
       collectionSetups: this.__collectionSetups,
       structure: this.__structure,
       snapshotFunctions: this.__snapshotFunctions,
+      enableCreate: this.__enableCreate,
+      enableDelete: this.__enableDelete,
+      enableSet: this.__enableSet,
+      enableUpdate: this.__enableUpdate,
       userData: this.__userData,
       __calledBySetup: true,
     })

@@ -9,7 +9,8 @@ const {fn, DocumentSnapshot} = require('./index')
 module.exports = class DocumentReference {
   constructor({
     id, __fsDocument, parent, schema, collectionSetups, structure,
-    snapshotFunctions, userData, __calledBySetup,
+    snapshotFunctions, enableCreate, enableDelete, enableSet, enableUpdate,
+    userData, __calledBySetup,
   }) {
     if (__calledBySetup !== true) {
       throw new Error('DocumentReference should only be instantiated ' +
@@ -36,6 +37,10 @@ module.exports = class DocumentReference {
       this.collection.bind(this),
     )
     this.__snapshotFunctions = snapshotFunctions
+    this.__enableCreate = enableCreate
+    this.__enableDelete = enableDelete
+    this.__enableSet = enableSet
+    this.__enableUpdate = enableUpdate
     this.userData = userData
   }
 
@@ -54,6 +59,10 @@ module.exports = class DocumentReference {
   }
 
   create(data) {
+    if (!this.__enableCreate) {
+      throw new Error(`Creating document ${this.id} is not permitted`)
+    }
+
     return fn.createDocument({
       docRef: this,
       data,
@@ -62,6 +71,10 @@ module.exports = class DocumentReference {
   }
 
   delete(precondition) {
+    if (!this.__enableDelete) {
+      throw new Error(`Deleting document ${this.id} is not permitted`)
+    }
+
     return fn.deleteDocument({
       docRef: this,
       precondition,
@@ -82,6 +95,10 @@ module.exports = class DocumentReference {
   }
 
   set(data, options) {
+    if (!this.__enableSet) {
+      throw new Error(`Setting document ${this.id} is not permitted`)
+    }
+
     return fn.setDocument({
       docRef: this,
       data,
@@ -91,6 +108,10 @@ module.exports = class DocumentReference {
   }
 
   update(dataOrField, ...preconditionOrValues) {
+    if (!this.__enableUpdate) {
+      throw new Error(`Updating document ${this.id} is not permitted`)
+    }
+
     return fn.updateDocument({
       docRef: this,
       dataOrField,
