@@ -11,6 +11,12 @@ const {
 } = require('./src/index')
 
 const {
+  ALLOW,
+  IGNORE,
+  USE_DEFAULT,
+  CALL_DEFAULT,
+  CALL_DEFAULT_ALWAYS,
+  ABORT,
   FieldArray,
   FieldBoolean,
   FieldChoice,
@@ -38,6 +44,12 @@ module.exports = {
   CollectionSetup,
   DocumentSetup,
   DocumentSchema,
+  ALLOW,
+  IGNORE,
+  USE_DEFAULT,
+  CALL_DEFAULT,
+  CALL_DEFAULT_ALWAYS,
+  ABORT,
   FieldArray,
   FieldBoolean,
   FieldChoice,

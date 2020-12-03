@@ -4,6 +4,9 @@
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
 // The order of requires is significant
+exports.CREATE = {writeMode: 'CREATE'}
+exports.SET = {writeMode: 'SET'}
+exports.UPDATE = {writeMode: 'UPDATE'}
 // deferredModules is needed to work around circular dependencies
 module.exports.deferredModules = {}
 module.exports.fn = require('./_functions')

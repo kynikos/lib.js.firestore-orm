@@ -4,6 +4,12 @@
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
 // The order of requires is significant
+exports.ALLOW = {action: 'ALLOW'}
+exports.IGNORE = {action: 'IGNORE'}
+exports.USE_DEFAULT = {action: 'USE_DEFAULT'}
+exports.CALL_DEFAULT = {action: 'CALL_DEFAULT'}
+exports.CALL_DEFAULT_ALWAYS = {action: 'CALL_DEFAULT_ALWAYS'}
+exports.ABORT = {action: 'ABORT'}
 exports.Field = require('./_Field')
 exports.FieldArray = require('./FieldArray')
 exports.FieldBoolean = require('./FieldBoolean')

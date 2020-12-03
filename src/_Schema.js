@@ -3,6 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
+
 module.exports = class _Schema {
   constructor(...fields) {
     this.fields = fields.reduce((acc, field) => {
@@ -15,15 +16,18 @@ module.exports = class _Schema {
   }
 
   __iterateFields({
-    data, handleFound, shouldHandleNotFound, handleNotFound, onlyTheseFields,
-    ignoreExtraneousFields,
+    data, shouldHandleFound, handleFound, shouldHandleNotFound, handleNotFound,
+    onlyTheseFields, ignoreExtraneousFields,
   }) {
     const cData = {...data}
 
     const sData = Object.values(this.fields).reduce(
       (acc, field) => {
         if (field.name in cData) {
-          acc[field.name] = handleFound(field, cData[field.name])
+          const value = cData[field.name]
+          if (shouldHandleFound(field, value)) {
+            acc[field.name] = handleFound(field, value)
+          }
           delete cData[field.name]
         } else if (
           shouldHandleNotFound(field) &&
@@ -47,22 +51,29 @@ module.exports = class _Schema {
 
   serialize(data, options = {}) {
     const {
-      ignoreAllMissingFields = false,
       onlyTheseFields = false,
       ignoreExtraneousFields = false,
-      ...fieldOptions
     } = options
 
     return this.__iterateFields({
       data,
+      shouldHandleFound: (field, value) => {
+        return field.__shouldSerialize(value, options, data)
+      },
       handleFound: (field, value) => {
-        return field.__serialize(value, fieldOptions, data)
+        // Do pass *all* the options to __serialize(), i.e. do not
+        // filter 'processMissingFields' etc. out because nested FieldSchema
+        // instances may use them aagin
+        return field.__serialize(value, options, data)
       },
       shouldHandleNotFound: (field) => {
-        return !ignoreAllMissingFields && !field.allowNoValue
+        return field.__shouldSerializeNoValue(options, data)
       },
       handleNotFound: ((field) => {
-        return field.__serializeNoValue(fieldOptions, data)
+        // Do pass *all* the options to __serializeNoValue(), i.e. do not
+        // filter 'processMissingFields' etc. out because nested FieldSchema
+        // instances may use them aagin
+        return field.__serializeNoValue(options, data)
       }),
       onlyTheseFields,
       ignoreExtraneousFields,
@@ -71,29 +82,36 @@ module.exports = class _Schema {
 
   deserialize(data, options = {}) {
     const {
-      fillWithDefaults = false,
       onlyTheseFields = false,
       ignoreExtraneousFields = false,
-      ...fieldOptions
     } = options
 
     return this.__iterateFields({
       data,
+      shouldHandleFound: (field, value) => {
+        return field.__shouldDeserialize(value, options, data)
+      },
       handleFound: (field, value) => {
-        return field.__deserialize(value, fieldOptions, data)
+        // Do pass *all* the options to __deserialize(), i.e. do not
+        // filter 'processMissingFields' etc. out because nested FieldSchema
+        // instances may use them aagin
+        return field.__deserialize(value, options, data)
       },
       shouldHandleNotFound: (field) => {
-        return fillWithDefaults
+        return field.__shouldDeserializeNoValue(options, data)
       },
       handleNotFound: ((field) => {
-        return field.__deserializeNoValue(fieldOptions, data)
+        // Do pass *all* the options to __deserializeNoValue(), i.e. do not
+        // filter 'processMissingFields' etc. out because nested FieldSchema
+        // instances may use them aagin
+        return field.__deserializeNoValue(options, data)
       }),
       onlyTheseFields,
       ignoreExtraneousFields,
     })
   }
 
-  deserializeField(fieldName, value, data, fieldOptions) {
-    return this.fields[fieldName].__deserialize(value, fieldOptions, data)
+  deserializeField(fieldName, value, data, options) {
+    return this.fields[fieldName].__deserialize(value, options, data)
   }
 }

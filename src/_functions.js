@@ -3,7 +3,8 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {deferredModules} = require('./index')
+/* eslint-disable max-lines */
+const {CREATE, SET, UPDATE, deferredModules} = require('./index')
 
 
 exports.makeStructure = function makeStructure(
@@ -191,7 +192,11 @@ exports.getDocumentStructureFromDocument = function getDocumentStructureFromDocu
 exports.createDocument = async function createDocument({
   docRef, data, batch, createFn,
 }) {
-  const serializedData = docRef.schema.serialize(data)
+  const serializedData = docRef.schema.serialize(data, {
+    writeMode: CREATE,
+    processMissingFields: true,
+    onlyTheseFields: false,
+  })
 
   const beforeData = docRef.database.__hooks.beforeCreatingDocument &&
     await docRef.database.__hooks.beforeCreatingDocument({
@@ -246,7 +251,9 @@ exports.setDocument = async function setDocument({
   docRef, data, options, batch, setFn,
 }) {
   // TODO: Support options.mergeFields with FieldPath objects
-  let sOptions
+  const sOptions = {
+    writeMode: SET,
+  }
 
   if (
     !options ||
@@ -256,16 +263,12 @@ exports.setDocument = async function setDocument({
     throw new Error("set() must explicitly specify either the 'merge' " +
       "or the 'mergeFields' option, not both or neither")
   } else if (options.mergeFields == null) {
-    sOptions = {
-      ignoreAllMissingFields: options.merge,
-      onlyTheseFields: false,
-    }
+    sOptions.processMissingFields = !options.merge
+    sOptions.onlyTheseFields = false
   } else {
-    sOptions = {
-      ignoreAllMissingFields: false,
-      // TODO: Support FieldPath in onlyTheseFields
-      onlyTheseFields: options.mergeFields,
-    }
+    sOptions.processMissingFields = true
+    // TODO: Support FieldPath in onlyTheseFields
+    sOptions.onlyTheseFields = options.mergeFields
   }
 
   const serializedData = docRef.schema.serialize(data, sOptions)
@@ -299,10 +302,11 @@ exports.updateDocument = async function updateDocument({
   docRef, dataOrField, preconditionOrValues, batch, updateFn,
 }) {
   // TODO: Support dataOrField and preconditionOrValues with FieldPath objects
-  // Use 'ignoreAllMissingFields' when updating, otherwise any unspecified
+  // Disable 'processMissingFields' when updating, otherwise any unspecified
   // fields would be overwritten with their default values
   const serializedData = docRef.schema.serialize(dataOrField, {
-    ignoreAllMissingFields: true,
+    writeMode: UPDATE,
+    processMissingFields: false,
     onlyTheseFields: false,
   })
 

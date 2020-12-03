@@ -7,19 +7,6 @@ const {Field} = require('./index')
 
 
 module.exports = class FieldDateTime extends Field {
-  constructor(fieldName, options = {}) {
-    // TODO: 'autoNow' should also be used when setting/updating (not creating) a document
-    const {autoNow, autoNowAdd, ...commonOptions} = options
-    super(fieldName, {
-      computeNoValue: (data, options_) => {
-        if (autoNow || autoNowAdd) return new Date()
-        return null
-      },
-      // Let commonOptions possibly override computeNoValue
-      ...commonOptions,
-    })
-  }
-
   serializeNotNull(value, {coerce = true}, data) {
     let sData = value
 
