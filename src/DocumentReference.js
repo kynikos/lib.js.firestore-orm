@@ -8,8 +8,8 @@ const {fn, DocumentSnapshot} = require('./index')
 
 module.exports = class DocumentReference {
   constructor({
-    id, __fsDocument, parent, schema, collectionSetups, structure, userData,
-    __calledBySetup,
+    id, __fsDocument, parent, schema, collectionSetups, structure,
+    snapshotFunctions, userData, __calledBySetup,
   }) {
     if (__calledBySetup !== true) {
       throw new Error('DocumentReference should only be instantiated ' +
@@ -35,7 +35,18 @@ module.exports = class DocumentReference {
       structure,
       this.collection.bind(this),
     )
+    this.__snapshotFunctions = snapshotFunctions
     this.userData = userData
+  }
+
+  __installSnapshotFunctions(documentSnapshot) {
+    return Object.entries(this.__snapshotFunctions).reduce(
+      (acc, [fnName, fn]) => {
+        acc[fnName] = (...args) => fn(...args, documentSnapshot)
+        return acc
+      },
+      {},
+    )
   }
 
   collection(...pathSegments) {

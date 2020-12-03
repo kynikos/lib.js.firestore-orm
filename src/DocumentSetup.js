@@ -7,11 +7,19 @@ const {deferredModules} = require('./index')
 
 
 module.exports = class DocumentSetup {
-  constructor({match, schema, collections, structure, userData}) {
+  constructor({
+    match,
+    schema,
+    collections,
+    structure,
+    snapshotFunctions = {},
+    userData,
+  }) {
     this.__match = match
     this.__schema = schema
     this.__collectionSetups = collections
     this.__structure = structure
+    this.__snapshotFunctions = snapshotFunctions
     this.__userData = userData
   }
 
@@ -30,6 +38,7 @@ module.exports = class DocumentSetup {
       schema: this.__schema,
       collectionSetups: this.__collectionSetups,
       structure: this.__structure,
+      snapshotFunctions: this.__snapshotFunctions,
       userData: this.__userData,
       __calledBySetup: true,
     })
@@ -41,6 +50,7 @@ module.exports = class DocumentSetup {
       schema: this.__schema,
       collectionSetups: this.__collectionSetups,
       structure: this.__structure,
+      snapshotFunctions: this.__snapshotFunctions,
       userData: this.__userData,
       __calledBySetup: true,
     })
@@ -53,6 +63,7 @@ module.exports = class DocumentSetup {
       schema: this.__schema,
       collectionSetups: this.__collectionSetups,
       structure: this.__structure,
+      snapshotFunctions: this.__snapshotFunctions,
       userData: this.__userData,
       __calledBySetup: true,
     })
