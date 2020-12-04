@@ -20,6 +20,8 @@ exports.FieldCollectionReferenceArray =
   require('./FieldCollectionReferenceArray')
 exports.FieldDateTime = require('./FieldDateTime')
 exports.FieldDate = require('./FieldDate')
+exports.FieldDateTimeCreation = require('./FieldDateTimeCreation')
+exports.FieldDateTimeLastUpdate = require('./FieldDateTimeLastUpdate')
 exports.FieldDocumentReference = require('./FieldDocumentReference')
 exports.FieldDocumentReferenceArray =
   require('./FieldDocumentReferenceArray')
