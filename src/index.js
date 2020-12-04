@@ -7,8 +7,6 @@
 // deferredModules is needed to work around circular dependencies
 module.exports.deferredModules = {}
 module.exports.fn = require('./_functions')
-module.exports.streamToGenerator =
-  require('@kynikos/misc/src/streamToGenerator').streamToGenerator
 module.exports.DocumentSetup = require('./DocumentSetup')
 module.exports.CollectionSetup = require('./CollectionSetup')
 module.exports._Schema = require('./_Schema')
