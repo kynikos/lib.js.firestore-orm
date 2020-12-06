@@ -8,7 +8,9 @@ const {QueryDocumentSnapshot} = require('./index')
 
 module.exports = class QuerySnapshot {
   constructor({collection, chooseSetup, __fsQuerySnapshot}) {
-    this.collection = collection
+    // Do not use this.collection, to not confuse it with the collection()
+    // methods of other classes
+    this.collectionRef = collection
     this.__chooseSetup = chooseSetup
     this.__fsQuerySnapshot = __fsQuerySnapshot
     this.empty = __fsQuerySnapshot.empty
@@ -36,7 +38,7 @@ module.exports = class QuerySnapshot {
       for (const __fsQueryDocumentSnapshot of this.__fsQuerySnapshot.docs) {
         const queryDocumentSnapshot = new QueryDocumentSnapshot({
           chooseSetup: this.__chooseSetup,
-          parentCollection: this.collection,
+          parentCollection: this.collectionRef,
           __fsQueryDocumentSnapshot,
         })
 

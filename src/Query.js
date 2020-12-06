@@ -18,13 +18,15 @@ module.exports = class Query {
 
   __Query_postConstructor({collection, __fsQueryOrCollection}) {
     this.__fsQueryOrCollection = __fsQueryOrCollection
-    this.collection = collection
+    // Do not use this.collection, to not confuse it with the collection()
+    // method of CollectionReference, which extends this class
+    this.collectionRef = collection
   }
 
   async get(chooseSetup) {
     const __fsQuerySnapshot = await this.__fsQueryOrCollection.get()
     return new QuerySnapshot({
-      collection: this.collection,
+      collection: this.collectionRef,
       chooseSetup,
       __fsQuerySnapshot,
     })
@@ -35,7 +37,7 @@ module.exports = class Query {
     for await (const __fsQueryDocumentSnapshot of stream) {
       yield new QueryDocumentSnapshot({
         chooseSetup,
-        parentCollection: this.collection,
+        parentCollection: this.collectionRef,
         __fsQueryDocumentSnapshot,
       })
     }
@@ -45,7 +47,7 @@ module.exports = class Query {
     const query = new Query({__callPostConstructor: true})
     const __fsQuery = this.__fsQueryOrCollection.limit(limit)
     query.__Query_postConstructor({
-      collection: this.collection,
+      collection: this.collectionRef,
       __fsQueryOrCollection: __fsQuery,
     })
     return query
@@ -55,7 +57,7 @@ module.exports = class Query {
     const query = new Query({__callPostConstructor: true})
     const __fsQuery = this.__fsQueryOrCollection.limitToLast(limit)
     query.__Query_postConstructor({
-      collection: this.collection,
+      collection: this.collectionRef,
       __fsQueryOrCollection: __fsQuery,
     })
     return query
@@ -67,7 +69,7 @@ module.exports = class Query {
     const __fsQuery =
       this.__fsQueryOrCollection.orderBy(fieldPath, directionStr)
     query.__Query_postConstructor({
-      collection: this.collection,
+      collection: this.collectionRef,
       __fsQueryOrCollection: __fsQuery,
     })
     return query
@@ -79,7 +81,7 @@ module.exports = class Query {
     const __fsQuery =
       this.__fsQueryOrCollection.select(...fieldPaths)
     query.__Query_postConstructor({
-      collection: this.collection,
+      collection: this.collectionRef,
       __fsQueryOrCollection: __fsQuery,
     })
     return query
@@ -95,7 +97,7 @@ module.exports = class Query {
     const query = new Query({__callPostConstructor: true})
     const __fsQuery = this.__fsQueryOrCollection.where(fieldPath, opStr, value)
     query.__Query_postConstructor({
-      collection: this.collection,
+      collection: this.collectionRef,
       __fsQueryOrCollection: __fsQuery,
     })
     return query
