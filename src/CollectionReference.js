@@ -36,7 +36,7 @@ module.exports = class CollectionReference extends Query {
   // eslint-disable-next-line class-methods-use-this
   add() {
     throw new Error('Not implemented: to add a document with an ' +
-      'auto-generated ID, use a DocumentSetup object with makeAutoId() ' +
+      "auto-generated ID, use a CollectionReference object's its docAutoId() " +
       'method, then either create() or set() the document reference')
   }
 
@@ -58,7 +58,8 @@ module.exports = class CollectionReference extends Query {
     return fn.getDocumentStructureFromCollection(this, pathSegments)
   }
 
-  docAutoId() {
-    return fn.resolveSetup(this.documentSetups).makeAutoId(this)
+  docAutoId(docSetup) {
+    const document = docSetup.__makeAutoId(this)
+    return document.structure
   }
 }
