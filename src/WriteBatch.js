@@ -18,7 +18,7 @@ module.exports = class WriteBatch {
   }
 
   create(document, data) {
-    fn.createDocument({
+    return fn.createDocument({
       docRef: document,
       data,
       batch: this,
@@ -26,14 +26,10 @@ module.exports = class WriteBatch {
         return this.__fsWriteBatch.create(document.__fsDocument, data_)
       },
     })
-
-    // Yes, also the native create() returns the WriteBatch instance
-    // TODO: Return createDocument's return, like DocumentReference's create()?
-    return this
   }
 
   delete(document, precondition) {
-    fn.deleteDocument({
+    return fn.deleteDocument({
       docRef: document,
       precondition,
       batch: this,
@@ -41,13 +37,10 @@ module.exports = class WriteBatch {
         return this.__fsWriteBatch.delete(document.__fsDocument, precondition_)
       },
     })
-
-    // Yes, also the native delete() returns the WriteBatch instance
-    return this
   }
 
   set(document, data, options) {
-    fn.setDocument({
+    return fn.setDocument({
       docRef: document,
       data,
       options,
@@ -56,14 +49,10 @@ module.exports = class WriteBatch {
         return this.__fsWriteBatch.set(document.__fsDocument, data_, options_)
       },
     })
-
-    // Yes, also the native set() returns the WriteBatch instance
-    // TODO: Return setDocument's return, like DocumentReference's set()?
-    return this
   }
 
   update(document, dataOrField, ...preconditionOrValues) {
-    fn.updateDocument({
+    return fn.updateDocument({
       docRef: document,
       dataOrField,
       preconditionOrValues,
@@ -76,9 +65,5 @@ module.exports = class WriteBatch {
         )
       },
     })
-
-    // Yes, also the native update() returns the WriteBatch instance
-    // TODO: Return updateDocument's return, like DocumentReference's update()?
-    return this
   }
 }

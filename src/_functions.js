@@ -218,8 +218,8 @@ exports.createDocument = async function createDocument({
 
   // TODO: Return the native WriteResult object wrapped in a custom class with
   //       the serializedData?
-  // return writeResult
-  return serializedData
+  // return {writeResult, serializedData}
+  return writeResult
 }
 
 
@@ -243,6 +243,7 @@ exports.deleteDocument = async function deleteDocument({
     })
 
   // TODO: Return the native WriteResult object wrapped in a custom class?
+  // return {writeResult}
   return writeResult
 }
 
@@ -293,8 +294,8 @@ exports.setDocument = async function setDocument({
 
   // TODO: Return the native WriteResult object wrapped in a custom class with
   //       the serializedData?
-  // return writeResult
-  return serializedData
+  // return {writeResult, serializedData}
+  return writeResult
 }
 
 
@@ -330,6 +331,6 @@ exports.updateDocument = async function updateDocument({
 
   // TODO: Return the native WriteResult object wrapped in a custom class with
   //       the serializedData?
-  // return writeResult
-  return serializedData
+  // return {writeResult, serializedData}
+  return writeResult
 }
