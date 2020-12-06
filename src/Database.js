@@ -6,9 +6,9 @@
 const {fn, WriteBatch} = require('./index')
 
 
-module.exports = class DatabaseConnection {
+module.exports = class Database {
   constructor({
-    firebaseAdminApp, collectionSetups, structure, userData, options = {},
+    firebaseAdminApp, collections, structure, userData, options = {},
   }) {
     const {hooks = {}} = options
     this.__app = firebaseAdminApp
@@ -17,7 +17,7 @@ module.exports = class DatabaseConnection {
     this.parent = null
     // CollectionReference needs this.__fsDocument to be defined
     this.__fsDocument = firebaseAdminApp.firestore()
-    this.collectionSetups = collectionSetups
+    this.collectionSetups = collections
     // 'structure' must be recreated for every connection, since it's
     // specifically related to 'this' object, so it cannot be created in
     // makeFactory()
