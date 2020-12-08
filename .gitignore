@@ -1,1 +1,6 @@
+/.firebaserc
+/firebase.json
+/firebase-debug.log
+/firestore-debug.log
 /node_modules/
+/ui-debug.log
