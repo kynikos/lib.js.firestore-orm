@@ -9,6 +9,7 @@ exports.SET = {writeMode: 'SET'}
 exports.UPDATE = {writeMode: 'UPDATE'}
 // deferredModules is needed to work around circular dependencies
 module.exports.deferredModules = {}
+module.exports.WriteResults = require('./WriteResults')
 module.exports.fn = require('./_functions')
 module.exports.DocumentSetup = require('./DocumentSetup')
 module.exports.CollectionSetup = require('./CollectionSetup')

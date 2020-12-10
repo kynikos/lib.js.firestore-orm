@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {fn, DocumentSnapshot} = require('./index')
+const {fn, DocumentSnapshot, WriteResults} = require('./index')
 
 
 module.exports = class DocumentReference {
@@ -67,7 +67,8 @@ module.exports = class DocumentReference {
       docRef: this,
       data,
       createFn: async (serializedData) => {
-        return this.__fsDocument.create(serializedData)
+        const __fsWriteResults = await this.__fsDocument.create(serializedData)
+        return new WriteResults({__fsWriteResults, serializedData})
       },
     })
   }
@@ -81,7 +82,8 @@ module.exports = class DocumentReference {
       docRef: this,
       precondition,
       deleteFn: async (precondition_) => {
-        return this.__fsDocument.delete(precondition_)
+        const __fsWriteResults = await this.__fsDocument.delete(precondition_)
+        return new WriteResults({__fsWriteResults, serializedData: null})
       },
     })
   }
@@ -108,7 +110,9 @@ module.exports = class DocumentReference {
       data,
       options,
       setFn: async (serializedData, options_) => {
-        return this.__fsDocument.set(serializedData, options_)
+        const __fsWriteResults =
+          await this.__fsDocument.set(serializedData, options_)
+        return new WriteResults({__fsWriteResults, serializedData})
       },
     })
   }
@@ -123,8 +127,11 @@ module.exports = class DocumentReference {
       dataOrField,
       preconditionOrValues,
       updateFn: async (serializedDataOrField, ...preconditionOrValues_) => {
-        return this.__fsDocument
+        const __fsWriteResults = await this.__fsDocument
           .update(serializedDataOrField, ...preconditionOrValues_)
+        return new WriteResults({
+          __fsWriteResults,
+          serializedData: serializedDataOrField,
         })
       },
     })

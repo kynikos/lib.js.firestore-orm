@@ -7,14 +7,25 @@ const {fn} = require('./index')
 
 
 module.exports = class WriteBatch {
-  constructor(database) {
+  constructor(database, __fsWriteBatch, lastSerializedData) {
     this.database = database
-    this.__fsWriteBatch = database.__app.firestore().batch()
+    this.__fsWriteBatch = __fsWriteBatch || database.__app.firestore().batch()
+    this.lastSerializedData = lastSerializedData
+  }
+
+  __cloneAfterQueuing(serializedData) {
+    return new WriteBatch(this.database, this.__fsWriteBatch, serializedData)
   }
 
   commit() {
-    // TODO: Wrap the returned native WriteResult object in a custom class?
+    // TODO: commit() returns a Promise that resolves into an Array of native
+    //       WriteResults objects: wrap them into this library's custom
+    //       WriteResults class?
     return this.__fsWriteBatch.commit()
+    // const __fsWriteResultsArray = await this.__fsWriteBatch.commit()
+    // return __fsWriteResultsArray.map((__fsWriteResults) => {
+    //   return new WriteResults({__fsWriteResults, serializedData: null})
+    // })
   }
 
   create(document, data) {
@@ -23,7 +34,13 @@ module.exports = class WriteBatch {
       data,
       batch: this,
       createFn: (serializedData) => {
-        return this.__fsWriteBatch.create(document.__fsDocument, serializedData)
+        const __fsWriteBatch =
+          this.__fsWriteBatch.create(document.__fsDocument, serializedData)
+        return this.__cloneAfterQueuing(
+          this.database,
+          __fsWriteBatch,
+          serializedData,
+        )
       },
     })
   }
@@ -34,7 +51,13 @@ module.exports = class WriteBatch {
       precondition,
       batch: this,
       deleteFn: (precondition_) => {
-        return this.__fsWriteBatch.delete(document.__fsDocument, precondition_)
+        const __fsWriteBatch =
+          this.__fsWriteBatch.delete(document.__fsDocument, precondition_)
+        return this.__cloneAfterQueuing(
+          this.database,
+          __fsWriteBatch,
+          null,
+        )
       },
     })
   }
@@ -46,8 +69,13 @@ module.exports = class WriteBatch {
       options,
       batch: this,
       setFn: (serializedData, options_) => {
-        return this.__fsWriteBatch
+        const __fsWriteBatch = this.__fsWriteBatch
           .set(document.__fsDocument, serializedData, options_)
+        return this.__cloneAfterQueuing(
+          this.database,
+          __fsWriteBatch,
+          serializedData,
+        )
       },
     })
   }
@@ -59,10 +87,15 @@ module.exports = class WriteBatch {
       preconditionOrValues,
       batch: this,
       updateFn: (serializedDataOrField, ...preconditionOrValues_) => {
-        return this.__fsWriteBatch.update(
+        const __fsWriteBatch = this.__fsWriteBatch.update(
           document.__fsDocument,
           serializedDataOrField,
           ...preconditionOrValues_,
+        )
+        return this.__cloneAfterQueuing(
+          this.database,
+          __fsWriteBatch,
+          serializedDataOrField,
         )
       },
     })

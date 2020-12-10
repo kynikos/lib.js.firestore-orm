@@ -216,9 +216,6 @@ exports.createDocument = async function createDocument({
       batch,
     })
 
-  // TODO: Return the native WriteResult object wrapped in a custom class with
-  //       the serializedData?
-  // return {writeResult, serializedData}
   return writeResultOrBatch
 }
 
@@ -242,8 +239,6 @@ exports.deleteDocument = async function deleteDocument({
       batch,
     })
 
-  // TODO: Return the native WriteResult object wrapped in a custom class?
-  // return {writeResult}
   return writeResultOrBatch
 }
 
@@ -292,9 +287,6 @@ exports.setDocument = async function setDocument({
       batch,
     })
 
-  // TODO: Return the native WriteResult object wrapped in a custom class with
-  //       the serializedData?
-  // return {writeResult, serializedData}
   return writeResultOrBatch
 }
 
@@ -330,8 +322,5 @@ exports.updateDocument = async function updateDocument({
       batch,
     })
 
-  // TODO: Return the native WriteResult object wrapped in a custom class with
-  //       the serializedData?
-  // return {writeResult, serializedData}
   return writeResultOrBatch
 }
