@@ -66,7 +66,9 @@ module.exports = class DocumentReference {
     return fn.createDocument({
       docRef: this,
       data,
-      createFn: (data_) => this.__fsDocument.create(data_),
+      createFn: async (serializedData) => {
+        return this.__fsDocument.create(serializedData)
+      },
     })
   }
 
@@ -78,7 +80,9 @@ module.exports = class DocumentReference {
     return fn.deleteDocument({
       docRef: this,
       precondition,
-      deleteFn: (precondition_) => this.__fsDocument.delete(precondition_),
+      deleteFn: async (precondition_) => {
+        return this.__fsDocument.delete(precondition_)
+      },
     })
   }
 
@@ -103,7 +107,9 @@ module.exports = class DocumentReference {
       docRef: this,
       data,
       options,
-      setFn: (data_, options_) => this.__fsDocument.set(data_, options_),
+      setFn: async (serializedData, options_) => {
+        return this.__fsDocument.set(serializedData, options_)
+      },
     })
   }
 
@@ -116,8 +122,10 @@ module.exports = class DocumentReference {
       docRef: this,
       dataOrField,
       preconditionOrValues,
-      updateFn: (dataOrField_, ...preconditionOrValues_) => {
-        return this.__fsDocument.update(dataOrField_, ...preconditionOrValues_)
+      updateFn: async (serializedDataOrField, ...preconditionOrValues_) => {
+        return this.__fsDocument
+          .update(serializedDataOrField, ...preconditionOrValues_)
+        })
       },
     })
   }

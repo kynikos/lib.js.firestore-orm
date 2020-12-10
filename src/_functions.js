@@ -205,21 +205,21 @@ exports.createDocument = async function createDocument({
       batch,
     })
 
-  const writeResult = await createFn(serializedData)
+  const writeResultOrBatch = await createFn(serializedData)
 
   docRef.database.__hooks.afterCreatingDocument &&
     await docRef.database.__hooks.afterCreatingDocument({
       document: docRef,
       beforeData,
       serializedData,
-      writeResult,
+      writeResultOrBatch,
       batch,
     })
 
   // TODO: Return the native WriteResult object wrapped in a custom class with
   //       the serializedData?
   // return {writeResult, serializedData}
-  return writeResult
+  return writeResultOrBatch
 }
 
 
@@ -232,19 +232,19 @@ exports.deleteDocument = async function deleteDocument({
       batch,
     })
 
-  const writeResult = await deleteFn(precondition)
+  const writeResultOrBatch = await deleteFn(precondition)
 
   docRef.database.__hooks.afterDeletingDocument &&
     await docRef.database.__hooks.afterDeletingDocument({
       document: docRef,
       beforeData,
-      writeResult,
+      writeResultOrBatch,
       batch,
     })
 
   // TODO: Return the native WriteResult object wrapped in a custom class?
   // return {writeResult}
-  return writeResult
+  return writeResultOrBatch
 }
 
 
@@ -281,21 +281,21 @@ exports.setDocument = async function setDocument({
       batch,
     })
 
-  const writeResult = await setFn(serializedData, options)
+  const writeResultOrBatch = await setFn(serializedData, options)
 
   docRef.database.__hooks.afterSettingDocument &&
     await docRef.database.__hooks.afterSettingDocument({
       document: docRef,
       beforeData,
       serializedData,
-      writeResult,
+      writeResultOrBatch,
       batch,
     })
 
   // TODO: Return the native WriteResult object wrapped in a custom class with
   //       the serializedData?
   // return {writeResult, serializedData}
-  return writeResult
+  return writeResultOrBatch
 }
 
 
@@ -305,7 +305,7 @@ exports.updateDocument = async function updateDocument({
   // TODO: Support dataOrField and preconditionOrValues with FieldPath objects
   // Disable 'processMissingFields' when updating, otherwise any unspecified
   // fields would be overwritten with their default values
-  const serializedData = docRef.schema.serialize(dataOrField, {
+  const serializedDataOrField = docRef.schema.serialize(dataOrField, {
     writeMode: UPDATE,
     processMissingFields: false,
     onlyTheseFields: false,
@@ -314,23 +314,24 @@ exports.updateDocument = async function updateDocument({
   const beforeData = docRef.database.__hooks.beforeUpdatingDocument &&
     await docRef.database.__hooks.beforeUpdatingDocument({
       document: docRef,
-      serializedData,
+      serializedDataOrField,
       batch,
     })
 
-  const writeResult = await updateFn(serializedData, ...preconditionOrValues)
+  const writeResultOrBatch =
+    await updateFn(serializedDataOrField, ...preconditionOrValues)
 
   docRef.database.__hooks.afterUpdatingDocument &&
     await docRef.database.__hooks.afterUpdatingDocument({
       document: docRef,
       beforeData,
-      serializedData,
-      writeResult,
+      serializedDataOrField,
+      writeResultOrBatch,
       batch,
     })
 
   // TODO: Return the native WriteResult object wrapped in a custom class with
   //       the serializedData?
   // return {writeResult, serializedData}
-  return writeResult
+  return writeResultOrBatch
 }

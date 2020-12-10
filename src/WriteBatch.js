@@ -22,8 +22,8 @@ module.exports = class WriteBatch {
       docRef: document,
       data,
       batch: this,
-      createFn: (data_) => {
-        return this.__fsWriteBatch.create(document.__fsDocument, data_)
+      createFn: (serializedData) => {
+        return this.__fsWriteBatch.create(document.__fsDocument, serializedData)
       },
     })
   }
@@ -45,8 +45,9 @@ module.exports = class WriteBatch {
       data,
       options,
       batch: this,
-      setFn: (data_, options_) => {
-        return this.__fsWriteBatch.set(document.__fsDocument, data_, options_)
+      setFn: (serializedData, options_) => {
+        return this.__fsWriteBatch
+          .set(document.__fsDocument, serializedData, options_)
       },
     })
   }
@@ -57,10 +58,10 @@ module.exports = class WriteBatch {
       dataOrField,
       preconditionOrValues,
       batch: this,
-      updateFn: (dataOrField_, ...preconditionOrValues_) => {
+      updateFn: (serializedDataOrField, ...preconditionOrValues_) => {
         return this.__fsWriteBatch.update(
           document.__fsDocument,
-          dataOrField_,
+          serializedDataOrField,
           ...preconditionOrValues_,
         )
       },
