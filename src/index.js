@@ -4,6 +4,7 @@
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
 // The order of requires is significant
+exports.Timestamp = require('firebase-admin').firestore.Timestamp
 exports.CREATE = {writeMode: 'CREATE'}
 exports.SET = {writeMode: 'SET'}
 exports.UPDATE = {writeMode: 'UPDATE'}

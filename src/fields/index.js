@@ -18,6 +18,7 @@ exports.FieldChoiceArray = require('./FieldChoiceArray')
 exports.FieldCollectionReference = require('./FieldCollectionReference')
 exports.FieldCollectionReferenceArray =
   require('./FieldCollectionReferenceArray')
+exports._FieldTimestamp = require('./_FieldTimestamp')
 exports.FieldDateTime = require('./FieldDateTime')
 exports.FieldDate = require('./FieldDate')
 exports.FieldDateTimeCreation = require('./FieldDateTimeCreation')

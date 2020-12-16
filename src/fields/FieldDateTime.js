@@ -3,11 +3,13 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {Field} = require('./index')
+const {_FieldTimestamp} = require('./index')
 
 
-module.exports = class FieldDateTime extends Field {
-  serializeNotNull(value, {coerce = true}, data) {
+module.exports = class FieldDateTime extends _FieldTimestamp {
+  serializeNotNull(value, options = {}, data) {
+    const {coerce = true} = options
+
     let sData = value
 
     if (!(sData instanceof Date)) {
@@ -24,14 +26,6 @@ module.exports = class FieldDateTime extends Field {
       throw new Error(`Value for ${this.name} is not a valid Date object`)
     }
 
-    return sData
-  }
-
-  deserialize(value, options, data) {
-    // TODO: Firestore stores Timestamp objects; the docs say that toDate()
-    //       may lose precision
-    //       https://googleapis.dev/nodejs/firestore/latest/Timestamp.html#toDate
-    //       Optionally keep it as a Timestamp?
-    return value && value.toDate()
+    return super.serializeNotNull(sData, options, data)
   }
 }
