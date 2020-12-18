@@ -64,7 +64,13 @@ module.exports = class Query {
   }
 
   orderBy(fieldPath, directionStr) {
-    // TODO: Support FieldPath
+    // TODO: Support FieldPath objects, but note that for the
+    //       moment I'm restricting all field names to be of the "simple"
+    //       format in _Field.js ([a-zA-Z_][0-9a-zA-Z_]*), so using
+    //       FieldPath shouldn't be necessary; there are other places
+    //       where FieldPath should be supported, but it would be harder;
+    //       for example in DocumentReference's set() and update()
+    //       https://firebase.google.com/docs/firestore/quotas#limits
     const query = new Query({__callPostConstructor: true})
     const __fsQuery =
       this.__fsQueryOrCollection.orderBy(fieldPath, directionStr)
@@ -76,7 +82,13 @@ module.exports = class Query {
   }
 
   select(...fieldPaths) {
-    // TODO: Support FieldPath
+    // TODO: Support FieldPath objects, but note that for the
+    //       moment I'm restricting all field names to be of the "simple"
+    //       format in _Field.js ([a-zA-Z_][0-9a-zA-Z_]*), so using
+    //       FieldPath shouldn't be necessary; there are other places
+    //       where FieldPath should be supported, but it would be harder;
+    //       for example in DocumentReference's set() and update()
+    //       https://firebase.google.com/docs/firestore/quotas#limits
     const query = new Query({__callPostConstructor: true})
     const __fsQuery =
       this.__fsQueryOrCollection.select(...fieldPaths)
@@ -93,7 +105,13 @@ module.exports = class Query {
   }
 
   where(fieldPath, opStr, value) {
-    // TODO: Support FieldPath
+    // TODO: Support FieldPath objects, but note that for the
+    //       moment I'm restricting all field names to be of the "simple"
+    //       format in _Field.js ([a-zA-Z_][0-9a-zA-Z_]*), so using
+    //       FieldPath shouldn't be necessary; there are other places
+    //       where FieldPath should be supported, but it would be harder;
+    //       for example in DocumentReference's set() and update()
+    //       https://firebase.google.com/docs/firestore/quotas#limits
     const query = new Query({__callPostConstructor: true})
     const __fsQuery = this.__fsQueryOrCollection.where(fieldPath, opStr, value)
     query.__Query_postConstructor({

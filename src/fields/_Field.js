@@ -13,6 +13,14 @@ const {ALLOW, IGNORE, USE_DEFAULT, CALL_DEFAULT, CALL_DEFAULT_ALWAYS, ABORT} =
 
 module.exports = class Field {
   constructor(fieldName, options = {}) {
+    // TODO: For the moment only allow field names of the "simple" format
+    //       (https://firebase.google.com/docs/firestore/quotas#limits)
+    //       because otherwise I would need to support FieldPath objects in
+    //       other places, for example in DocumentReference's set() and update()
+    if (!(/^[a-zA-Z_][0-9a-zA-Z_]*$/u).test(fieldName)) {
+      throw new Error('Field names must match /^[a-zA-Z_][0-9a-zA-Z_]*$/')
+    }
+
     const {
       nullable,
       onWrite = ALLOW,

@@ -4,7 +4,7 @@
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
 /* eslint-disable max-lines */
-const {CREATE, SET, UPDATE, deferredModules} = require('./index')
+const {FieldPath, CREATE, SET, UPDATE, deferredModules} = require('./index')
 
 
 exports.makeStructure = function makeStructure(
@@ -246,7 +246,13 @@ exports.deleteDocument = async function deleteDocument({
 exports.setDocument = async function setDocument({
   docRef, data, options, batch, setFn,
 }) {
-  // TODO: Support options.mergeFields with FieldPath objects
+  // TODO: Support options.mergeFields with FieldPath objects, but note that
+  //       for the moment I'm restricting all field names to be of the "simple"
+  //       format in _Field.js ([a-zA-Z_][0-9a-zA-Z_]*), so using FieldPath
+  //       shouldn't be necessary; there are other places where FieldPath should
+  //       be supported, but it would be harder; for example in
+  //       DocumentReference's set() and update()
+  //       https://firebase.google.com/docs/firestore/quotas#limits
   const sOptions = {
     writeMode: SET,
   }
@@ -263,7 +269,13 @@ exports.setDocument = async function setDocument({
     sOptions.onlyTheseFields = false
   } else {
     sOptions.processMissingFields = true
-    // TODO: Support FieldPath in onlyTheseFields
+    // TODO: Support FieldPath objects in onlyTheseFields, but note that
+    //       for the moment I'm restricting all field names to be of the
+    //       "simple" format in _Field.js ([a-zA-Z_][0-9a-zA-Z_]*), so using
+    //       FieldPath shouldn't be necessary; there are other places where
+    //       FieldPath should be supported, but it would be harder; for example
+    //       in DocumentReference's set() and update()
+    //       https://firebase.google.com/docs/firestore/quotas#limits
     sOptions.onlyTheseFields = options.mergeFields
   }
 
@@ -294,7 +306,19 @@ exports.setDocument = async function setDocument({
 exports.updateDocument = async function updateDocument({
   docRef, dataOrField, preconditionOrValues, batch, updateFn,
 }) {
-  // TODO: Support dataOrField and preconditionOrValues with FieldPath objects
+  // TODO: Support dataOrField and preconditionOrValues with FieldPath objects,
+  //       but note that for the moment I'm restricting all field names to be of
+  //       the "simple" format in _Field.js ([a-zA-Z_][0-9a-zA-Z_]*), so using
+  //       FieldPath shouldn't be necessary; there are other places where
+  //       FieldPath should be supported, but it would be harder; for example in
+  //       DocumentReference's set() and update()
+  //       https://firebase.google.com/docs/firestore/quotas#limits
+  //       Also "serializedDataOrField" isn't a very good variable name
+  if (!(dataOrField instanceof Object) || dataOrField instanceof FieldPath) {
+    throw new Error('Passing an alternating list of field paths and values ' +
+      'is not supported')
+  }
+
   // Disable 'processMissingFields' when updating, otherwise any unspecified
   // fields would be overwritten with their default values
   const serializedDataOrField = docRef.schema.serialize(dataOrField, {

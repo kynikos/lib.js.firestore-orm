@@ -31,7 +31,13 @@ module.exports = class _Schema {
           delete cData[field.name]
         } else if (
           shouldHandleNotFound(field) &&
-          // TODO: Support FieldPath in onlyTheseFields
+          // TODO: Support FieldPath objects in onlyTheseFields, but note that
+          //       for the moment I'm restricting all field names to be of the
+          //       "simple" format in _Field.js ([a-zA-Z_][0-9a-zA-Z_]*), so
+          //       using FieldPath shouldn't be necessary; there are other
+          //       places where FieldPath should be supported, but it would be
+          //       harder; for example in DocumentReference's set() and update()
+          //       https://firebase.google.com/docs/firestore/quotas#limits
           (!onlyTheseFields || onlyTheseFields.includes(field.name))
         ) {
           acc[field.name] = handleNotFound(field)

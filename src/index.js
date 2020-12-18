@@ -6,6 +6,7 @@
 const {firestore} = require('firebase-admin')
 
 // The order of requires is significant
+exports.FieldPath = firestore.FieldPath
 exports.Timestamp = firestore.Timestamp
 exports.CREATE = {writeMode: 'CREATE'}
 exports.SET = {writeMode: 'SET'}
