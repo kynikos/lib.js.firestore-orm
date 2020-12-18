@@ -150,7 +150,8 @@ describe('within a DocumentReference object', () => {
         str2: 'blue',
       })
 
-      const snapshots = await database.structure.coll1.ref().get()
+      const coll = database.structure.coll1.ref()
+      const snapshots = await coll.get(coll.documentSetups[1])
 
       expect(snapshots.size).toBe(1)
 
@@ -160,7 +161,7 @@ describe('within a DocumentReference object', () => {
 
       await carrot.delete()
 
-      const snapshots2 = await database.structure.coll1.ref().get()
+      const snapshots2 = await coll.get(coll.documentSetups[1])
 
       expect(snapshots2.size).toBe(0)
 
