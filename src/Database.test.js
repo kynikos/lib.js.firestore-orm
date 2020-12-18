@@ -61,17 +61,17 @@ describe('within a Database object', () => {
         str: 'else',
       })
 
-      expect(() => database.collection('/coll1/Abc/coll3/doc5/coll51')
-        .doc('doc51'))
-        .toThrow('Unexpected collection or document id: ')
+      expect(() => {
+        return database.collection('/coll1/Abc/coll3/doc5/coll51').doc('doc51')
+      }).toThrow('Unexpected collection or document id: ')
 
-      expect(() => database.collection('coll1/Abc/coll3/doc5/coll51/')
-        .doc('doc51'))
-        .toThrow("Making a DocumentSetup requires 'id' to be defined")
+      expect(() => {
+        return database.collection('coll1/Abc/coll3/doc5/coll51/').doc('doc51')
+      }).toThrow("Making a DocumentSetup requires 'id' to be defined")
 
-      expect(() => database.collection('/coll1/Abc/coll3/doc5/coll51/')
-        .doc('doc51'))
-        .toThrow('Unexpected collection or document id: ')
+      expect(() => {
+        return database.collection('/coll1/Abc/coll3/doc5/coll51/').doc('doc51')
+      }).toThrow('Unexpected collection or document id: ')
     },
   ))
 

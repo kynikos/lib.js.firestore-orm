@@ -1,6 +1,6 @@
 const axios = require('axios')
 const firebaseAdmin = require('firebase-admin')
-const {Database, CollectionSetup, DocumentSetup,
+const {IGNORE, Database, CollectionSetup, DocumentSetup,
   DocumentSchema, FieldArray, FieldBoolean, FieldDate, FieldDateTime,
   FieldInteger, FieldIntegerMap, FieldMap, FieldString, FieldStringArray,
   FieldStringMap} = require('../index')
@@ -145,16 +145,16 @@ exports.initDatabaseStatic = function initDatabaseStatic() {
           new DocumentSetup({
             match: 'many-fields',
             schema: new DocumentSchema(
-              new FieldArray('arr1'),
-              new FieldBoolean('bool1'),
-              new FieldDate('date1'),
-              new FieldDateTime('ts1'),
-              new FieldInteger('int1'),
-              new FieldIntegerMap('intmap1'),
-              new FieldMap('map1'),
-              new FieldString('str1'),
-              new FieldStringArray('strarr1'),
-              new FieldStringMap('strmap1'),
+              new FieldArray('arr1', {onWriteNil: IGNORE}),
+              new FieldBoolean('bool1', {onWriteNil: IGNORE}),
+              new FieldDate('date1', {onWriteNil: IGNORE}),
+              new FieldDateTime('ts1', {onWriteNil: IGNORE}),
+              new FieldInteger('int1', {onWriteNil: IGNORE}),
+              new FieldIntegerMap('intmap1', {onWriteNil: IGNORE}),
+              new FieldMap('map1', {onWriteNil: IGNORE}),
+              new FieldString('str1', {onWriteNil: IGNORE}),
+              new FieldStringArray('strarr1', {onWriteNil: IGNORE}),
+              new FieldStringMap('strmap1', {onWriteNil: IGNORE}),
             ),
             structure: {
               ref: (doc) => doc,

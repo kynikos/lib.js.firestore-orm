@@ -1,4 +1,5 @@
-const {DocumentSnapshot} = require('./index')
+/* eslint-disable max-lines */
+const {Timestamp, DocumentSnapshot} = require('./index')
 const {withFreshDatabase, initDatabaseStatic} = require('../tests/_setup')
 
 
@@ -46,17 +47,17 @@ describe('within a DocumentReference object', () => {
         str: 'else',
       })
 
-      expect(() => docAbc.collection('/coll3/doc5/coll51')
-        .doc('doc51'))
-        .toThrow('Unexpected collection or document id: ')
+      expect(() => {
+        return docAbc.collection('/coll3/doc5/coll51').doc('doc51')
+      }).toThrow('Unexpected collection or document id: ')
 
-      expect(() => docAbc.collection('coll3/doc5/coll51/')
-        .doc('doc51'))
-        .toThrow("Making a DocumentSetup requires 'id' to be defined")
+      expect(() => {
+        return docAbc.collection('coll3/doc5/coll51/').doc('doc51')
+      }).toThrow("Making a DocumentSetup requires 'id' to be defined")
 
-      expect(() => docAbc.collection('/coll3/doc5/coll51/')
-        .doc('doc51'))
-        .toThrow('Unexpected collection or document id: ')
+      expect(() => {
+        return docAbc.collection('/coll3/doc5/coll51/').doc('doc51')
+      }).toThrow('Unexpected collection or document id: ')
     },
   ))
 
@@ -169,7 +170,193 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test.todo('document.set(data, options)')
+  test("set() needs options 'merge' or 'mergeFields'", () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const melon = database.structure.coll1.doc2('book').ref()
+
+      await expect(() => melon.set({
+        int1: 2,
+        str1: 'giraffe',
+      })).rejects.toThrow("set() must explicitly specify either the 'merge' " +
+        "or the 'mergeFields' option, not both or neither")
+
+      await expect(() => melon.set({
+        int1: 2,
+        str1: 'giraffe',
+      }, {merge: true, mergeFields: ['int1']})).rejects.toThrow('set() must ' +
+        "explicitly specify either the 'merge' or the " +
+        "'mergeFields' option, not both or neither")
+    },
+  ))
+
+  test('set() correctly creates a document', () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.manyFields.ref()
+
+      const snapshot1 = await doc.get()
+
+      expect(snapshot1.exists).toBe(false)
+
+      await doc.set({
+        arr1: ['a', 'b'],
+        bool1: true,
+        date1: '2020-10-31',
+        ts1: new Date(2020, 10, 12, 22, 30, 45),
+        int1: 42,
+        intmap1: {c: 3, k: 6},
+        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        str1: 'astring',
+        strarr1: ['almond', 'pecan'],
+        strmap1: {s: 'duck', t: 'notduck'},
+      }, {merge: false})
+
+      const snapshot2 = await doc.get()
+
+      expect(snapshot2.data()).toStrictEqual({
+        arr1: ['a', 'b'],
+        bool1: true,
+        date1: '2020-10-31',
+        ts1: new Date(2020, 10, 12, 22, 30, 45),
+        int1: 42,
+        intmap1: {c: 3, k: 6},
+        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        str1: 'astring',
+        strarr1: ['almond', 'pecan'],
+        strmap1: {s: 'duck', t: 'notduck'},
+      })
+    },
+  ))
+
+  test('set() correctly overwrites a document with merge:false', () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.manyFields.ref()
+
+      await doc.create({
+        arr1: ['a', 'b'],
+        bool1: true,
+        date1: '2020-10-31',
+        ts1: new Date(2020, 10, 12, 22, 30, 45),
+        int1: 42,
+        intmap1: {c: 3, k: 6},
+        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        str1: 'astring',
+        strarr1: ['almond', 'pecan'],
+        strmap1: {s: 'duck', t: 'notduck'},
+      })
+
+      const snapshot1 = await doc.get()
+
+      expect(snapshot1.exists).toBe(true)
+
+      await doc.set({
+        int1: 2,
+        str1: 'giraffe',
+      }, {merge: false})
+
+      const snapshot2 = await doc.get()
+
+      expect(snapshot2.data()).toStrictEqual({
+        int1: 2,
+        str1: 'giraffe',
+      })
+    },
+  ))
+
+  test('set() correctly updates a document with merge:true', () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.manyFields.ref()
+
+      await doc.create({
+        date1: '2020-10-31',
+        ts1: new Date(2020, 10, 12, 22, 30, 45),
+        int1: 42,
+        intmap1: {c: 3, k: 6},
+        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        str1: 'astring',
+        strarr1: ['almond', 'pecan'],
+        strmap1: {s: 'duck', t: 'notduck'},
+      })
+
+      const snapshot1 = await doc.get()
+
+      expect(snapshot1.exists).toBe(true)
+
+      await doc.set({
+        arr1: ['a', 'b'],
+        bool1: true,
+        int1: 2,
+        str1: 'giraffe',
+      }, {merge: true})
+
+      const snapshot2 = await doc.get()
+
+      expect(snapshot2.data()).toStrictEqual({
+        arr1: ['a', 'b'],
+        bool1: true,
+        date1: '2020-10-31',
+        ts1: new Date(2020, 10, 12, 22, 30, 45),
+        int1: 2,
+        intmap1: {c: 3, k: 6},
+        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        str1: 'giraffe',
+        strarr1: ['almond', 'pecan'],
+        strmap1: {s: 'duck', t: 'notduck'},
+      })
+    },
+  ))
+
+  test('set() correctly updates a document with mergeFields', () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.manyFields.ref()
+
+      await doc.create({
+        date1: '2020-10-31',
+        ts1: new Date(2020, 10, 12, 22, 30, 45),
+        int1: 42,
+        intmap1: {c: 3, k: 6},
+        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        str1: 'astring',
+        strarr1: ['almond', 'pecan'],
+        strmap1: {s: 'duck', t: 'notduck'},
+      })
+
+      const snapshot1 = await doc.get()
+
+      expect(snapshot1.exists).toBe(true)
+
+      await doc.set({
+        arr1: ['a', 'b'],
+        bool1: true,
+        date1: '2010-05-06',
+        int1: 2,
+        str1: 'giraffe',
+      }, {mergeFields: ['bool1', 'str1']})
+
+      const snapshot2 = await doc.get()
+
+      expect(snapshot2.data()).toStrictEqual({
+        bool1: true,
+        date1: '2020-10-31',
+        ts1: new Date(2020, 10, 12, 22, 30, 45),
+        int1: 42,
+        intmap1: {c: 3, k: 6},
+        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        str1: 'giraffe',
+        strarr1: ['almond', 'pecan'],
+        strmap1: {s: 'duck', t: 'notduck'},
+      })
+    },
+  ))
 
   test.todo('document.update(dataOrField, ...preconditionOrValues)')
 
