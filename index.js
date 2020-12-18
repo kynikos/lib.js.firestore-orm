@@ -4,6 +4,7 @@
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
 const {
+  DEFAULT,
   Database,
   CollectionSetup,
   DocumentSetup,
@@ -42,6 +43,7 @@ const {
 } = require('./src/fields/index')
 
 module.exports = {
+  DEFAULT,
   Database,
   CollectionSetup,
   DocumentSetup,

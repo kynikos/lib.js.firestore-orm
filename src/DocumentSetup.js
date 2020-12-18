@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {deferredModules} = require('./index')
+const {DEFAULT, deferredModules} = require('./index')
 
 
 module.exports = class DocumentSetup {
@@ -13,10 +13,14 @@ module.exports = class DocumentSetup {
     collections,
     structure,
     snapshotFunctions = {},
-    enableCreate = true,
-    enableDelete = true,
-    enableSet = true,
-    enableUpdate = true,
+    enableDirectCreate = DEFAULT,
+    enableDirectDelete = DEFAULT,
+    enableDirectSet = DEFAULT,
+    enableDirectUpdate = DEFAULT,
+    enableBatchCreate = DEFAULT,
+    enableBatchDelete = DEFAULT,
+    enableBatchSet = DEFAULT,
+    enableBatchUpdate = DEFAULT,
     userData,
   }) {
     this.__match = match
@@ -24,10 +28,14 @@ module.exports = class DocumentSetup {
     this.__collectionSetups = collections
     this.__structure = structure
     this.__snapshotFunctions = snapshotFunctions
-    this.__enableCreate = enableCreate
-    this.__enableDelete = enableDelete
-    this.__enableSet = enableSet
-    this.__enableUpdate = enableUpdate
+    this.__enableDirectCreate = enableDirectCreate
+    this.__enableDirectDelete = enableDirectDelete
+    this.__enableDirectSet = enableDirectSet
+    this.__enableDirectUpdate = enableDirectUpdate
+    this.__enableBatchCreate = enableBatchCreate
+    this.__enableBatchDelete = enableBatchDelete
+    this.__enableBatchSet = enableBatchSet
+    this.__enableBatchUpdate = enableBatchUpdate
     this.__userData = userData
   }
 
@@ -47,10 +55,14 @@ module.exports = class DocumentSetup {
       collectionSetups: this.__collectionSetups,
       structure: this.__structure,
       snapshotFunctions: this.__snapshotFunctions,
-      enableCreate: this.__enableCreate,
-      enableDelete: this.__enableDelete,
-      enableSet: this.__enableSet,
-      enableUpdate: this.__enableUpdate,
+      enableDirectCreate: this.__enableDirectCreate,
+      enableDirectDelete: this.__enableDirectDelete,
+      enableDirectSet: this.__enableDirectSet,
+      enableDirectUpdate: this.__enableDirectUpdate,
+      enableBatchCreate: this.__enableBatchCreate,
+      enableBatchDelete: this.__enableBatchDelete,
+      enableBatchSet: this.__enableBatchSet,
+      enableBatchUpdate: this.__enableBatchUpdate,
       userData: this.__userData,
       __calledBySetup: true,
     })
@@ -63,10 +75,14 @@ module.exports = class DocumentSetup {
       collectionSetups: this.__collectionSetups,
       structure: this.__structure,
       snapshotFunctions: this.__snapshotFunctions,
-      enableCreate: this.__enableCreate,
-      enableDelete: this.__enableDelete,
-      enableSet: this.__enableSet,
-      enableUpdate: this.__enableUpdate,
+      enableDirectCreate: this.__enableDirectCreate,
+      enableDirectDelete: this.__enableDirectDelete,
+      enableDirectSet: this.__enableDirectSet,
+      enableDirectUpdate: this.__enableDirectUpdate,
+      enableBatchCreate: this.__enableBatchCreate,
+      enableBatchDelete: this.__enableBatchDelete,
+      enableBatchSet: this.__enableBatchSet,
+      enableBatchUpdate: this.__enableBatchUpdate,
       userData: this.__userData,
       __calledBySetup: true,
     })
@@ -80,10 +96,14 @@ module.exports = class DocumentSetup {
       collectionSetups: this.__collectionSetups,
       structure: this.__structure,
       snapshotFunctions: this.__snapshotFunctions,
-      enableCreate: this.__enableCreate,
-      enableDelete: this.__enableDelete,
-      enableSet: this.__enableSet,
-      enableUpdate: this.__enableUpdate,
+      enableDirectCreate: this.__enableDirectCreate,
+      enableDirectDelete: this.__enableDirectDelete,
+      enableDirectSet: this.__enableDirectSet,
+      enableDirectUpdate: this.__enableDirectUpdate,
+      enableBatchCreate: this.__enableBatchCreate,
+      enableBatchDelete: this.__enableBatchDelete,
+      enableBatchSet: this.__enableBatchSet,
+      enableBatchUpdate: this.__enableBatchUpdate,
       userData: this.__userData,
       __calledBySetup: true,
     })

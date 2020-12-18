@@ -192,6 +192,15 @@ exports.getDocumentStructureFromDocument = function getDocumentStructureFromDocu
 exports.createDocument = async function createDocument({
   docRef, data, batch, createFn,
 }) {
+  if (batch) {
+    if (!docRef.__enableBatchCreate) {
+      throw new Error(`Creating document ${
+        docRef.id} in a batch is not permitted`)
+    }
+  } else if (!docRef.__enableDirectCreate) {
+    throw new Error(`Creating document ${docRef.id} directly is not permitted`)
+  }
+
   const serializedData = docRef.schema.serialize(data, {
     writeMode: CREATE,
     processMissingFields: true,
@@ -223,6 +232,15 @@ exports.createDocument = async function createDocument({
 exports.deleteDocument = async function deleteDocument({
   docRef, precondition, batch, deleteFn,
 }) {
+  if (batch) {
+    if (!docRef.__enableBatchDelete) {
+      throw new Error(`Deleting document ${
+        docRef.id} in a batch is not permitted`)
+    }
+  } else if (!docRef.__enableDirectDelete) {
+    throw new Error(`Deleting document ${docRef.id} directly is not permitted`)
+  }
+
   const beforeData = docRef.database.__hooks.beforeDeletingDocument &&
     await docRef.database.__hooks.beforeDeletingDocument({
       document: docRef,
@@ -246,6 +264,15 @@ exports.deleteDocument = async function deleteDocument({
 exports.setDocument = async function setDocument({
   docRef, data, options, batch, setFn,
 }) {
+  if (batch) {
+    if (!docRef.__enableBatchSet) {
+      throw new Error(`Setting document ${
+        docRef.id} in a batch is not permitted`)
+    }
+  } else if (!docRef.__enableDirectSet) {
+    throw new Error(`Setting document ${docRef.id} directly is not permitted`)
+  }
+
   // TODO: Support options.mergeFields with FieldPath objects, but note that
   //       for the moment I'm restricting all field names to be of the "simple"
   //       format in _Field.js ([a-zA-Z_][0-9a-zA-Z_]*), so using FieldPath
@@ -306,6 +333,15 @@ exports.setDocument = async function setDocument({
 exports.updateDocument = async function updateDocument({
   docRef, dataOrField, preconditionOrValues, batch, updateFn,
 }) {
+  if (batch) {
+    if (!docRef.__enableBatchUpdate) {
+      throw new Error(`Updating document ${
+        docRef.id} in a batch is not permitted`)
+    }
+  } else if (!docRef.__enableDirectUpdate) {
+    throw new Error(`Updating document ${docRef.id} directly is not permitted`)
+  }
+
   // TODO: Support dataOrField and preconditionOrValues with FieldPath objects,
   //       but note that for the moment I'm restricting all field names to be of
   //       the "simple" format in _Field.js ([a-zA-Z_][0-9a-zA-Z_]*), so using

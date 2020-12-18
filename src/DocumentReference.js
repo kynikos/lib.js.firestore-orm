@@ -3,13 +3,15 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {fn, DocumentSnapshot, WriteResults} = require('./index')
+const {DEFAULT, fn, DocumentSnapshot, WriteResults} = require('./index')
 
 
 module.exports = class DocumentReference {
   constructor({
     id, __fsDocument, parent, schema, collectionSetups, structure,
-    snapshotFunctions, enableCreate, enableDelete, enableSet, enableUpdate,
+    snapshotFunctions, enableDirectCreate, enableDirectDelete, enableDirectSet,
+    enableDirectUpdate, enableBatchCreate, enableBatchDelete,
+    enableBatchSet, enableBatchUpdate,
     userData, __calledBySetup,
   }) {
     if (__calledBySetup !== true) {
@@ -37,10 +39,30 @@ module.exports = class DocumentReference {
       this.collection.bind(this),
     )
     this.__snapshotFunctions = snapshotFunctions
-    this.__enableCreate = enableCreate
-    this.__enableDelete = enableDelete
-    this.__enableSet = enableSet
-    this.__enableUpdate = enableUpdate
+    this.__enableDirectCreate = enableDirectCreate === DEFAULT
+      ? this.database.__defaultEnableDirectCreate
+      : enableDirectCreate
+    this.__enableDirectDelete = enableDirectDelete === DEFAULT
+      ? this.database.__defaultEnableDirectDelete
+      : enableDirectDelete
+    this.__enableDirectSet = enableDirectSet === DEFAULT
+      ? this.database.__defaultEnableDirectSet
+      : enableDirectSet
+    this.__enableDirectUpdate = enableDirectUpdate === DEFAULT
+      ? this.database.__defaultEnableDirectUpdate
+      : enableDirectUpdate
+    this.__enableBatchCreate = enableBatchCreate === DEFAULT
+      ? this.database.__defaultEnableBatchCreate
+      : enableBatchCreate
+    this.__enableBatchDelete = enableBatchDelete === DEFAULT
+      ? this.database.__defaultEnableBatchDelete
+      : enableBatchDelete
+    this.__enableBatchSet = enableBatchSet === DEFAULT
+      ? this.database.__defaultEnableBatchSet
+      : enableBatchSet
+    this.__enableBatchUpdate = enableBatchUpdate === DEFAULT
+      ? this.database.__defaultEnableBatchUpdate
+      : enableBatchUpdate
     this.userData = userData
   }
 
@@ -59,10 +81,6 @@ module.exports = class DocumentReference {
   }
 
   create(data) {
-    if (!this.__enableCreate) {
-      throw new Error(`Creating document ${this.id} is not permitted`)
-    }
-
     return fn.createDocument({
       docRef: this,
       data,
@@ -74,10 +92,6 @@ module.exports = class DocumentReference {
   }
 
   delete(precondition) {
-    if (!this.__enableDelete) {
-      throw new Error(`Deleting document ${this.id} is not permitted`)
-    }
-
     return fn.deleteDocument({
       docRef: this,
       precondition,
@@ -101,10 +115,6 @@ module.exports = class DocumentReference {
   }
 
   set(data, options) {
-    if (!this.__enableSet) {
-      throw new Error(`Setting document ${this.id} is not permitted`)
-    }
-
     return fn.setDocument({
       docRef: this,
       data,
@@ -118,10 +128,6 @@ module.exports = class DocumentReference {
   }
 
   update(dataOrField, ...preconditionOrValues) {
-    if (!this.__enableUpdate) {
-      throw new Error(`Updating document ${this.id} is not permitted`)
-    }
-
     return fn.updateDocument({
       docRef: this,
       dataOrField,

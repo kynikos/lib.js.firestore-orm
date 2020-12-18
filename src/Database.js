@@ -10,23 +10,41 @@ module.exports = class Database {
   constructor({
     firebaseAdminApp, collections, structure, userData, options = {},
   }) {
-    const {hooks = {}} = options
+    const {
+      defaultEnableDirectCreate = true,
+      defaultEnableDirectDelete = true,
+      defaultEnableDirectSet = true,
+      defaultEnableDirectUpdate = true,
+      defaultEnableBatchCreate = true,
+      defaultEnableBatchDelete = true,
+      defaultEnableBatchSet = true,
+      defaultEnableBatchUpdate = true,
+      hooks = {},
+    } = options
+
     this.__app = firebaseAdminApp
+
     // CollectionReference needs this.database to be defined
     this.database = this
+
     this.parent = null
+
     // CollectionReference needs this.__fsDocument to be defined
     this.__fsDocument = firebaseAdminApp.firestore()
+
     this.collectionSetups = collections
-    // 'structure' must be recreated for every connection, since it's
-    // specifically related to 'this' object, so it cannot be created in
-    // makeFactory()
-    this.structure = fn.makeStructure(
-      this,
-      structure,
-      this.collection.bind(this),
-    )
+
+    this.__defaultEnableDirectCreate = defaultEnableDirectCreate
+    this.__defaultEnableDirectDelete = defaultEnableDirectDelete
+    this.__defaultEnableDirectSet = defaultEnableDirectSet
+    this.__defaultEnableDirectUpdate = defaultEnableDirectUpdate
+    this.__defaultEnableBatchCreate = defaultEnableBatchCreate
+    this.__defaultEnableBatchDelete = defaultEnableBatchDelete
+    this.__defaultEnableBatchSet = defaultEnableBatchSet
+    this.__defaultEnableBatchUpdate = defaultEnableBatchUpdate
+
     this.userData = userData
+
     this.__hooks = {
       beforeCreatingDocument: hooks.beforeCreatingDocument,
       afterCreatingDocument: hooks.afterCreatingDocument,
@@ -37,6 +55,18 @@ module.exports = class Database {
       beforeUpdatingDocument: hooks.beforeUpdatingDocument,
       afterUpdatingDocument: hooks.afterUpdatingDocument,
     }
+
+    // 'structure' must be recreated for every connection, since it's
+    // specifically related to 'this' object, so it cannot be created in
+    // makeFactory()
+    // Make sure to make the structure *after* initializing all the other
+    // properties above, otherwise some of them would be unavailable to any
+    // static document references being created
+    this.structure = fn.makeStructure(
+      this,
+      structure,
+      this.collection.bind(this),
+    )
   }
 
   batch() {
