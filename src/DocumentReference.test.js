@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-const {DocumentSnapshot} = require('./index')
+const {FieldPath, DocumentSnapshot} = require('./index')
 const {withFreshDatabase, initDatabaseStatic} = require('../tests/_setup')
 
 
@@ -359,7 +359,78 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test.todo('document.update(dataOrField, ...preconditionOrValues)')
+  test('document() does not support the alternating field/value signature', () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.manyFields.ref()
+
+      await doc.create({
+        date1: '2020-10-31',
+        ts1: new Date(2020, 10, 12, 22, 30, 45),
+        int1: 42,
+        intmap1: {c: 3, k: 6},
+        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        str1: 'astring',
+        strarr1: ['almond', 'pecan'],
+        strmap1: {s: 'duck', t: 'notduck'},
+      })
+
+      await expect(() => doc.update('arr1', ['a', 'b'])).rejects
+        .toThrow('Passing an alternating list of field paths and values is ' +
+          'not supported')
+
+      await expect(() => doc.update(new FieldPath('arr1'), ['a', 'b'])).rejects
+        .toThrow('Passing an alternating list of field paths and values is ' +
+          'not supported')
+    },
+  ))
+
+  test('update() correctly updates a document', () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.manyFields.ref()
+
+      await doc.create({
+        date1: '2020-10-31',
+        ts1: new Date(2020, 10, 12, 22, 30, 45),
+        int1: 42,
+        intmap1: {c: 3, k: 6},
+        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        str1: 'astring',
+        strarr1: ['almond', 'pecan'],
+        strmap1: {s: 'duck', t: 'notduck'},
+      })
+
+      const snapshot1 = await doc.get()
+
+      expect(snapshot1.exists).toBe(true)
+
+      await doc.update({
+        arr1: ['a', 'b'],
+        bool1: true,
+        date1: '2010-05-06',
+        int1: 2,
+        str1: 'giraffe',
+      })
+
+      const snapshot2 = await doc.get()
+
+      expect(snapshot2.data()).toStrictEqual({
+        arr1: ['a', 'b'],
+        bool1: true,
+        date1: '2010-05-06',
+        ts1: new Date(2020, 10, 12, 22, 30, 45),
+        int1: 2,
+        intmap1: {c: 3, k: 6},
+        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        str1: 'giraffe',
+        strarr1: ['almond', 'pecan'],
+        strmap1: {s: 'duck', t: 'notduck'},
+      })
+    },
+  ))
 
   test.todo('enableCreate')
 
