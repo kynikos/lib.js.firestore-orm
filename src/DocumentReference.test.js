@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-const {Timestamp, DocumentSnapshot} = require('./index')
+const {DocumentSnapshot} = require('./index')
 const {withFreshDatabase, initDatabaseStatic} = require('../tests/_setup')
 
 
