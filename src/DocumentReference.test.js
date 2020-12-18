@@ -432,13 +432,21 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test.todo('enableCreate')
+  test.todo('enableDirectCreate (also Database defaults)')
 
-  test.todo('enableDelete')
+  test.todo('enableDirectDelete (also Database defaults)')
 
-  test.todo('enableSet')
+  test.todo('enableDirectSet (also Database defaults)')
 
-  test.todo('enableUpdate')
+  test.todo('enableDirectUpdate (also Database defaults)')
+
+  test.todo('enableBatchCreate (also Database defaults)')
+
+  test.todo('enableBatchDelete (also Database defaults)')
+
+  test.todo('enableBatchSet (also Database defaults)')
+
+  test.todo('enableBatchUpdate (also Database defaults)')
 
   test('userData is correctly stored and retrieved', () => withFreshDatabase(
     1,
