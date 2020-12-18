@@ -8,6 +8,12 @@ const {QueryDocumentSnapshot} = require('./index')
 
 module.exports = class QuerySnapshot {
   constructor({collection, chooseSetup, __fsQuerySnapshot}) {
+    // Explicitly warn when not passing a setup, as it's a common mistake,
+    // not straighforward to debug because it differs from the native API
+    if (!chooseSetup) {
+      throw new Error('A document setup, or a function ' +
+        'returning one, is required')
+    }
     // Do not use this.collection, to not confuse it with the collection()
     // methods of other classes
     this.collectionRef = collection

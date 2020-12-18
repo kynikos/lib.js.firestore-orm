@@ -59,6 +59,9 @@ module.exports = class CollectionReference extends Query {
   }
 
   docAutoId(docSetup) {
+    // Explicitly warn when not passing a setup, as it's a common mistake,
+    // not straighforward to debug because it differs from the native API
+    if (!docSetup) throw new Error('A document setup is required')
     const document = docSetup.__makeAutoId(this)
     return document.structure
   }
