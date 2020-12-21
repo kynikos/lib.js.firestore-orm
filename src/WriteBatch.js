@@ -13,8 +13,8 @@ module.exports = class WriteBatch {
     this.lastSerializedData = lastSerializedData
   }
 
-  __cloneAfterQueuing(serializedData) {
-    return new WriteBatch(this.database, this.__fsWriteBatch, serializedData)
+  __cloneAfterQueuing(__fsWriteBatch, serializedData) {
+    return new WriteBatch(this.database, __fsWriteBatch, serializedData)
   }
 
   commit() {
@@ -28,6 +28,8 @@ module.exports = class WriteBatch {
     // })
   }
 
+  // Note that this function is synchronous in the native API, but it returns
+  // a Promise here, since createDocument() is asynchronous
   create(document, data) {
     return fn.createDocument({
       docRef: document,
@@ -36,15 +38,13 @@ module.exports = class WriteBatch {
       createFn: (serializedData) => {
         const __fsWriteBatch =
           this.__fsWriteBatch.create(document.__fsDocument, serializedData)
-        return this.__cloneAfterQueuing(
-          this.database,
-          __fsWriteBatch,
-          serializedData,
-        )
+        return this.__cloneAfterQueuing(__fsWriteBatch, serializedData)
       },
     })
   }
 
+  // Note that this function is synchronous in the native API, but it returns
+  // a Promise here, since deleteDocument() is asynchronous
   delete(document, precondition) {
     return fn.deleteDocument({
       docRef: document,
@@ -53,15 +53,13 @@ module.exports = class WriteBatch {
       deleteFn: (precondition_) => {
         const __fsWriteBatch =
           this.__fsWriteBatch.delete(document.__fsDocument, precondition_)
-        return this.__cloneAfterQueuing(
-          this.database,
-          __fsWriteBatch,
-          null,
-        )
+        return this.__cloneAfterQueuing(__fsWriteBatch, null)
       },
     })
   }
 
+  // Note that this function is synchronous in the native API, but it returns
+  // a Promise here, since setDocument() is asynchronous
   set(document, data, options) {
     return fn.setDocument({
       docRef: document,
@@ -71,15 +69,13 @@ module.exports = class WriteBatch {
       setFn: (serializedData, options_) => {
         const __fsWriteBatch = this.__fsWriteBatch
           .set(document.__fsDocument, serializedData, options_)
-        return this.__cloneAfterQueuing(
-          this.database,
-          __fsWriteBatch,
-          serializedData,
-        )
+        return this.__cloneAfterQueuing(__fsWriteBatch, serializedData)
       },
     })
   }
 
+  // Note that this function is synchronous in the native API, but it returns
+  // a Promise here, since updateDocument() is asynchronous
   update(document, dataOrField, ...preconditionOrValues) {
     return fn.updateDocument({
       docRef: document,
@@ -92,11 +88,7 @@ module.exports = class WriteBatch {
           serializedDataOrField,
           ...preconditionOrValues_,
         )
-        return this.__cloneAfterQueuing(
-          this.database,
-          __fsWriteBatch,
-          serializedDataOrField,
-        )
+        return this.__cloneAfterQueuing(__fsWriteBatch, serializedDataOrField)
       },
     })
   }
