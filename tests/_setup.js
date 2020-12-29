@@ -15,7 +15,7 @@ function initializeApp() {
 exports.initializeApp = initializeApp
 
 
-exports.initDatabaseStatic = function initDatabaseStatic() {
+exports.initDatabaseStatic = function initDatabaseStatic(overrideProps = {}) {
   return new Database({
     firebaseAdminApp: initializeApp(),
     structure: {
@@ -241,6 +241,7 @@ exports.initDatabaseStatic = function initDatabaseStatic() {
         ],
       }),
     ],
+    ...overrideProps,
   })
 }
 
