@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 const axios = require('axios')
 const firebaseAdmin = require('firebase-admin')
 const {IGNORE, Database, CollectionSetup, DocumentSetup,
@@ -235,9 +236,11 @@ async function withFreshDatabase(
 
   const database = initDatabase()
 
-  await testFn(database)
-
-  await database.__app.delete()
+  try {
+    await testFn(database)
+  } finally {
+    await database.__app.delete()
+  }
 
   return true
 }
