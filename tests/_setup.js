@@ -170,7 +170,73 @@ exports.initDatabaseStatic = function initDatabaseStatic() {
             ),
             structure: {
               ref: (doc) => doc,
+              writeRestrictions: 'writeRestrictions',
             },
+            collections: [
+              new CollectionSetup({
+                match: 'writeRestrictions',
+                structure: {
+                  enableDirectCreate: 'enableDirectCreate',
+                  enableDirectDelete: 'enableDirectDelete',
+                  enableDirectSet: 'enableDirectSet',
+                  enableDirectUpdate: 'enableDirectUpdate',
+                  enableBatchCreate: 'enableBatchCreate',
+                  enableBatchDelete: 'enableBatchDelete',
+                  enableBatchSet: 'enableBatchSet',
+                  enableBatchUpdate: 'enableBatchUpdate',
+                },
+                documents: [
+                  new DocumentSetup({
+                    match: 'enableDirectCreate',
+                    schema: new DocumentSchema(new FieldString('str')),
+                    enableDirectCreate: false,
+                    structure: {ref: (doc) => doc},
+                  }),
+                  new DocumentSetup({
+                    match: 'enableDirectDelete',
+                    schema: new DocumentSchema(new FieldString('str')),
+                    enableDirectDelete: false,
+                    structure: {ref: (doc) => doc},
+                  }),
+                  new DocumentSetup({
+                    match: 'enableDirectSet',
+                    schema: new DocumentSchema(new FieldString('str')),
+                    enableDirectSet: false,
+                    structure: {ref: (doc) => doc},
+                  }),
+                  new DocumentSetup({
+                    match: 'enableDirectUpdate',
+                    schema: new DocumentSchema(new FieldString('str')),
+                    enableDirectUpdate: false,
+                    structure: {ref: (doc) => doc},
+                  }),
+                  new DocumentSetup({
+                    match: 'enableBatchCreate',
+                    schema: new DocumentSchema(new FieldString('str')),
+                    enableBatchCreate: false,
+                    structure: {ref: (doc) => doc},
+                  }),
+                  new DocumentSetup({
+                    match: 'enableBatchDelete',
+                    schema: new DocumentSchema(new FieldString('str')),
+                    enableBatchDelete: false,
+                    structure: {ref: (doc) => doc},
+                  }),
+                  new DocumentSetup({
+                    match: 'enableBatchSet',
+                    schema: new DocumentSchema(new FieldString('str')),
+                    enableBatchSet: false,
+                    structure: {ref: (doc) => doc},
+                  }),
+                  new DocumentSetup({
+                    match: 'enableBatchUpdate',
+                    schema: new DocumentSchema(new FieldString('str')),
+                    enableBatchUpdate: false,
+                    structure: {ref: (doc) => doc},
+                  }),
+                ],
+              }),
+            ],
           }),
         ],
       }),

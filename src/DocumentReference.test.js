@@ -432,21 +432,153 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test.todo('enableDirectCreate (also Database defaults)')
+  test('enableDirectCreate prevents creating a document', () => withFreshDatabase(
+    1,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.doc6('aaa').writeRestrictions
+        .enableDirectCreate.ref()
 
-  test.todo('enableDirectDelete (also Database defaults)')
+      await expect(doc.create({str: 'bbb'})).rejects
+        .toThrow('Creating document enableDirectCreate directly is not ' +
+          'permitted')
+    },
+  ))
 
-  test.todo('enableDirectSet (also Database defaults)')
+  test('enableDirectDelete prevents deleting a document', () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.doc6('aaa').writeRestrictions
+        .enableDirectDelete.ref()
 
-  test.todo('enableDirectUpdate (also Database defaults)')
+      await doc.create({str: 'bbb'})
 
-  test.todo('enableBatchCreate (also Database defaults)')
+      const snapshot = await doc.get()
 
-  test.todo('enableBatchDelete (also Database defaults)')
+      expect(snapshot.exists).toBe(true)
 
-  test.todo('enableBatchSet (also Database defaults)')
+      await expect(doc.delete()).rejects
+        .toThrow('Deleting document enableDirectDelete directly is not ' +
+          'permitted')
+    },
+  ))
 
-  test.todo('enableBatchUpdate (also Database defaults)')
+  test('enableDirectSet prevents setting a document', () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.doc6('aaa').writeRestrictions
+        .enableDirectSet.ref()
+
+      await doc.create({str: 'bbb'})
+
+      const snapshot = await doc.get()
+
+      expect(snapshot.exists).toBe(true)
+
+      await expect(doc.set({str: 'ccc'}, {merge: true})).rejects
+        .toThrow('Setting document enableDirectSet directly is not ' +
+          'permitted')
+    },
+  ))
+
+  test('enableDirectUpdate prevents updating a document', () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.doc6('aaa').writeRestrictions
+        .enableDirectUpdate.ref()
+
+      await doc.create({str: 'bbb'})
+
+      const snapshot = await doc.get()
+
+      expect(snapshot.exists).toBe(true)
+
+      await expect(doc.update({str: 'ddd'})).rejects
+        .toThrow('Updating document enableDirectUpdate directly is not ' +
+          'permitted')
+    },
+  ))
+
+  test('enableBatchCreate prevents batch-creating documents', () => withFreshDatabase(
+    1,
+    initDatabaseStatic,
+    async (database) => {
+      const batch = database.batch()
+
+      const doc = database.structure.coll2.doc6('aaa').writeRestrictions
+        .enableBatchCreate.ref()
+
+      await expect(batch.create(doc, {str: 'bbb'})).rejects
+        .toThrow('Creating document enableBatchCreate in a batch is not ' +
+          'permitted')
+    },
+  ))
+
+  test('enableBatchDelete prevents batch-deleting documents', () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.doc6('aaa').writeRestrictions
+        .enableBatchDelete.ref()
+
+      await doc.create({str: 'bbb'})
+
+      const snapshot = await doc.get()
+
+      expect(snapshot.exists).toBe(true)
+
+      const batch = database.batch()
+
+      await expect(batch.delete(doc)).rejects
+        .toThrow('Deleting document enableBatchDelete in a batch is not ' +
+          'permitted')
+    },
+  ))
+
+  test('enableBatchSet prevents batch-setting documents', () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.doc6('aaa').writeRestrictions
+        .enableBatchSet.ref()
+
+      await doc.create({str: 'bbb'})
+
+      const snapshot = await doc.get()
+
+      expect(snapshot.exists).toBe(true)
+
+      const batch = database.batch()
+
+      await expect(batch.set(doc, {str: 'ccc'}, {merge: true})).rejects
+        .toThrow('Setting document enableBatchSet in a batch is not ' +
+          'permitted')
+    },
+  ))
+
+  test('enableBatchUpdate prevents batch-updating documents', () => withFreshDatabase(
+    2,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.doc6('aaa').writeRestrictions
+        .enableBatchUpdate.ref()
+
+      await doc.create({str: 'bbb'})
+
+      const snapshot = await doc.get()
+
+      expect(snapshot.exists).toBe(true)
+
+      const batch = database.batch()
+
+      await expect(batch.update(doc, {str: 'ccc'})).rejects
+        .toThrow('Updating document enableBatchUpdate in a batch is not ' +
+          'permitted')
+    },
+  ))
 
   test('userData is correctly stored and retrieved', () => withFreshDatabase(
     1,
