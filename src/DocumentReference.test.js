@@ -203,31 +203,31 @@ describe('within a DocumentReference object', () => {
       expect(snapshot1.exists).toBe(false)
 
       await doc.set({
-        arr1: ['a', 'b'],
-        bool1: true,
-        date1: '2020-10-31',
-        ts1: new Date(2020, 10, 12, 22, 30, 45),
-        int1: 42,
-        intmap1: {c: 3, k: 6},
-        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
-        str1: 'astring',
-        strarr1: ['almond', 'pecan'],
-        strmap1: {s: 'duck', t: 'notduck'},
+        array: ['a', 'b'],
+        boolean: true,
+        date: '2020-10-31',
+        dateTime: new Date(2020, 10, 12, 22, 30, 45),
+        integer: 42,
+        integerMap: {c: 3, k: 6},
+        map: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        string: 'astring',
+        stringArray: ['almond', 'pecan'],
+        stringMap: {s: 'duck', t: 'notduck'},
       }, {merge: false})
 
       const snapshot2 = await doc.get()
 
       expect(snapshot2.data()).toStrictEqual({
-        arr1: ['a', 'b'],
-        bool1: true,
-        date1: '2020-10-31',
-        ts1: new Date(2020, 10, 12, 22, 30, 45),
-        int1: 42,
-        intmap1: {c: 3, k: 6},
-        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
-        str1: 'astring',
-        strarr1: ['almond', 'pecan'],
-        strmap1: {s: 'duck', t: 'notduck'},
+        array: ['a', 'b'],
+        boolean: true,
+        date: '2020-10-31',
+        dateTime: new Date(2020, 10, 12, 22, 30, 45),
+        integer: 42,
+        integerMap: {c: 3, k: 6},
+        map: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        string: 'astring',
+        stringArray: ['almond', 'pecan'],
+        stringMap: {s: 'duck', t: 'notduck'},
       })
     },
   ))
@@ -239,16 +239,16 @@ describe('within a DocumentReference object', () => {
       const doc = database.structure.coll2.manyFields.ref()
 
       await doc.create({
-        arr1: ['a', 'b'],
-        bool1: true,
-        date1: '2020-10-31',
-        ts1: new Date(2020, 10, 12, 22, 30, 45),
-        int1: 42,
-        intmap1: {c: 3, k: 6},
-        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
-        str1: 'astring',
-        strarr1: ['almond', 'pecan'],
-        strmap1: {s: 'duck', t: 'notduck'},
+        array: ['a', 'b'],
+        boolean: true,
+        date: '2020-10-31',
+        dateTime: new Date(2020, 10, 12, 22, 30, 45),
+        integer: 42,
+        integerMap: {c: 3, k: 6},
+        map: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        string: 'astring',
+        stringArray: ['almond', 'pecan'],
+        stringMap: {s: 'duck', t: 'notduck'},
       })
 
       const snapshot1 = await doc.get()
@@ -256,15 +256,15 @@ describe('within a DocumentReference object', () => {
       expect(snapshot1.exists).toBe(true)
 
       await doc.set({
-        int1: 2,
-        str1: 'giraffe',
+        integer: 2,
+        string: 'giraffe',
       }, {merge: false})
 
       const snapshot2 = await doc.get()
 
       expect(snapshot2.data()).toStrictEqual({
-        int1: 2,
-        str1: 'giraffe',
+        integer: 2,
+        string: 'giraffe',
       })
     },
   ))
@@ -276,14 +276,14 @@ describe('within a DocumentReference object', () => {
       const doc = database.structure.coll2.manyFields.ref()
 
       await doc.create({
-        date1: '2020-10-31',
-        ts1: new Date(2020, 10, 12, 22, 30, 45),
-        int1: 42,
-        intmap1: {c: 3, k: 6},
-        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
-        str1: 'astring',
-        strarr1: ['almond', 'pecan'],
-        strmap1: {s: 'duck', t: 'notduck'},
+        date: '2020-10-31',
+        dateTime: new Date(2020, 10, 12, 22, 30, 45),
+        integer: 42,
+        integerMap: {c: 3, k: 6},
+        map: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        string: 'astring',
+        stringArray: ['almond', 'pecan'],
+        stringMap: {s: 'duck', t: 'notduck'},
       })
 
       const snapshot1 = await doc.get()
@@ -291,25 +291,25 @@ describe('within a DocumentReference object', () => {
       expect(snapshot1.exists).toBe(true)
 
       await doc.set({
-        arr1: ['a', 'b'],
-        bool1: true,
-        int1: 2,
-        str1: 'giraffe',
+        array: ['a', 'b'],
+        boolean: true,
+        integer: 2,
+        string: 'giraffe',
       }, {merge: true})
 
       const snapshot2 = await doc.get()
 
       expect(snapshot2.data()).toStrictEqual({
-        arr1: ['a', 'b'],
-        bool1: true,
-        date1: '2020-10-31',
-        ts1: new Date(2020, 10, 12, 22, 30, 45),
-        int1: 2,
-        intmap1: {c: 3, k: 6},
-        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
-        str1: 'giraffe',
-        strarr1: ['almond', 'pecan'],
-        strmap1: {s: 'duck', t: 'notduck'},
+        array: ['a', 'b'],
+        boolean: true,
+        date: '2020-10-31',
+        dateTime: new Date(2020, 10, 12, 22, 30, 45),
+        integer: 2,
+        integerMap: {c: 3, k: 6},
+        map: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        string: 'giraffe',
+        stringArray: ['almond', 'pecan'],
+        stringMap: {s: 'duck', t: 'notduck'},
       })
     },
   ))
@@ -321,14 +321,14 @@ describe('within a DocumentReference object', () => {
       const doc = database.structure.coll2.manyFields.ref()
 
       await doc.create({
-        date1: '2020-10-31',
-        ts1: new Date(2020, 10, 12, 22, 30, 45),
-        int1: 42,
-        intmap1: {c: 3, k: 6},
-        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
-        str1: 'astring',
-        strarr1: ['almond', 'pecan'],
-        strmap1: {s: 'duck', t: 'notduck'},
+        date: '2020-10-31',
+        dateTime: new Date(2020, 10, 12, 22, 30, 45),
+        integer: 42,
+        integerMap: {c: 3, k: 6},
+        map: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        string: 'astring',
+        stringArray: ['almond', 'pecan'],
+        stringMap: {s: 'duck', t: 'notduck'},
       })
 
       const snapshot1 = await doc.get()
@@ -336,25 +336,25 @@ describe('within a DocumentReference object', () => {
       expect(snapshot1.exists).toBe(true)
 
       await doc.set({
-        arr1: ['a', 'b'],
-        bool1: true,
-        date1: '2010-05-06',
-        int1: 2,
-        str1: 'giraffe',
-      }, {mergeFields: ['bool1', 'str1']})
+        array: ['a', 'b'],
+        boolean: true,
+        date: '2010-05-06',
+        integer: 2,
+        string: 'giraffe',
+      }, {mergeFields: ['boolean', 'string']})
 
       const snapshot2 = await doc.get()
 
       expect(snapshot2.data()).toStrictEqual({
-        bool1: true,
-        date1: '2020-10-31',
-        ts1: new Date(2020, 10, 12, 22, 30, 45),
-        int1: 42,
-        intmap1: {c: 3, k: 6},
-        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
-        str1: 'giraffe',
-        strarr1: ['almond', 'pecan'],
-        strmap1: {s: 'duck', t: 'notduck'},
+        boolean: true,
+        date: '2020-10-31',
+        dateTime: new Date(2020, 10, 12, 22, 30, 45),
+        integer: 42,
+        integerMap: {c: 3, k: 6},
+        map: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        string: 'giraffe',
+        stringArray: ['almond', 'pecan'],
+        stringMap: {s: 'duck', t: 'notduck'},
       })
     },
   ))
@@ -366,14 +366,14 @@ describe('within a DocumentReference object', () => {
       const doc = database.structure.coll2.manyFields.ref()
 
       await doc.create({
-        date1: '2020-10-31',
-        ts1: new Date(2020, 10, 12, 22, 30, 45),
-        int1: 42,
-        intmap1: {c: 3, k: 6},
-        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
-        str1: 'astring',
-        strarr1: ['almond', 'pecan'],
-        strmap1: {s: 'duck', t: 'notduck'},
+        date: '2020-10-31',
+        dateTime: new Date(2020, 10, 12, 22, 30, 45),
+        integer: 42,
+        integerMap: {c: 3, k: 6},
+        map: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        string: 'astring',
+        stringArray: ['almond', 'pecan'],
+        stringMap: {s: 'duck', t: 'notduck'},
       })
 
       await expect(() => doc.update('arr1', ['a', 'b'])).rejects
@@ -393,14 +393,14 @@ describe('within a DocumentReference object', () => {
       const doc = database.structure.coll2.manyFields.ref()
 
       await doc.create({
-        date1: '2020-10-31',
-        ts1: new Date(2020, 10, 12, 22, 30, 45),
-        int1: 42,
-        intmap1: {c: 3, k: 6},
-        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
-        str1: 'astring',
-        strarr1: ['almond', 'pecan'],
-        strmap1: {s: 'duck', t: 'notduck'},
+        date: '2020-10-31',
+        dateTime: new Date(2020, 10, 12, 22, 30, 45),
+        integer: 42,
+        integerMap: {c: 3, k: 6},
+        map: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        string: 'astring',
+        stringArray: ['almond', 'pecan'],
+        stringMap: {s: 'duck', t: 'notduck'},
       })
 
       const snapshot1 = await doc.get()
@@ -408,26 +408,26 @@ describe('within a DocumentReference object', () => {
       expect(snapshot1.exists).toBe(true)
 
       await doc.update({
-        arr1: ['a', 'b'],
-        bool1: true,
-        date1: '2010-05-06',
-        int1: 2,
-        str1: 'giraffe',
+        array: ['a', 'b'],
+        boolean: true,
+        date: '2010-05-06',
+        integer: 2,
+        string: 'giraffe',
       })
 
       const snapshot2 = await doc.get()
 
       expect(snapshot2.data()).toStrictEqual({
-        arr1: ['a', 'b'],
-        bool1: true,
-        date1: '2010-05-06',
-        ts1: new Date(2020, 10, 12, 22, 30, 45),
-        int1: 2,
-        intmap1: {c: 3, k: 6},
-        map1: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
-        str1: 'giraffe',
-        strarr1: ['almond', 'pecan'],
-        strmap1: {s: 'duck', t: 'notduck'},
+        array: ['a', 'b'],
+        boolean: true,
+        date: '2010-05-06',
+        dateTime: new Date(2020, 10, 12, 22, 30, 45),
+        integer: 2,
+        integerMap: {c: 3, k: 6},
+        map: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
+        string: 'giraffe',
+        stringArray: ['almond', 'pecan'],
+        stringMap: {s: 'duck', t: 'notduck'},
       })
     },
   ))

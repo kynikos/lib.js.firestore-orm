@@ -4,7 +4,10 @@ const firebaseAdmin = require('firebase-admin')
 const {IGNORE, Database, CollectionSetup, DocumentSetup,
   DocumentSchema, FieldArray, FieldBoolean, FieldDate, FieldDateTime,
   FieldInteger, FieldIntegerMap, FieldMap, FieldString, FieldStringArray,
-  FieldStringMap} = require('../index')
+  FieldStringMap, FieldChoice, FieldChoiceArray, FieldCollectionReference,
+  FieldCollectionReferenceArray, FieldDateTimeCreation, FieldDateTimeLastUpdate,
+  FieldDocumentReference, FieldDocumentReferenceArray, FieldFixed, FieldJson,
+  FieldSchema, FieldSchemaArray} = require('../index')
 
 
 function initializeApp() {
@@ -146,16 +149,76 @@ exports.initDatabaseStatic = function initDatabaseStatic(overrideProps = {}) {
           new DocumentSetup({
             match: 'many-fields',
             schema: new DocumentSchema(
-              new FieldArray('arr1', {onWriteNil: IGNORE}),
-              new FieldBoolean('bool1', {onWriteNil: IGNORE}),
-              new FieldDate('date1', {onWriteNil: IGNORE}),
-              new FieldDateTime('ts1', {onWriteNil: IGNORE}),
-              new FieldInteger('int1', {onWriteNil: IGNORE}),
-              new FieldIntegerMap('intmap1', {onWriteNil: IGNORE}),
-              new FieldMap('map1', {onWriteNil: IGNORE}),
-              new FieldString('str1', {onWriteNil: IGNORE}),
-              new FieldStringArray('strarr1', {onWriteNil: IGNORE}),
-              new FieldStringMap('strmap1', {onWriteNil: IGNORE}),
+              new FieldArray('array', {onWriteNil: IGNORE}),
+              new FieldBoolean('boolean', {onWriteNil: IGNORE}),
+              new FieldChoice('choice', {
+                choices: ['venus', 'mars'],
+                onWriteNil: IGNORE,
+              }),
+              new FieldChoiceArray('choiceArray', {
+                choices: ['saturn', 'uranus', 'neptune'],
+                onWriteNil: IGNORE,
+              }),
+              new FieldCollectionReference('collectionReference', {
+                pathToSetupAndParent: (database, value) => ({
+                  setup: null,
+                  parent: null,
+                }),
+                onWriteNil: IGNORE,
+              }),
+              new FieldCollectionReferenceArray('collectionReferenceArray', {
+                pathToSetupAndParent: (database, value) => ({
+                  setup: null,
+                  parent: null,
+                }),
+                onWriteNil: IGNORE,
+              }),
+              new FieldDateTime('dateTime', {onWriteNil: IGNORE}),
+              new FieldDate('date', {onWriteNil: IGNORE}),
+              // TODO Can't test FieldDateTimeCreation so easily
+              // new FieldDateTimeCreation(
+              //   'dateTimeCreation',
+              //   {onWriteNil: IGNORE},
+              // ),
+              // TODO Can't test FieldDateTimeLastUpdate so easily
+              // new FieldDateTimeLastUpdate(
+              //   'dateTimeLastUpdate',
+              //   {onWriteNil: IGNORE},
+              // ),
+              new FieldDocumentReference('documentReference', {
+                pathToSetupAndParent: (database, value) => ({
+                  setup: null,
+                  parent: null,
+                }),
+                onWriteNil: IGNORE,
+              }),
+              new FieldDocumentReferenceArray('documentReferenceArray', {
+                pathToSetupAndParent: (database, value) => ({
+                  setup: null,
+                  parent: null,
+                }),
+                onWriteNil: IGNORE,
+              }),
+              new FieldFixed('fixed', {digits: 2, onWriteNil: IGNORE}),
+              new FieldInteger('integer', {onWriteNil: IGNORE}),
+              new FieldIntegerMap('integerMap', {onWriteNil: IGNORE}),
+              new FieldJson('json', {onWriteNil: IGNORE}),
+              new FieldMap('map', {onWriteNil: IGNORE}),
+              new FieldSchema('schema', {
+                fields: [
+                  new FieldString('string', {onWriteNil: IGNORE}),
+                ],
+                onWriteNil: IGNORE,
+              }),
+              new FieldSchemaArray('schemaArray', {
+                fields: [
+                  new FieldString('string', {onWriteNil: IGNORE}),
+                ],
+                onWriteNil: IGNORE,
+              }),
+              new FieldString('string', {onWriteNil: IGNORE}),
+              new FieldStringArray('stringArray', {onWriteNil: IGNORE}),
+              new FieldStringMap('stringMap', {onWriteNil: IGNORE}),
             ),
             structure: {
               ref: (doc) => doc,
