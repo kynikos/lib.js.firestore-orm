@@ -118,6 +118,7 @@ exports.initDatabaseStatic = function initDatabaseStatic(overrideProps = {}) {
         structure: {
           doc3: 'doc3',
           doc4: 'doc4',
+          allFields: 'all-fields',
           manyFields: 'many-fields',
           doc6: (doc6, coll) => coll.doc(doc6),
           ref: (coll) => coll,
@@ -147,75 +148,84 @@ exports.initDatabaseStatic = function initDatabaseStatic(overrideProps = {}) {
             ),
           }),
           new DocumentSetup({
-            match: 'many-fields',
+            match: 'all-fields',
             schema: new DocumentSchema(
-              new FieldArray('array', {onWriteNil: IGNORE}),
-              new FieldBoolean('boolean', {onWriteNil: IGNORE}),
+              new FieldArray('array'),
+              new FieldBoolean('boolean'),
               new FieldChoice('choice', {
                 choices: ['venus', 'mars'],
-                onWriteNil: IGNORE,
               }),
               new FieldChoiceArray('choiceArray', {
                 choices: ['saturn', 'uranus', 'neptune'],
-                onWriteNil: IGNORE,
               }),
               new FieldCollectionReference('collectionReference', {
                 pathToSetupAndParent: (database, value) => ({
                   setup: null,
                   parent: null,
                 }),
-                onWriteNil: IGNORE,
               }),
               new FieldCollectionReferenceArray('collectionReferenceArray', {
                 pathToSetupAndParent: (database, value) => ({
                   setup: null,
                   parent: null,
                 }),
-                onWriteNil: IGNORE,
               }),
-              new FieldDateTime('dateTime', {onWriteNil: IGNORE}),
-              new FieldDate('date', {onWriteNil: IGNORE}),
+              new FieldDateTime('dateTime'),
+              new FieldDate('date'),
               // TODO Can't test FieldDateTimeCreation so easily
               // new FieldDateTimeCreation(
               //   'dateTimeCreation',
-              //   {onWriteNil: IGNORE},
               // ),
               // TODO Can't test FieldDateTimeLastUpdate so easily
               // new FieldDateTimeLastUpdate(
               //   'dateTimeLastUpdate',
-              //   {onWriteNil: IGNORE},
               // ),
               new FieldDocumentReference('documentReference', {
                 pathToSetupAndParent: (database, value) => ({
                   setup: null,
                   parent: null,
                 }),
-                onWriteNil: IGNORE,
               }),
               new FieldDocumentReferenceArray('documentReferenceArray', {
                 pathToSetupAndParent: (database, value) => ({
                   setup: null,
                   parent: null,
                 }),
-                onWriteNil: IGNORE,
               }),
-              new FieldFixed('fixed', {digits: 2, onWriteNil: IGNORE}),
-              new FieldInteger('integer', {onWriteNil: IGNORE}),
-              new FieldIntegerMap('integerMap', {onWriteNil: IGNORE}),
-              new FieldJson('json', {onWriteNil: IGNORE}),
-              new FieldMap('map', {onWriteNil: IGNORE}),
+              new FieldFixed('fixed', {digits: 2}),
+              new FieldInteger('integer'),
+              new FieldIntegerMap('integerMap'),
+              new FieldJson('json'),
+              new FieldMap('map'),
               new FieldSchema('schema', {
                 fields: [
-                  new FieldString('string', {onWriteNil: IGNORE}),
+                  new FieldString('string'),
                 ],
-                onWriteNil: IGNORE,
               }),
               new FieldSchemaArray('schemaArray', {
                 fields: [
-                  new FieldString('string', {onWriteNil: IGNORE}),
+                  new FieldString('string'),
                 ],
-                onWriteNil: IGNORE,
               }),
+              new FieldString('string'),
+              new FieldStringArray('stringArray'),
+              new FieldStringMap('stringMap'),
+            ),
+            structure: {
+              ref: (doc) => doc,
+              create: (data, doc) => doc.create(data),
+            },
+          }),
+          new DocumentSetup({
+            match: 'many-fields',
+            schema: new DocumentSchema(
+              new FieldArray('array', {onWriteNil: IGNORE}),
+              new FieldBoolean('boolean', {onWriteNil: IGNORE}),
+              new FieldDate('date', {onWriteNil: IGNORE}),
+              new FieldDateTime('dateTime', {onWriteNil: IGNORE}),
+              new FieldInteger('integer', {onWriteNil: IGNORE}),
+              new FieldIntegerMap('integerMap', {onWriteNil: IGNORE}),
+              new FieldMap('map', {onWriteNil: IGNORE}),
               new FieldString('string', {onWriteNil: IGNORE}),
               new FieldStringArray('stringArray', {onWriteNil: IGNORE}),
               new FieldStringMap('stringMap', {onWriteNil: IGNORE}),

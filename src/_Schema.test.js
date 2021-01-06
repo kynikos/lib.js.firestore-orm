@@ -8,7 +8,7 @@ describe('a document with all field types and default options', () => {
     3,
     initDatabaseStatic,
     async (database) => {
-      const schema = database.structure.coll2.manyFields.ref().schema
+      const schema = database.structure.coll2.allFields.ref().schema
       const filteredFields = Object.values(fields).filter((field) => {
         return field.prototype && ![
           fields._FieldTimestamp,
@@ -33,8 +33,8 @@ describe('a document with all field types and default options', () => {
         collectionReferenceArray: [database.structure.coll2.ref()],
         dateTime: new Date(2020, 10, 12, 22, 30, 45),
         date: new Date(Date.UTC(2020, 9, 31)),
-        documentReference: database.structure.coll2.manyFields.ref(),
-        documentReferenceArray: [database.structure.coll2.manyFields.ref()],
+        documentReference: database.structure.coll2.allFields.ref(),
+        documentReferenceArray: [database.structure.coll2.allFields.ref()],
         fixed: 3.14,
         integer: 42,
         integerMap: {c: 3, k: 6},
@@ -61,9 +61,9 @@ describe('a document with all field types and default options', () => {
         dateTime: Timestamp.fromDate(new Date(2020, 10, 12, 22, 30, 45)),
         date: Timestamp.fromDate(new Date(Date.UTC(2020, 9, 31))),
         documentReference:
-          database.structure.coll2.manyFields.ref().__fsDocument,
+          database.structure.coll2.allFields.ref().__fsDocument,
         documentReferenceArray:
-          [database.structure.coll2.manyFields.ref().__fsDocument],
+          [database.structure.coll2.allFields.ref().__fsDocument],
         fixed: 314,
         integer: 42,
         integerMap: {c: 3, k: 6},
@@ -81,18 +81,14 @@ describe('a document with all field types and default options', () => {
 
   test.todo(`serialize(data, options = {}) {
     const {
-      ignoreAllMissingFields = false,
       onlyTheseFields = false,
       ignoreExtraneousFields = false,
-      ...fieldOptions
     } = options`)
 
   test.todo(`deserialize(data, options = {}) {
     const {
-      fillWithDefaults = false,
       onlyTheseFields = false,
       ignoreExtraneousFields = false,
-      ...fieldOptions
     } = options`)
 
   test.todo('deserializeField(fieldName, value, data, fieldOptions)')
