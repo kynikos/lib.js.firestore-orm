@@ -1,10 +1,31 @@
-const {Timestamp} = require('./index')
+const {Timestamp, DocumentSchema} = require('./index')
 const fields = require('./fields')
+const {FieldInteger, FieldString} = fields
 const {withFreshDatabase, initDatabaseStatic} = require('../tests/_setup')
 
 
-describe('a document with all field types and default options', () => {
-  test('is serialized correctly', () => withFreshDatabase(
+describe('a document schema', () => {
+  test('requires unique field names', () => {
+    expect.assertions(2)
+
+    expect(() => {
+      return new DocumentSchema(
+        new FieldString('aaa'),
+        new FieldInteger('bbb'),
+        new FieldString('aaa'),
+      )
+    }).toThrow('Duplicated field name: aaa')
+
+    expect(() => {
+      return new DocumentSchema(
+        new FieldString('aaa'),
+        new FieldInteger('aaa'),
+        new FieldString('bbb'),
+      )
+    }).toThrow('Duplicated field name: aaa')
+  })
+
+  test('serializes correctly a document with all field types and default options', () => withFreshDatabase(
     3,
     initDatabaseStatic,
     async (database) => {
@@ -33,12 +54,21 @@ describe('a document with all field types and default options', () => {
         choiceArray: ['saturn', 'neptune'],
         collectionReference: database.structure.coll2.ref(),
         collectionReferenceArray: [database.structure.coll2.ref()],
-        dateTime: new Date(2020, 10, 12, 22, 30, 45),
-        date: new Date(Date.UTC(2020, 9, 31)),
+        dateTime: new Date(2021, 11, 9, 20, 1, 13),
+        dateTimeArray: [
+          new Date(2019, 3, 15, 8, 9, 33),
+          new Date(2020, 10, 12, 22, 30, 45),
+        ],
+        date: new Date(Date.UTC(2020, 7, 23)),
+        dateArray: [
+          new Date(Date.UTC(2019, 5, 2)),
+          new Date(Date.UTC(2020, 9, 31)),
+        ],
         documentReference: database.structure.coll2.allFields.ref(),
         documentReferenceArray: [database.structure.coll2.allFields.ref()],
         fixed: 3.14,
         integer: 42,
+        integerArray: [11, 13, 17],
         integerMap: {c: 3, k: 6},
         json: ['carbon', {name: 'oxygen', symbol: 'O'}, 'uranium'],
         map: {foo: {j: 'aaa', k: 'bbb'}, bar: {j: 'ccc', k: 'ddd'}},
@@ -60,14 +90,23 @@ describe('a document with all field types and default options', () => {
         choiceArray: ['saturn', 'neptune'],
         collectionReference: 'coll2',
         collectionReferenceArray: ['coll2'],
-        dateTime: Timestamp.fromDate(new Date(2020, 10, 12, 22, 30, 45)),
-        date: Timestamp.fromDate(new Date(Date.UTC(2020, 9, 31))),
+        dateTime: Timestamp.fromDate(new Date(2021, 11, 9, 20, 1, 13)),
+        dateTimeArray: [
+          Timestamp.fromDate(new Date(2019, 3, 15, 8, 9, 33)),
+          Timestamp.fromDate(new Date(2020, 10, 12, 22, 30, 45)),
+        ],
+        date: Timestamp.fromDate(new Date(Date.UTC(2020, 7, 23))),
+        dateArray: [
+          Timestamp.fromDate(new Date(Date.UTC(2019, 5, 2))),
+          Timestamp.fromDate(new Date(Date.UTC(2020, 9, 31))),
+        ],
         documentReference:
           database.structure.coll2.allFields.ref().__fsDocument,
         documentReferenceArray:
           [database.structure.coll2.allFields.ref().__fsDocument],
         fixed: 314,
         integer: 42,
+        integerArray: [11, 13, 17],
         integerMap: {c: 3, k: 6},
         json:
           JSON.stringify(['carbon', {name: 'oxygen', symbol: 'O'}, 'uranium']),
