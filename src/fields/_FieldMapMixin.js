@@ -17,7 +17,7 @@ module.exports = function FieldMapMixin(Field) {
     }
 
     deserialize(value, options, data) {
-      return Object.entries(value).reduce((acc, [key, val]) => {
+      return value && Object.entries(value).reduce((acc, [key, val]) => {
         acc[key] = super.deserialize(val, options, data)
         return acc
       }, {})

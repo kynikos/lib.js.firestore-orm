@@ -19,7 +19,8 @@ module.exports = function FieldArrayMixin(Field) {
     }
 
     deserialize(value, options, data) {
-      return value.map((item) => super.deserialize(item, options, data))
+      return value &&
+        value.map((item) => super.deserialize(item, options, data))
     }
   }
 }
