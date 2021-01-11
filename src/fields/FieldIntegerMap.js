@@ -3,17 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {FieldInteger} = require('./index')
+const {FieldMapMixin, FieldInteger} = require('./index')
 
 
-module.exports = class FieldIntegerMap extends FieldInteger {
-  serializeNotNull(value, {coerce = true}, data) {
-    // TODO: Verify that 'value' is an object literal
-    const sData = Object.entries(value).reduce((acc, [key, val]) => {
-      acc[key] = super.serializeNotNull(val, {coerce}, data)
-      return acc
-    }, {})
-
-    return sData
-  }
-}
+module.exports = class FieldIntegerMap extends FieldMapMixin(FieldInteger) {}

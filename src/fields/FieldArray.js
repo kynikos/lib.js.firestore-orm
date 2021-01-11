@@ -3,18 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {Field} = require('./index')
+const {FieldArrayMixin, Field} = require('./index')
 
 
-// TODO: Allow specifying the sub-schema of each array item?
-module.exports = class FieldArray extends Field {
-  serializeNotNull(value, options, data) {
-    const sData = value
-
-    if (!Array.isArray(sData)) {
-      throw new Error(`Value for ${this.name} is not an Array`)
-    }
-
-    return sData
-  }
-}
+module.exports = class FieldArray extends FieldArrayMixin(Field) {}

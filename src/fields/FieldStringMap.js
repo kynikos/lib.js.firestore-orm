@@ -3,16 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {FieldString} = require('./index')
+const {FieldMapMixin, FieldString} = require('./index')
 
 
-module.exports = class FieldStringMap extends FieldString {
-  serializeNotNull(value, {coerce = true}, data) {
-    const sData = Object.entries(value).reduce((acc, [key, val]) => {
-      acc[key] = super.serializeNotNull(val, {coerce}, data)
-      return acc
-    }, {})
-
-    return sData
-  }
-}
+module.exports = class FieldStringMap extends FieldMapMixin(FieldString) {}

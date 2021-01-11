@@ -3,19 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {FieldString} = require('./index')
+const {FieldArrayMixin, FieldString} = require('./index')
 
 
-module.exports = class FieldStringArray extends FieldString {
-  serializeNotNull(value, {coerce = true}, data) {
-    if (!Array.isArray(value)) {
-      throw new Error(`Value for ${this.name} is not an Array`)
-    }
-
-    const sData = value.map((item) => {
-      return super.serializeNotNull(item, {coerce}, data)
-    })
-
-    return sData
-  }
-}
+module.exports = class FieldStringArray extends FieldArrayMixin(FieldString) {}

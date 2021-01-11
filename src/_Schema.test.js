@@ -12,6 +12,8 @@ describe('a document with all field types and default options', () => {
       const filteredFields = Object.values(fields).filter((field) => {
         return field.prototype && ![
           fields._FieldTimestamp,
+          fields.FieldArrayMixin,
+          fields.FieldMapMixin,
           fields.Field,
           // TODO Can't test FieldDateTimeCreation so easily
           fields.FieldDateTimeCreation,
