@@ -2,9 +2,10 @@
 const axios = require('axios')
 const firebaseAdmin = require('firebase-admin')
 const {IGNORE, Database, CollectionSetup, DocumentSetup,
-  DocumentSchema, FieldArray, FieldBoolean, FieldDate, FieldDateTime,
-  FieldInteger, FieldIntegerMap, FieldMap, FieldString, FieldStringArray,
-  FieldStringMap, FieldChoice, FieldChoiceArray, FieldCollectionReference,
+  DocumentSchema, FieldArray, FieldBoolean, FieldDate, FieldDateTimeArray,
+  FieldDateTime, FieldDateArray, FieldInteger, FieldIntegerArray,
+  FieldIntegerMap, FieldMap, FieldString, FieldStringArray, FieldStringMap,
+  FieldChoice, FieldChoiceArray, FieldCollectionReference,
   FieldCollectionReferenceArray, FieldDateTimeCreation, FieldDateTimeLastUpdate,
   FieldDocumentReference, FieldDocumentReferenceArray, FieldFixed, FieldJson,
   FieldSchema, FieldSchemaArray} = require('../index')
@@ -171,7 +172,9 @@ exports.initDatabaseStatic = function initDatabaseStatic(overrideProps = {}) {
                 }),
               }),
               new FieldDateTime('dateTime'),
+              new FieldDateTimeArray('dateTimeArray'),
               new FieldDate('date'),
+              new FieldDateArray('dateArray'),
               // TODO Can't test FieldDateTimeCreation so easily
               // new FieldDateTimeCreation(
               //   'dateTimeCreation',
@@ -194,6 +197,7 @@ exports.initDatabaseStatic = function initDatabaseStatic(overrideProps = {}) {
               }),
               new FieldFixed('fixed', {digits: 2}),
               new FieldInteger('integer'),
+              new FieldIntegerArray('integerArray'),
               new FieldIntegerMap('integerMap'),
               new FieldJson('json'),
               new FieldMap('map'),
