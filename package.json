@@ -1,6 +1,6 @@
 {
   "name": "@kynikos/firestore-orm",
-  "version": "1.23.0",
+  "version": "1.23.1",
   "author": "Dario Giovannetti <dev@dariogiovannetti.net>",
   "description": "Firebase Firestore ORM wrapper",
   "license": "MIT",
