@@ -48,8 +48,8 @@ module.exports = class _Schema {
     )
 
     if (!ignoreExtraneousFields && Object.keys(cData).length > 0) {
-      throw new Error(`Extraneous field names:
-        ${Object.keys(cData).join(', ')}`)
+      throw new Error(`Extraneous field names: ${
+        Object.keys(cData).join(', ')}`)
     }
 
     return sData
