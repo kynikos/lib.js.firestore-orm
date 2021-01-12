@@ -24,9 +24,11 @@ module.exports = class _Schema {
     const sData = Object.values(this.fields).reduce(
       (acc, field) => {
         if (field.name in cData) {
-          const value = cData[field.name]
-          if (shouldHandleFound(field, value)) {
-            acc[field.name] = handleFound(field, value)
+          if (!onlyTheseFields || onlyTheseFields.includes(field.name)) {
+            const value = cData[field.name]
+            if (shouldHandleFound(field, value)) {
+              acc[field.name] = handleFound(field, value)
+            }
           }
           delete cData[field.name]
         } else if (
