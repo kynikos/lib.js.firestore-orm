@@ -25,6 +25,159 @@ describe('a document schema', () => {
     }).toThrow('Duplicated field name: aaa')
   })
 
+  test('correctly serializes data', () => {
+    expect.assertions(5)
+
+    const schema = new DocumentSchema(
+      new FieldString('string1'),
+      new FieldInteger('integer1'),
+      new FieldString('string2'),
+      new FieldInteger('integer2'),
+    )
+
+    expect(() => {
+      schema.serialize({
+        string1: 'New York',
+        integer1: 10,
+      })
+    }).toThrow('TODO')
+
+    expect(() => {
+      schema.serialize({
+        string1: 'New York',
+        integer1: 10,
+        string3: 'Singapore',
+      })
+    }).toThrow('Extraneous field names: string3')
+
+    const ser1 = schema.serialize({
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    })
+
+    expect(ser1).toStrictEqual({
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    })
+
+    const ser2 = schema.serialize({
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    }, {onlyTheseFields: ['string1', 'integer2']})
+
+    expect(ser2).toStrictEqual({
+      string1: 'New York',
+      integer2: 27,
+    })
+
+    const ser3 = schema.serialize({
+      string1: 'New York',
+      integer1: 10,
+      string3: 'Singapore',
+    }, {ignoreExtraneousFields: true})
+
+    expect(ser3).toStrictEqual({
+      string1: 'New York',
+      integer1: 10,
+    })
+  })
+
+  test('correctly deserializes data', () => {
+    expect.assertions(5)
+
+    const schema = new DocumentSchema(
+      new FieldString('string1'),
+      new FieldInteger('integer1'),
+      new FieldString('string2'),
+      new FieldInteger('integer2'),
+    )
+
+    expect(() => {
+      schema.deserialize({
+        string1: 'New York',
+        integer1: 10,
+      })
+    }).toThrow('TODO')
+
+    expect(() => {
+      schema.deserialize({
+        string1: 'New York',
+        integer1: 10,
+        string3: 'Singapore',
+      })
+    }).toThrow('Extraneous field names: string3')
+
+    const ser1 = schema.deserialize({
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    })
+
+    expect(ser1).toStrictEqual({
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    })
+
+    const ser2 = schema.deserialize({
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    }, {onlyTheseFields: ['string1', 'integer2']})
+
+    expect(ser2).toStrictEqual({
+      string1: 'New York',
+      integer2: 27,
+    })
+
+    const ser3 = schema.deserialize({
+      string1: 'New York',
+      integer1: 10,
+      string3: 'Singapore',
+    }, {ignoreExtraneousFields: true})
+
+    expect(ser3).toStrictEqual({
+      string1: 'New York',
+      integer1: 10,
+    })
+  })
+
+  test('correctly deserializes a single field', () => {
+    expect.assertions(2)
+
+    const schema = new DocumentSchema(
+      new FieldString('string1'),
+      new FieldInteger('integer1'),
+      new FieldString('string2'),
+      new FieldInteger('integer2'),
+    )
+
+    expect(() => {
+      schema.deserializeField('string3', 'Singapore', {
+        string1: 'New York',
+        integer1: 10,
+      })
+    }).toThrow("Cannot read property '__deserialize' of undefined")
+
+    const ser1 = schema.deserializeField('string2', 'Sydney', {
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    })
+
+    expect(ser1).toStrictEqual('Sydney')
+  })
+
   test('serializes correctly a document with all field types and default options', () => withFreshDatabase(
     3,
     initDatabaseStatic,
@@ -119,18 +272,4 @@ describe('a document schema', () => {
       })
     },
   ))
-
-  test.todo(`serialize(data, options = {}) {
-    const {
-      onlyTheseFields = false,
-      ignoreExtraneousFields = false,
-    } = options`)
-
-  test.todo(`deserialize(data, options = {}) {
-    const {
-      onlyTheseFields = false,
-      ignoreExtraneousFields = false,
-    } = options`)
-
-  test.todo('deserializeField(fieldName, value, data, fieldOptions)')
 })
