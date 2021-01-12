@@ -35,12 +35,44 @@ describe('a document schema', () => {
       new FieldInteger('integer2'),
     )
 
-    expect(() => {
-      schema.serialize({
-        string1: 'New York',
-        integer1: 10,
-      })
-    }).toThrow('TODO')
+    const ser1 = schema.serialize({
+      string1: 'New York',
+      integer1: 10,
+    })
+
+    // Writing a document checks required fields thanks to 'writeMode'
+    // Simply serializing from the schema has writeMode=false, so no check
+    // is done
+    expect(ser1).toStrictEqual({
+      string1: 'New York',
+      integer1: 10,
+    })
+
+    const ser2 = schema.serialize({
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    })
+
+    expect(ser2).toStrictEqual({
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    })
+
+    const ser3 = schema.serialize({
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    }, {onlyTheseFields: ['string1', 'integer2']})
+
+    expect(ser3).toStrictEqual({
+      string1: 'New York',
+      integer2: 27,
+    })
 
     expect(() => {
       schema.serialize({
@@ -50,39 +82,13 @@ describe('a document schema', () => {
       })
     }).toThrow('Extraneous field names: string3')
 
-    const ser1 = schema.serialize({
-      string1: 'New York',
-      integer1: 10,
-      string2: 'Sydney',
-      integer2: 27,
-    })
-
-    expect(ser1).toStrictEqual({
-      string1: 'New York',
-      integer1: 10,
-      string2: 'Sydney',
-      integer2: 27,
-    })
-
-    const ser2 = schema.serialize({
-      string1: 'New York',
-      integer1: 10,
-      string2: 'Sydney',
-      integer2: 27,
-    }, {onlyTheseFields: ['string1', 'integer2']})
-
-    expect(ser2).toStrictEqual({
-      string1: 'New York',
-      integer2: 27,
-    })
-
-    const ser3 = schema.serialize({
+    const ser4 = schema.serialize({
       string1: 'New York',
       integer1: 10,
       string3: 'Singapore',
     }, {ignoreExtraneousFields: true})
 
-    expect(ser3).toStrictEqual({
+    expect(ser4).toStrictEqual({
       string1: 'New York',
       integer1: 10,
     })
@@ -98,12 +104,41 @@ describe('a document schema', () => {
       new FieldInteger('integer2'),
     )
 
-    expect(() => {
-      schema.deserialize({
-        string1: 'New York',
-        integer1: 10,
-      })
-    }).toThrow('TODO')
+    const ser1 = schema.deserialize({
+      string1: 'New York',
+      integer1: 10,
+    })
+
+    expect(ser1).toStrictEqual({
+      string1: 'New York',
+      integer1: 10,
+    })
+
+    const ser2 = schema.deserialize({
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    })
+
+    expect(ser2).toStrictEqual({
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    })
+
+    const ser3 = schema.deserialize({
+      string1: 'New York',
+      integer1: 10,
+      string2: 'Sydney',
+      integer2: 27,
+    }, {onlyTheseFields: ['string1', 'integer2']})
+
+    expect(ser3).toStrictEqual({
+      string1: 'New York',
+      integer2: 27,
+    })
 
     expect(() => {
       schema.deserialize({
@@ -113,39 +148,13 @@ describe('a document schema', () => {
       })
     }).toThrow('Extraneous field names: string3')
 
-    const ser1 = schema.deserialize({
-      string1: 'New York',
-      integer1: 10,
-      string2: 'Sydney',
-      integer2: 27,
-    })
-
-    expect(ser1).toStrictEqual({
-      string1: 'New York',
-      integer1: 10,
-      string2: 'Sydney',
-      integer2: 27,
-    })
-
-    const ser2 = schema.deserialize({
-      string1: 'New York',
-      integer1: 10,
-      string2: 'Sydney',
-      integer2: 27,
-    }, {onlyTheseFields: ['string1', 'integer2']})
-
-    expect(ser2).toStrictEqual({
-      string1: 'New York',
-      integer2: 27,
-    })
-
-    const ser3 = schema.deserialize({
+    const ser4 = schema.deserialize({
       string1: 'New York',
       integer1: 10,
       string3: 'Singapore',
     }, {ignoreExtraneousFields: true})
 
-    expect(ser3).toStrictEqual({
+    expect(ser4).toStrictEqual({
       string1: 'New York',
       integer1: 10,
     })
@@ -177,6 +186,22 @@ describe('a document schema', () => {
 
     expect(ser1).toStrictEqual('Sydney')
   })
+
+  test('throws an error when not all required fields are given values to serialize', () => withFreshDatabase(
+    1,
+    initDatabaseStatic,
+    async (database) => {
+      const doc = database.structure.coll2.allFields.ref()
+
+      // Writing a document checks required fields thanks to 'writeMode'
+      // Simply serializing from the schema has writeMode=false, so no check
+      // is done
+      await expect(() => doc.create({
+        integer: 42,
+        string: 'astring',
+      })).rejects.toThrow('Field array requires a value, but none was given')
+    },
+  ))
 
   test('serializes correctly a document with all field types and default options', () => withFreshDatabase(
     3,
