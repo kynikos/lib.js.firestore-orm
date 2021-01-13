@@ -139,4 +139,6 @@ describe('within a Database object', () => {
       })
     },
   ))
+
+  test.todo('database.merge()')
 })

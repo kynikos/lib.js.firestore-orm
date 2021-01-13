@@ -86,4 +86,26 @@ module.exports = class Database {
   doc(...pathSegments) {
     return fn.getDocumentStructureFromDocument(this, pathSegments)
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  async *merge(queries, onField, chooseSetup) {
+    const uniques = []
+
+    for (const query of queries) {
+      // eslint-disable-next-line no-await-in-loop
+      for await (const snapshot of query.iter(chooseSetup)) {
+        if (onField == null) {
+          yield snapshot
+        } else {
+          const unique = typeof onField === 'function'
+            ? onField(snapshot)
+            : snapshot.get(onField)
+          if (!uniques.includes(unique)) {
+            yield snapshot
+            uniques.push(unique)
+          }
+        }
+      }
+    }
+  }
 }
