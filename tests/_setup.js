@@ -52,6 +52,11 @@ exports.initDatabaseStatic = function initDatabaseStatic(overrideProps = {}) {
               create: (data, doc) => doc.create(data),
               snapshot: (doc) => doc.get(),
             },
+            snapshotFunctions: {
+              multiply(multiplier, snapshot) {
+                return snapshot.get('int1') * multiplier
+              },
+            },
           }),
           new DocumentSetup({
             match: true,
