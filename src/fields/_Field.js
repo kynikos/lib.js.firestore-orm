@@ -142,8 +142,8 @@ module.exports = class Field {
     const writeAction = this.__writeAction.get(writeMode)
 
     if (writeAction === ABORT) {
-      throw new Error(`Field ${this.name} is configured to reject any explicitly
-        assigned value`)
+      throw new Error(`Field ${this.name} is configured to reject any ` +
+        'explicitly assigned value')
     }
 
     if (writeAction === IGNORE) return false
@@ -223,8 +223,8 @@ module.exports = class Field {
 
   __shouldDeserialize(value, options, data) {
     if (this.__readAction === ABORT) {
-      throw new Error(`Field ${this.name} is configured to reject reading its
-        value`)
+      throw new Error(`Field ${this.name} is configured to reject reading ` +
+        'its value')
     }
 
     if (this.__readAction === IGNORE) return false

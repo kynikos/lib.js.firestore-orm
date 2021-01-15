@@ -3,9 +3,9 @@ const {FieldPath, DocumentSnapshot} = require('./index')
 const {withFreshDatabase, initDatabaseStatic} = require('../tests/_setup')
 
 
-describe('within a DocumentReference object', () => {
-  test('collection() correctly refers to collections', () => withFreshDatabase(
-    7,
+describe('a DocumentReference object', () => {
+  test('references collections with collection()', () => withFreshDatabase(
+    8,
     initDatabaseStatic,
     async (database) => {
       const docAbc = database.structure.coll1.doc2('Abc').ref()
@@ -39,6 +39,10 @@ describe('within a DocumentReference object', () => {
         str: 'something',
       })
 
+      expect(() => {
+        return docAbc.collection('coll3/doc5')
+      }).toThrow('The path resolves to a document, not a collection')
+
       const doc51 = docAbc.collection('coll3/doc5/coll51').ref().doc('doc51')
       const doc51snapshot = await doc51.snapshot()
 
@@ -61,8 +65,8 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('doc() correctly refers to documents', () => withFreshDatabase(
-    6,
+  test('references documents with doc()', () => withFreshDatabase(
+    7,
     initDatabaseStatic,
     async (database) => {
       const docAbc = database.structure.coll1.doc2('Abc').ref()
@@ -90,6 +94,10 @@ describe('within a DocumentReference object', () => {
         str: 'something',
       })
 
+      expect(() => {
+        return docAbc.doc('coll3')
+      }).toThrow('The path resolves to a collection, not a document')
+
       expect(() => docAbc.doc('/coll3/doc5'))
         .toThrow('Unexpected collection or document id: ')
 
@@ -101,7 +109,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('get() correctly retrieves a snapshot', () => withFreshDatabase(
+  test('retrieves snapshots with get()', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -122,7 +130,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('create() correctly creates a document', () => withFreshDatabase(
+  test('creates a document with create()', () => withFreshDatabase(
     1,
     initDatabaseStatic,
     async (database) => {
@@ -139,7 +147,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('delete() correctly deletes a document', () => withFreshDatabase(
+  test('deletes a document with delete()', () => withFreshDatabase(
     4,
     initDatabaseStatic,
     async (database) => {
@@ -171,7 +179,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test("set() needs options 'merge' or 'mergeFields'", () => withFreshDatabase(
+  test("needs options 'merge' or 'mergeFields' for set()", () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -192,7 +200,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('set() correctly creates a document', () => withFreshDatabase(
+  test('creates a document with set()', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -232,7 +240,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('set() correctly overwrites a document with merge:false', () => withFreshDatabase(
+  test('overwrites a document with set(data, {merge:false})', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -269,7 +277,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('set() correctly updates a document with merge:true', () => withFreshDatabase(
+  test('updates a document with set(data, {merge:true})', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -314,7 +322,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('set() correctly updates a document with mergeFields', () => withFreshDatabase(
+  test('updates a document with set(data, {mergeFields})', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -359,7 +367,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('document() does not support the alternating field/value signature', () => withFreshDatabase(
+  test('does not support the alternating field/value signature of the native update()', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -386,7 +394,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('update() correctly updates a document', () => withFreshDatabase(
+  test('updates a document with update()', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -432,7 +440,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('enableDirectCreate prevents creating a document', () => withFreshDatabase(
+  test('prevents creating a document with enableDirectCreate', () => withFreshDatabase(
     1,
     initDatabaseStatic,
     async (database) => {
@@ -445,7 +453,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('enableDirectDelete prevents deleting a document', () => withFreshDatabase(
+  test('prevents deleting a document with enableDirectDelete', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -464,7 +472,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('enableDirectSet prevents setting a document', () => withFreshDatabase(
+  test('prevents setting a document with enableDirectSet', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -483,7 +491,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('enableDirectUpdate prevents updating a document', () => withFreshDatabase(
+  test('prevents updating a document with enableDirectUpdate', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -502,7 +510,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('enableBatchCreate prevents batch-creating documents', () => withFreshDatabase(
+  test('prevents batch-creating documents with enableBatchCreate', () => withFreshDatabase(
     1,
     initDatabaseStatic,
     async (database) => {
@@ -517,7 +525,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('enableBatchDelete prevents batch-deleting documents', () => withFreshDatabase(
+  test('prevents batch-deleting documents with enableBatchDelete', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -538,7 +546,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('enableBatchSet prevents batch-setting documents', () => withFreshDatabase(
+  test('prevents batch-setting documents with enableBatchSet', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -559,7 +567,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('enableBatchUpdate prevents batch-updating documents', () => withFreshDatabase(
+  test('prevents batch-updating documents with enableBatchUpdate', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -580,7 +588,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('defaultEnableDirectCreate prevents creating a document', () => withFreshDatabase(
+  test('prevents creating a document with defaultEnableDirectCreate', () => withFreshDatabase(
     1,
     () => initDatabaseStatic({options: {defaultEnableDirectCreate: false}}),
     async (database) => {
@@ -591,7 +599,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('defaultEnableDirectDelete prevents deleting a document', () => withFreshDatabase(
+  test('prevents deleting a document with defaultEnableDirectDelete', () => withFreshDatabase(
     2,
     () => initDatabaseStatic({options: {defaultEnableDirectDelete: false}}),
     async (database) => {
@@ -608,7 +616,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('defaultEnableDirectSet prevents setting a document', () => withFreshDatabase(
+  test('prevents setting a document with defaultEnableDirectSet', () => withFreshDatabase(
     2,
     () => initDatabaseStatic({options: {defaultEnableDirectSet: false}}),
     async (database) => {
@@ -625,7 +633,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('defaultEnableDirectUpdate prevents updating a document', () => withFreshDatabase(
+  test('prevents updating a document with defaultEnableDirectUpdate', () => withFreshDatabase(
     2,
     () => initDatabaseStatic({options: {defaultEnableDirectUpdate: false}}),
     async (database) => {
@@ -642,7 +650,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('defaultEnableBatchCreate prevents creating documents', () => withFreshDatabase(
+  test('prevents creating documents with defaultEnableBatchCreate', () => withFreshDatabase(
     1,
     () => initDatabaseStatic({options: {defaultEnableBatchCreate: false}}),
     async (database) => {
@@ -655,7 +663,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('defaultEnableBatchDelete prevents deleting documents', () => withFreshDatabase(
+  test('prevents deleting documents with defaultEnableBatchDelete', () => withFreshDatabase(
     2,
     () => initDatabaseStatic({options: {defaultEnableBatchDelete: false}}),
     async (database) => {
@@ -674,7 +682,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('defaultEnableBatchSet prevents setting documents', () => withFreshDatabase(
+  test('prevents setting documents with defaultEnableBatchSet', () => withFreshDatabase(
     2,
     () => initDatabaseStatic({options: {defaultEnableBatchSet: false}}),
     async (database) => {
@@ -693,7 +701,7 @@ describe('within a DocumentReference object', () => {
     },
   ))
 
-  test('defaultEnableBatchUpdate prevents updating documents', () => withFreshDatabase(
+  test('prevents updating documents with defaultEnableBatchUpdate', () => withFreshDatabase(
     2,
     () => initDatabaseStatic({options: {defaultEnableBatchUpdate: false}}),
     async (database) => {

@@ -394,3 +394,22 @@ async function withFreshDatabase(
   return true
 }
 exports.withFreshDatabase = withFreshDatabase
+
+
+exports.populate = function populate(database, count) {
+  const doc2 = database.structure.coll1.doc2
+
+  return database.batchCommit((batch) => {
+    const promises = []
+
+    for (let i = 0; i < count; i++) {
+      const doc = doc2(`doc2-${i}`).ref()
+      promises.push(batch.create(doc, {
+        int2: i,
+        str2: `value${i}`,
+      }))
+    }
+
+    return Promise.all(promises)
+  })
+}

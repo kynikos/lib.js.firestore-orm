@@ -1,9 +1,9 @@
 const {withFreshDatabase, initDatabaseStatic} = require('../tests/_setup')
 
 
-describe('within a CollectionReference object', () => {
-  test('doc() correctly refers to documents', () => withFreshDatabase(
-    11,
+describe('a CollectionReference object', () => {
+  test('references documents with doc()', () => withFreshDatabase(
+    12,
     initDatabaseStatic,
     async (database) => {
       await Promise.all([
@@ -53,6 +53,10 @@ describe('within a CollectionReference object', () => {
         str: 'something',
       })
 
+      expect(() => {
+        return coll1.doc('Abc/coll3')
+      }).toThrow('The path resolves to a collection, not a document')
+
       const doc5a = coll1.doc('Abc/coll3/doc5')
       const doc5asnapshot = await doc5a.snapshot()
 
@@ -72,8 +76,8 @@ describe('within a CollectionReference object', () => {
     },
   ))
 
-  test('collection() correctly refers to collections', () => withFreshDatabase(
-    10,
+  test('references collections with collection()', () => withFreshDatabase(
+    11,
     initDatabaseStatic,
     async (database) => {
       await database.structure.coll1.doc2('Abc').create({
@@ -123,6 +127,10 @@ describe('within a CollectionReference object', () => {
         str: 'else',
       })
 
+      expect(() => {
+        return coll1.collection('Abc/coll3/doc5')
+      }).toThrow('The path resolves to a document, not a collection')
+
       expect(() => coll1.collection('/Abc/coll3/doc5/coll51').doc('doc51'))
         .toThrow("Making a DocumentSetup requires 'id' to be defined")
 
@@ -134,7 +142,7 @@ describe('within a CollectionReference object', () => {
     },
   ))
 
-  test('the native add() method is disabled', () => withFreshDatabase(
+  test('disallows using the native add() method', () => withFreshDatabase(
     1,
     initDatabaseStatic,
     (database) => {
@@ -152,7 +160,7 @@ describe('within a CollectionReference object', () => {
     },
   ))
 
-  test('docAutoId() refers to an auto-generated document ID', () => withFreshDatabase(
+  test('references auto-generated document IDs with docAutoId()', () => withFreshDatabase(
     2,
     initDatabaseStatic,
     async (database) => {
@@ -194,7 +202,7 @@ describe('within a CollectionReference object', () => {
     },
   ))
 
-  test('deleteAllDocuments() deletes all contained documents', () => withFreshDatabase(
+  test('deletes all contained documents with deleteAllDocuments()', () => withFreshDatabase(
     4,
     initDatabaseStatic,
     async (database) => {
@@ -261,7 +269,7 @@ describe('within a CollectionReference object', () => {
     },
   ))
 
-  test('userData is correctly stored and retrieved', () => withFreshDatabase(
+  test('stores and retrieves userData', () => withFreshDatabase(
     1,
     initDatabaseStatic,
     (database) => {
