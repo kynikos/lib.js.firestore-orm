@@ -1,9 +1,27 @@
 /* eslint-disable max-lines */
-const {FieldPath, DocumentSnapshot} = require('./index')
+const {FieldPath, DocumentSnapshot, DocumentReference} = require('./index')
 const {withFreshDatabase, initDatabaseStatic} = require('../tests/_setup')
 
 
 describe('a DocumentReference object', () => {
+  test('cannot be directly instantiated', () => {
+    expect.assertions(1)
+    expect(() => new DocumentReference({
+      id: 'doc1',
+      parent: null,
+    })).toThrow('DocumentReference should only be instantiated ' +
+      'internally by a DocumentSetup object')
+  })
+
+  test('cannot have a path as an id', () => {
+    expect.assertions(1)
+    expect(() => new DocumentReference({
+      id: 'doc1/doc2',
+      parent: null,
+      __calledBySetup: true,
+    })).toThrow("'id' cannot be a path of segments separated by '/'")
+  })
+
   test('references collections with collection()', () => withFreshDatabase(
     8,
     initDatabaseStatic,

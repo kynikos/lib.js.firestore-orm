@@ -1,7 +1,26 @@
+const {CollectionReference} = require('../src/index')
 const {withFreshDatabase, initDatabaseStatic} = require('../tests/_setup')
 
 
 describe('a CollectionReference object', () => {
+  test('cannot be directly instantiated', () => {
+    expect.assertions(1)
+    expect(() => new CollectionReference({
+      id: 'coll1',
+      parent: null,
+    })).toThrow('CollectionReference should only be instantiated ' +
+      'internally by a CollectionSetup object')
+  })
+
+  test('cannot have a path as an id', () => {
+    expect.assertions(1)
+    expect(() => new CollectionReference({
+      id: 'coll1/coll2',
+      parent: null,
+      __calledBySetup: true,
+    })).toThrow("'id' cannot be a path of segments separated by '/'")
+  })
+
   test('references documents with doc()', () => withFreshDatabase(
     12,
     initDatabaseStatic,
@@ -161,7 +180,7 @@ describe('a CollectionReference object', () => {
   ))
 
   test('references auto-generated document IDs with docAutoId()', () => withFreshDatabase(
-    2,
+    3,
     initDatabaseStatic,
     async (database) => {
       await database.structure.coll1.doc2('Abc').create({
@@ -170,6 +189,8 @@ describe('a CollectionReference object', () => {
       })
 
       const coll1 = database.structure.coll1.ref()
+
+      expect(() => coll1.docAutoId()).toThrow('A document setup is required')
 
       const docAuto1 = coll1.docAutoId(coll1.documentSetups[0])
 
