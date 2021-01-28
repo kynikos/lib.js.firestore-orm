@@ -32,6 +32,6 @@ module.exports = class FieldFixed extends Field {
   deserialize(value, options, data) {
     if (value == null) return value
     const dValue = value / (10 ** this.digits)
-    return Number.parseFloat(dValue.toFixed(2))
+    return Number.parseFloat(dValue.toFixed(this.digits))
   }
 }
