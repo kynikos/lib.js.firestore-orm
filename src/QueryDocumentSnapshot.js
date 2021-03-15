@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {DocumentSnapshot} = require('./index')
+const {fn, DocumentSnapshot, deferredModules} = require('./index')
 
 
 module.exports = class QueryDocumentSnapshot extends DocumentSnapshot {
@@ -19,8 +19,20 @@ module.exports = class QueryDocumentSnapshot extends DocumentSnapshot {
       ? chooseSetup(__fsQueryDocumentSnapshot.id)
       : chooseSetup
 
+    let _parentCollection
+
+    if (parentCollection instanceof deferredModules.CollectionGroup) {
+      _parentCollection = fn.getAncestors(
+        parentCollection.database,
+        parentCollection.pathSetups,
+        __fsQueryDocumentSnapshot.ref,
+      ).pop()
+    } else {
+      _parentCollection = parentCollection
+    }
+
     const documentReference = setup.__makeFromReference(
-      parentCollection,
+      _parentCollection,
       __fsQueryDocumentSnapshot.ref,
     )
 

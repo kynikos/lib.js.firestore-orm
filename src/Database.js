@@ -3,7 +3,7 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {fn, WriteBatch} = require('./index')
+const {fn, WriteBatch, CollectionGroup} = require('./index')
 
 
 module.exports = class Database {
@@ -81,6 +81,10 @@ module.exports = class Database {
 
   collection(...pathSegments) {
     return fn.getCollectionStructureFromDocument(this, pathSegments)
+  }
+
+  collectionGroup(collectionId, pathSetups) {
+    return new CollectionGroup({id: collectionId, database: this, pathSetups})
   }
 
   doc(...pathSegments) {

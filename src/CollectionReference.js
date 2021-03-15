@@ -8,20 +8,21 @@ const {fn, Query} = require('./index')
 
 module.exports = class CollectionReference extends Query {
   constructor({
-    id, parent, documentSetups, structure, userData, __calledBySetup,
+    id, __fsCollection, parent, documentSetups, structure, userData,
+    __calledBySetup,
   }) {
     if (__calledBySetup !== true) {
       throw new Error('CollectionReference should only be instantiated ' +
         'internally by a CollectionSetup object')
     }
-    if (id.includes('/')) {
+    if (id && id.includes('/')) {
       throw new Error("'id' cannot be a path of segments separated by '/'")
     }
 
     super({__callPostConstructor: true})
     this.database = parent.database
     this.parent = parent
-    this.__fsCollection = parent.__fsDocument.collection(id)
+    this.__fsCollection = __fsCollection || parent.__fsDocument.collection(id)
     this.id = this.__fsCollection.id
     this.path = this.__fsCollection.path
     this.documentSetups = documentSetups

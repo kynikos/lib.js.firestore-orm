@@ -31,4 +31,7 @@ exports.deferredModules.CollectionReference = CollectionReference
 const DocumentReference = require('./DocumentReference')
 exports.DocumentReference = DocumentReference
 exports.deferredModules.DocumentReference = DocumentReference
+const CollectionGroup = require('./CollectionGroup')
+exports.CollectionGroup = CollectionGroup
+exports.deferredModules.CollectionGroup = CollectionGroup
 exports.Database = require('./Database')

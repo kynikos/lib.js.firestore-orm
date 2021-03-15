@@ -189,6 +189,29 @@ exports.getDocumentStructureFromDocument = function getDocumentStructureFromDocu
 }
 
 
+exports.getAncestors = function getAncestors(
+  database,
+  pathSetups,
+  __fsDocument,
+) {
+  const fsReversePath = []
+  let fsRef = __fsDocument
+
+  while (fsRef.parent) {
+    fsReversePath.push(fsRef.parent)
+    fsRef = fsRef.parent
+  }
+
+  const path = [database]
+
+  for (let i = 0, j = fsReversePath.length - 1; j >= 0; i++, j--) {
+    path.push(pathSetups[i].__makeFromReference(path[i], fsReversePath[j]))
+  }
+
+  return path
+}
+
+
 exports.createDocument = async function createDocument({
   docRef, data, batch, createFn,
 }) {

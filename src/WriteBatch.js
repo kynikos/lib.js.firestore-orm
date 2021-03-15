@@ -9,7 +9,7 @@ const {fn} = require('./index')
 module.exports = class WriteBatch {
   constructor(database, __fsWriteBatch, lastSerializedData) {
     this.database = database
-    this.__fsWriteBatch = __fsWriteBatch || database.__app.firestore().batch()
+    this.__fsWriteBatch = __fsWriteBatch || database.__fsDocument.batch()
     this.lastSerializedData = lastSerializedData
   }
 

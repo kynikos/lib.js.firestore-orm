@@ -24,4 +24,15 @@ module.exports = class CollectionSetup {
       __calledBySetup: true,
     })
   }
+
+  __makeFromReference(parent, __fsCollection) {
+    return new deferredModules.CollectionReference({
+      __fsCollection,
+      parent,
+      documentSetups: this.__documentSetups,
+      structure: this.__structure,
+      userData: this.__userData,
+      __calledBySetup: true,
+    })
+  }
 }
