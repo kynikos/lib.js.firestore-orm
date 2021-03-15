@@ -8,7 +8,7 @@ const {IGNORE, Database, CollectionSetup, DocumentSetup,
   FieldChoice, FieldChoiceArray, FieldCollectionReference,
   FieldCollectionReferenceArray, FieldDateTimeCreation, FieldDateTimeLastUpdate,
   FieldDocumentReference, FieldDocumentReferenceArray, FieldFixed, FieldJson,
-  FieldSchema, FieldSchemaArray} = require('../index')
+  FieldSchema, FieldSchemaArray, FieldSchemaMap} = require('../index')
 
 
 function initializeApp() {
@@ -212,6 +212,11 @@ exports.initDatabaseStatic = function initDatabaseStatic(overrideProps = {}) {
                 ],
               }),
               new FieldSchemaArray('schemaArray', {
+                fields: [
+                  new FieldString('string'),
+                ],
+              }),
+              new FieldSchemaMap('schemaMap', {
                 fields: [
                   new FieldString('string'),
                 ],
