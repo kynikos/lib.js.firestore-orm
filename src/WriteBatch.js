@@ -8,13 +8,14 @@ const {fn} = require('./index')
 
 module.exports = class WriteBatch {
   constructor(database, __fsWriteBatch, lastSerializedData) {
-    this.database = database
+    this.__database = database
+    this.database = database.structure
     this.__fsWriteBatch = __fsWriteBatch || database.__fsDocument.batch()
     this.lastSerializedData = lastSerializedData
   }
 
   __cloneAfterQueuing(__fsWriteBatch, serializedData) {
-    return new WriteBatch(this.database, __fsWriteBatch, serializedData)
+    return new WriteBatch(this.__database, __fsWriteBatch, serializedData)
   }
 
   commit() {

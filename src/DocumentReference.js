@@ -22,8 +22,10 @@ module.exports = class DocumentReference {
       throw new Error("'id' cannot be a path of segments separated by '/'")
     }
 
+    this.__database = parent.__database
     this.database = parent.database
-    this.parent = parent
+    this.__parent = parent
+    this.parent = parent.structure
     this.schema = schema
     this.__fsDocument = __fsDocument || (id
       ? parent.__fsCollection.doc(id)
@@ -40,28 +42,28 @@ module.exports = class DocumentReference {
     )
     this.__snapshotFunctions = snapshotFunctions
     this.__enableDirectCreate = enableDirectCreate === DEFAULT
-      ? this.database.__defaultEnableDirectCreate
+      ? this.__database.__defaultEnableDirectCreate
       : enableDirectCreate
     this.__enableDirectDelete = enableDirectDelete === DEFAULT
-      ? this.database.__defaultEnableDirectDelete
+      ? this.__database.__defaultEnableDirectDelete
       : enableDirectDelete
     this.__enableDirectSet = enableDirectSet === DEFAULT
-      ? this.database.__defaultEnableDirectSet
+      ? this.__database.__defaultEnableDirectSet
       : enableDirectSet
     this.__enableDirectUpdate = enableDirectUpdate === DEFAULT
-      ? this.database.__defaultEnableDirectUpdate
+      ? this.__database.__defaultEnableDirectUpdate
       : enableDirectUpdate
     this.__enableBatchCreate = enableBatchCreate === DEFAULT
-      ? this.database.__defaultEnableBatchCreate
+      ? this.__database.__defaultEnableBatchCreate
       : enableBatchCreate
     this.__enableBatchDelete = enableBatchDelete === DEFAULT
-      ? this.database.__defaultEnableBatchDelete
+      ? this.__database.__defaultEnableBatchDelete
       : enableBatchDelete
     this.__enableBatchSet = enableBatchSet === DEFAULT
-      ? this.database.__defaultEnableBatchSet
+      ? this.__database.__defaultEnableBatchSet
       : enableBatchSet
     this.__enableBatchUpdate = enableBatchUpdate === DEFAULT
-      ? this.database.__defaultEnableBatchUpdate
+      ? this.__database.__defaultEnableBatchUpdate
       : enableBatchUpdate
     this.userData = userData
   }

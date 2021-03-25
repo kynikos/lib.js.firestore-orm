@@ -30,7 +30,7 @@ module.exports = class FieldDocumentReference extends Field {
     return (database) => {
       const {setup, parent} = this.pathToSetupAndParent(
         database,
-        value.parent.path,
+        value.__parent.path,
         value.path,
       )
       return setup.__makeFromReference(parent, value)

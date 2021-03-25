@@ -81,13 +81,13 @@ describe('a complex nested database structure', () => {
       expect(database.structure.coll2.doc6('doc3').ref())
         .toBeInstanceOf(DocumentReference)
 
-      expect(database.structure.coll2.doc6('doc3').ref().database)
+      expect(database.structure.coll2.doc6('doc3').ref().__database)
         .toBeInstanceOf(Database)
 
       expect(database.structure.coll1.doc2('abc').ref())
         .toBeInstanceOf(DocumentReference)
 
-      expect(database.structure.coll1.doc2('abc').ref().database)
+      expect(database.structure.coll1.doc2('abc').ref().__database)
         .toBeInstanceOf(Database)
     },
   ))

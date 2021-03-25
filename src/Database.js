@@ -24,9 +24,11 @@ module.exports = class Database {
 
     this.__app = firebaseAdminApp
 
-    // CollectionReference needs this.database to be defined
-    this.database = this
+    // CollectionReference needs this.__database to be defined
+    // this.database must be defined after this.structure
+    this.__database = this
 
+    this.__parent = null
     this.parent = null
 
     // CollectionReference needs this.__fsDocument to be defined
@@ -67,6 +69,9 @@ module.exports = class Database {
       structure,
       this.collection.bind(this),
     )
+
+    // this.__database is defined earlier in the constructor
+    this.database = this.structure
   }
 
   batch() {

@@ -13,8 +13,10 @@ module.exports = class CollectionGroup extends Query {
     }
 
     super({__callPostConstructor: true})
-    this.database = database
-    this.parent = database
+    this.__database = database
+    this.database = database.structure
+    this.__parent = database
+    this.parent = database.structure
     this.__fsCollectionGroup = database.__fsDocument.collectionGroup(id)
     this.id = id
     this.pathSetups = pathSetups

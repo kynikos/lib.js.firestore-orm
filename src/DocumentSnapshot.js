@@ -13,9 +13,11 @@ module.exports = class DocumentSnapshot {
     this.readTime = __fsDocumentSnapshot.readTime
     this.updateTime = __fsDocumentSnapshot.updateTime
     if (__fsDocumentSnapshot.exists) {
-      this.ref = documentReference
-      this.schema = this.ref.__installSnapshotFunctions(this)
+      this.__ref = documentReference
+      this.ref = documentReference.structure
+      this.schema = this.__ref.__installSnapshotFunctions(this)
     } else {
+      this.__ref = null
       this.ref = null
       this.schema = null
     }
@@ -25,7 +27,7 @@ module.exports = class DocumentSnapshot {
   data() {
     if (this.__data === false) {
       this.__data =
-        this.ref.schema.deserialize(this.__fsDocumentSnapshot.data())
+        this.__ref.schema.deserialize(this.__fsDocumentSnapshot.data())
     }
     return this.__data
   }
@@ -33,7 +35,7 @@ module.exports = class DocumentSnapshot {
   get(field) {
     if (this.__data === false) {
       const data = this.__fsDocumentSnapshot.data()
-      return this.ref.schema.deserializeField(
+      return this.__ref.schema.deserializeField(
         field,
         data[field],
         data,

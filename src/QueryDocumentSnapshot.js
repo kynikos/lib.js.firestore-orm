@@ -23,7 +23,7 @@ module.exports = class QueryDocumentSnapshot extends DocumentSnapshot {
 
     if (parentCollection instanceof deferredModules.CollectionGroup) {
       _parentCollection = fn.getAncestors(
-        parentCollection.database,
+        parentCollection.__database,
         parentCollection.pathSetups,
         __fsQueryDocumentSnapshot.ref,
       ).pop()

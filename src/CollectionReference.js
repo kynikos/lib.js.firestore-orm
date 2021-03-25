@@ -20,8 +20,10 @@ module.exports = class CollectionReference extends Query {
     }
 
     super({__callPostConstructor: true})
+    this.__database = parent.__database
     this.database = parent.database
-    this.parent = parent
+    this.__parent = parent
+    this.parent = parent.structure
     this.__fsCollection = __fsCollection || parent.__fsDocument.collection(id)
     this.id = this.__fsCollection.id
     this.path = this.__fsCollection.path
@@ -44,9 +46,9 @@ module.exports = class CollectionReference extends Query {
   async deleteAllDocuments(chooseSetup) {
     const res = await this.get(chooseSetup)
 
-    return this.database.batchCommit((batch) => {
+    return this.__database.batchCommit((batch) => {
       return Promise.all(res.docs.map((doc) => {
-        return batch.delete(doc.ref)
+        return batch.delete(doc.__ref)
       }))
     })
   }

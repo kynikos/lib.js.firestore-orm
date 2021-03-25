@@ -197,9 +197,9 @@ exports.getAncestors = function getAncestors(
   const fsReversePath = []
   let fsRef = __fsDocument
 
-  while (fsRef.parent) {
-    fsReversePath.push(fsRef.parent)
-    fsRef = fsRef.parent
+  while (fsRef.__parent) {
+    fsReversePath.push(fsRef.__parent)
+    fsRef = fsRef.__parent
   }
 
   const path = [database]
@@ -230,8 +230,8 @@ exports.createDocument = async function createDocument({
     onlyTheseFields: false,
   })
 
-  const beforeData = docRef.database.__hooks.beforeCreatingDocument &&
-    await docRef.database.__hooks.beforeCreatingDocument({
+  const beforeData = docRef.__database.__hooks.beforeCreatingDocument &&
+    await docRef.__database.__hooks.beforeCreatingDocument({
       document: docRef,
       serializedData,
       batch,
@@ -239,8 +239,8 @@ exports.createDocument = async function createDocument({
 
   const writeResultOrBatch = await createFn(serializedData)
 
-  docRef.database.__hooks.afterCreatingDocument &&
-    await docRef.database.__hooks.afterCreatingDocument({
+  docRef.__database.__hooks.afterCreatingDocument &&
+    await docRef.__database.__hooks.afterCreatingDocument({
       document: docRef,
       beforeData,
       serializedData,
@@ -264,16 +264,16 @@ exports.deleteDocument = async function deleteDocument({
     throw new Error(`Deleting document ${docRef.id} directly is not permitted`)
   }
 
-  const beforeData = docRef.database.__hooks.beforeDeletingDocument &&
-    await docRef.database.__hooks.beforeDeletingDocument({
+  const beforeData = docRef.__database.__hooks.beforeDeletingDocument &&
+    await docRef.__database.__hooks.beforeDeletingDocument({
       document: docRef,
       batch,
     })
 
   const writeResultOrBatch = await deleteFn(precondition)
 
-  docRef.database.__hooks.afterDeletingDocument &&
-    await docRef.database.__hooks.afterDeletingDocument({
+  docRef.__database.__hooks.afterDeletingDocument &&
+    await docRef.__database.__hooks.afterDeletingDocument({
       document: docRef,
       beforeData,
       writeResultOrBatch,
@@ -331,8 +331,8 @@ exports.setDocument = async function setDocument({
 
   const serializedData = docRef.schema.serialize(data, sOptions)
 
-  const beforeData = docRef.database.__hooks.beforeSettingDocument &&
-    await docRef.database.__hooks.beforeSettingDocument({
+  const beforeData = docRef.__database.__hooks.beforeSettingDocument &&
+    await docRef.__database.__hooks.beforeSettingDocument({
       document: docRef,
       serializedData,
       batch,
@@ -340,8 +340,8 @@ exports.setDocument = async function setDocument({
 
   const writeResultOrBatch = await setFn(serializedData, options)
 
-  docRef.database.__hooks.afterSettingDocument &&
-    await docRef.database.__hooks.afterSettingDocument({
+  docRef.__database.__hooks.afterSettingDocument &&
+    await docRef.__database.__hooks.afterSettingDocument({
       document: docRef,
       beforeData,
       serializedData,
@@ -386,8 +386,8 @@ exports.updateDocument = async function updateDocument({
     onlyTheseFields: false,
   })
 
-  const beforeData = docRef.database.__hooks.beforeUpdatingDocument &&
-    await docRef.database.__hooks.beforeUpdatingDocument({
+  const beforeData = docRef.__database.__hooks.beforeUpdatingDocument &&
+    await docRef.__database.__hooks.beforeUpdatingDocument({
       document: docRef,
       serializedDataOrField,
       batch,
@@ -396,8 +396,8 @@ exports.updateDocument = async function updateDocument({
   const writeResultOrBatch =
     await updateFn(serializedDataOrField, ...preconditionOrValues)
 
-  docRef.database.__hooks.afterUpdatingDocument &&
-    await docRef.database.__hooks.afterUpdatingDocument({
+  docRef.__database.__hooks.afterUpdatingDocument &&
+    await docRef.__database.__hooks.afterUpdatingDocument({
       document: docRef,
       beforeData,
       serializedDataOrField,
