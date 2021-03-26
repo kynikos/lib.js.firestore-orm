@@ -197,9 +197,9 @@ exports.getAncestors = function getAncestors(
   const fsReversePath = []
   let fsRef = __fsDocument
 
-  while (fsRef.__parent) {
-    fsReversePath.push(fsRef.__parent)
-    fsRef = fsRef.__parent
+  while (fsRef.parent) {
+    fsReversePath.push(fsRef.parent)
+    fsRef = fsRef.parent
   }
 
   const path = [database]

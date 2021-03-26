@@ -24,9 +24,12 @@ module.exports = class Database {
 
     this.__app = firebaseAdminApp
 
-    // CollectionReference needs this.__database to be defined
-    // this.database must be defined after this.structure
+    // CollectionReference needs this.structure, this.__database and
+    // this.database to be already defined
+    // this.structure is assigned values later in the constructor
+    this.structure = {}
     this.__database = this
+    this.database = this.structure
 
     this.__parent = null
     this.parent = null
@@ -64,14 +67,11 @@ module.exports = class Database {
     // Make sure to make the structure *after* initializing all the other
     // properties above, otherwise some of them would be unavailable to any
     // static document references being created
-    this.structure = fn.makeStructure(
+    Object.assign(this.structure, fn.makeStructure(
       this,
       structure,
       this.collection.bind(this),
-    )
-
-    // this.__database is defined earlier in the constructor
-    this.database = this.structure
+    ))
   }
 
   batch() {
