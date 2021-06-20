@@ -96,6 +96,10 @@ module.exports = class Database {
     return fn.getDocumentStructureFromDocument(this, pathSegments)
   }
 
+  // It wouldn't make sense for merge() to accept generic iterators, since it
+  // only makes sense when applied to the same collection, because it yields
+  // the results immediately on the first query that returns them, without doing
+  // any field merging in case of different collections
   // eslint-disable-next-line class-methods-use-this
   async *merge(queries, onField, chooseSetup) {
     const uniques = []
