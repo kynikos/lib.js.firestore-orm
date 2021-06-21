@@ -4,45 +4,6 @@ const {withFreshDatabase, initDatabaseStatic, populate} =
 
 
 describe('a Query object', () => {
-  test('filters the results with filter()', () => withFreshDatabase(
-    3,
-    initDatabaseStatic,
-    async (database) => {
-      await populate(database, 5)
-
-      const coll1 = database.structure.coll1.ref()
-      const doc2Setup = coll1.documentSetups[1]
-
-      await expect(() => coll1.filter().next()).rejects
-        .toThrow('A document setup, or a function returning one, is required')
-
-      await expect(() => coll1.filter(doc2Setup).next()).rejects
-        .toThrow("The 'onField' parameter is required")
-
-      const expected = [
-        {
-          int2: 2,
-          str2: 'value2',
-        },
-        {
-          int2: 3,
-          str2: 'value3',
-        },
-      ]
-
-      const res1 = []
-
-      for await (const ss of coll1.filter(doc2Setup, 'int2', [
-        ['str2', 'in', ['value1', 'value2', 'value3']],
-        ['int2', '>=', 2],
-      ])) {
-        res1.push(ss.data())
-      }
-
-      expect(res1).toStrictEqual(expected)
-    },
-  ))
-
   test('gets the results with get()', () => withFreshDatabase(
     3,
     initDatabaseStatic,

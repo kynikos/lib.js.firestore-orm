@@ -23,51 +23,6 @@ module.exports = class Query {
     this.collectionRef = collection
   }
 
-  // eslint-disable-next-line class-methods-use-this,max-params
-  async *filter(chooseSetup, onField, whereParameters = []) {
-    // Explicitly warn when not passing a setup, as it's a common mistake,
-    // not straighforward to debug because it differs from the native API
-    if (!chooseSetup) {
-      throw new Error('A document setup, or a function ' +
-        'returning one, is required')
-    }
-
-    if (onField == null) {
-      throw new Error("The 'onField' parameter is required")
-    }
-
-    let current = new Map()
-
-    // eslint-disable-next-line no-await-in-loop
-    for await (const snapshot of this.iter(chooseSetup)) {
-      const intersectionKey = snapshot.get(onField)
-      current.set(intersectionKey, snapshot)
-    }
-
-    for (const [fieldPath, opStr, value] of whereParameters) {
-      if (!current.size) {
-        break
-      }
-
-      const previous = current
-      current = new Map()
-
-      // eslint-disable-next-line no-await-in-loop
-      for await (const snapshot of this
-        .where(fieldPath, opStr, value)
-        .select(onField)
-        .iter(chooseSetup)
-      ) {
-        const intersectionKey = snapshot.get(onField)
-        if (previous.has(intersectionKey)) {
-          current.set(intersectionKey, previous.get(intersectionKey))
-        }
-      }
-    }
-
-    yield* current.values()
-  }
-
   async get(chooseSetup) {
     const __fsQuerySnapshot = await this.__fsQueryOrCollection.get()
     return new QuerySnapshot({
