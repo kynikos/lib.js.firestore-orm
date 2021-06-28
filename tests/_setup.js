@@ -77,6 +77,9 @@ exports.initDatabaseStatic = function initDatabaseStatic(overrideProps = {}) {
                   ref: (coll) => coll,
                   get: (coll) => coll.get(coll.documentSetups[0]),
                 },
+                userData: {
+                  language: 'Japanese',
+                },
                 documents: [
                   new DocumentSetup({
                     match: true,
@@ -84,9 +87,13 @@ exports.initDatabaseStatic = function initDatabaseStatic(overrideProps = {}) {
                       new FieldString('str'),
                       new FieldInteger('int'),
                     ),
+                    userData: {
+                      object: 'bicycle',
+                    },
                     structure: {
                       coll51: 'coll51',
                       create: (data, doc) => doc.create(data),
+                      ref: (doc) => doc,
                       snapshot: (doc) => doc.get(),
                     },
                     collections: [

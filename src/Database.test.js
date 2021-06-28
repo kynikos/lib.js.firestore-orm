@@ -1,9 +1,60 @@
 /* eslint-disable max-lines */
+const {CollectionSetup} = require('../src/index')
+const {FirebaseApp} = require('firebase-admin/lib/firebase-app')
 const {withFreshDatabase, initDatabaseStatic, populate} =
   require('../tests/_setup')
 
 
 describe('a Database object', () => {
+  test('has all its properties set to the correct values', () => withFreshDatabase(
+    10,
+    initDatabaseStatic,
+    (database) => {
+      expect(database.__app).toStrictEqual(expect.any(FirebaseApp))
+      expect(database.structure).toStrictEqual({
+        coll1: {
+          doc1: {
+            create: expect.any(Function),
+            ref: expect.any(Function),
+            snapshot: expect.any(Function),
+          },
+          doc2: expect.any(Function),
+          fn1: expect.any(Function),
+          get1: expect.any(Function),
+          get2: expect.any(Function),
+          ref: expect.any(Function),
+        },
+        coll2: {
+          allFields: {
+            create: expect.any(Function),
+            ref: expect.any(Function),
+          },
+          doc3: {
+            ref: expect.any(Function),
+          },
+          doc4: {},
+          doc6: expect.any(Function),
+          manyFields: {
+            create: expect.any(Function),
+            ref: expect.any(Function),
+          },
+          ref: expect.any(Function),
+        },
+      })
+      expect(database.__database).toBe(database)
+      expect(database.database).toBe(database.structure)
+      expect(database.__parent).toBeNull()
+      expect(database.parent).toBeNull()
+      expect(database.id).toBeNull()
+      expect(database.path).toBeNull()
+      expect(database.collectionSetups)
+        .toContainEqual(expect.any(CollectionSetup))
+      expect(database.userData).toStrictEqual({
+        fruit: 'mandarin',
+      })
+    },
+  ))
+
   test('references collections with collection()', () => withFreshDatabase(
     11,
     initDatabaseStatic,

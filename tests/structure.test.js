@@ -33,7 +33,7 @@ describe('a complex nested database structure', () => {
           doc3: {
             ref: expect.any(Function),
           },
-          doc4: null,
+          doc4: {},
           allFields: {
             ref: expect.any(Function),
             create: expect.any(Function),
@@ -65,7 +65,7 @@ describe('a complex nested database structure', () => {
         doc3: {
           ref: expect.any(Function),
         },
-        doc4: null,
+        doc4: {},
         allFields: {
           ref: expect.any(Function),
           create: expect.any(Function),

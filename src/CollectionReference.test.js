@@ -1,8 +1,86 @@
-const {CollectionReference} = require('../src/index')
+/* eslint-disable max-lines */
+const {Database, DocumentSetup, DocumentReference, CollectionReference} =
+  require('../src/index')
 const {withFreshDatabase, initDatabaseStatic} = require('../tests/_setup')
 
 
 describe('a CollectionReference object', () => {
+  test('has all its properties set to the correct values', () => withFreshDatabase(
+    9,
+    initDatabaseStatic,
+    async (database) => {
+      await Promise.all([
+        database.structure.coll1.doc1.create({
+          int1: 42,
+          str1: 'astring',
+        }),
+        database.structure.coll1.doc2('Abc').create({
+          int2: 345,
+          str2: 'blaalb',
+        }),
+      ])
+
+      const coll3s = database.structure.coll1.doc2('Abc').coll3
+
+      await coll3s.doc('doc5').create({
+        int: 678,
+        str: 'something',
+      })
+
+      const coll3 = coll3s.ref()
+
+      expect(coll3.__database).toStrictEqual(expect.any(Database))
+      expect(coll3.database).toStrictEqual({
+        coll1: {
+          doc1: {
+            create: expect.any(Function),
+            ref: expect.any(Function),
+            snapshot: expect.any(Function),
+          },
+          doc2: expect.any(Function),
+          fn1: expect.any(Function),
+          get1: expect.any(Function),
+          get2: expect.any(Function),
+          ref: expect.any(Function),
+        },
+        coll2: {
+          allFields: {
+            create: expect.any(Function),
+            ref: expect.any(Function),
+          },
+          doc3: {
+            ref: expect.any(Function),
+          },
+          doc4: {},
+          doc6: expect.any(Function),
+          manyFields: {
+            create: expect.any(Function),
+            ref: expect.any(Function),
+          },
+          ref: expect.any(Function),
+        },
+      })
+      expect(coll3.__parent).toStrictEqual(expect.any(DocumentReference))
+      expect(coll3.parent).toStrictEqual({
+        coll3: {
+          doc: expect.any(Function),
+          get: expect.any(Function),
+          ref: expect.any(Function),
+        },
+        create: expect.any(Function),
+        ref: expect.any(Function),
+      })
+      expect(coll3.id).toStrictEqual('coll3')
+      expect(coll3.path).toStrictEqual('coll1/Abc/coll3')
+      expect(coll3.documentSetups)
+        .toContainEqual(expect.any(DocumentSetup))
+      expect(coll3.userData).toStrictEqual({
+        language: 'Japanese',
+      })
+      expect(coll3.collectionRef).toStrictEqual(expect.any(CollectionReference))
+    },
+  ))
+
   test('cannot be directly instantiated', () => {
     expect.assertions(1)
     expect(() => new CollectionReference({

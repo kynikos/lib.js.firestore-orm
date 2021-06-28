@@ -20,6 +20,10 @@ module.exports = class CollectionReference extends Query {
     }
 
     super({__callPostConstructor: true})
+    // The children DocumentReference objects need this.structure to be already
+    // defined, or their 'parent' property will be undefined
+    // this.structure is assigned values later in the constructor
+    this.structure = {}
     this.__database = parent.__database
     this.database = parent.database
     this.__parent = parent
@@ -28,12 +32,19 @@ module.exports = class CollectionReference extends Query {
     this.id = this.__fsCollection.id
     this.path = this.__fsCollection.path
     this.documentSetups = documentSetups
-    this.structure = fn.makeStructure(this, structure, this.doc.bind(this))
     this.userData = userData
     this.__Query_postConstructor({
       collection: this,
       __fsQueryOrCollection: this.__fsCollection,
     })
+    // Make sure to make the structure *after* initializing all the other
+    // properties above, otherwise some of them would be unavailable to any
+    // static document references being created
+    Object.assign(this.structure, fn.makeStructure(
+      this,
+      structure,
+      this.doc.bind(this),
+    ))
   }
 
   // eslint-disable-next-line class-methods-use-this

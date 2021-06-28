@@ -33,6 +33,8 @@ module.exports = class Database {
 
     this.__parent = null
     this.parent = null
+    this.id = null
+    this.path = null
 
     // CollectionReference needs this.__fsDocument to be defined
     this.__fsDocument = firebaseAdminApp.firestore()
@@ -61,9 +63,6 @@ module.exports = class Database {
       afterUpdatingDocument: hooks.afterUpdatingDocument,
     }
 
-    // 'structure' must be recreated for every connection, since it's
-    // specifically related to 'this' object, so it cannot be created in
-    // makeFactory()
     // Make sure to make the structure *after* initializing all the other
     // properties above, otherwise some of them would be unavailable to any
     // static document references being created
