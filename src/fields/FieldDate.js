@@ -32,6 +32,7 @@ module.exports = class FieldDate extends _FieldTimestamp {
     // TODO: Only return a date
     // Make sure to return a timezone-agnostic string (i.e. not UTC), otherwise
     // clients in Western time zones may derive the previous date
-    return super.deserialize(value, options, data).toISOString().slice(0, 10)
+    const dValue = super.deserialize(value, options, data)
+    return dValue && dValue.toISOString().slice(0, 10)
   }
 }
