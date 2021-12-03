@@ -79,4 +79,21 @@ module.exports = class CollectionReference extends Query {
     const document = docSetup.__makeAutoId(this)
     return document.structure
   }
+
+  async *iterDocuments(chooseSetup) {
+    const __fsDocuments = await this.collectionRef.listDocuments()
+
+    for (const __fsDocument of __fsDocuments) {
+      const setup = fn.makeSetup(chooseSetup, __fsDocument.id)
+      yield setup.__makeFromReference(
+        this.collectionRef,
+        __fsDocument,
+      )
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  listDocuments() {
+    throw new Error('Not implemented: use *iterDocuments()')
+  }
 }

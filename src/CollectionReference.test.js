@@ -379,4 +379,8 @@ describe('a CollectionReference object', () => {
       })
     },
   ))
+
+  test.todo('iterDocuments()')
+
+  test.todo('listDocuments()')
 })

@@ -26,6 +26,20 @@ exports.makeStructure = function makeStructure(
 }
 
 
+exports.makeSetup = function makeSetup(chooseSetup, documentSnapshotId) {
+  // Explicitly warn when not passing a setup, as it's a common mistake,
+  // not straighforward to debug because it differs from the native API
+  if (!chooseSetup) {
+    throw new Error('A document setup, or a function ' +
+      'returning one, is required')
+  }
+
+  return typeof chooseSetup === 'function'
+    ? chooseSetup(documentSnapshotId)
+    : chooseSetup
+}
+
+
 function matchSetup(setup, id) {
   if (setup.__match === true) return true
   if (setup.__match === id) return true
