@@ -81,14 +81,15 @@ module.exports = class CollectionReference extends Query {
   }
 
   async *iterDocuments(chooseSetup) {
-    const __fsDocuments = await this.collectionRef.listDocuments()
+    const __fsDocuments = await this.__fsCollection.listDocuments()
 
     for (const __fsDocument of __fsDocuments) {
       const setup = fn.makeSetup(chooseSetup, __fsDocument.id)
-      yield setup.__makeFromReference(
+      const document = setup.__makeFromReference(
         this.collectionRef,
         __fsDocument,
       )
+      yield document.structure
     }
   }
 
