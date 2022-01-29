@@ -59,7 +59,7 @@ describe('a Query object', () => {
       const doc2Setup = coll1.documentSetups[1]
 
       await expect(() => coll1.iter().next()).rejects
-        .toThrow('A document setup, or a function returning one, is required')
+        .toThrow('A document setup, collection setup, or a function returning one, is required')
 
       const expected = [
         {

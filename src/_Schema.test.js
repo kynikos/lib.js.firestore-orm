@@ -175,7 +175,7 @@ describe('a document schema', () => {
         string1: 'New York',
         integer1: 10,
       })
-    }).toThrow("Cannot read property '__deserialize' of undefined")
+    }).toThrow("Cannot read properties of undefined (reading '__deserialize')")
 
     const ser1 = schema.deserializeField('string2', 'Sydney', {
       string1: 'New York',

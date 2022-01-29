@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 const {CollectionSetup} = require('../src/index')
-const {FirebaseApp} = require('firebase-admin/lib/firebase-app')
+const {FirebaseApp} = require('firebase-admin/lib/app/firebase-app')
 const {withFreshDatabase, initDatabaseStatic, populate} =
   require('../tests/_setup')
 

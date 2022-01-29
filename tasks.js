@@ -31,7 +31,8 @@ function runTests({
 }) {
   const env = {
     FIRESTORE_EMULATOR_HOST:
-      `localhost:${firebaseJson.emulators.firestore.port}`,
+      `${firebaseJson.emulators.firestore.host}:${
+        firebaseJson.emulators.firestore.port}`,
     GCLOUD_PROJECT: firebaseRc.projects.default,
   }
   return npxInteractive([
