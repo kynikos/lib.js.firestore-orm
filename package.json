@@ -22,10 +22,10 @@
   },
   "devDependencies": {
     "@kynikos/tasks": "^1.3.0",
-    "axios": "^0.21.1",
+    "axios": "^0.25.0",
     "eslint": "^8.3.0",
-    "eslint-plugin-jest": "^25.3.0",
-    "firebase-tools": "^9.8.0",
+    "eslint-plugin-jest": "^26.0.0",
+    "firebase-tools": "^10.1.2",
     "jest": "^27.0.4",
     "publish-please": "^5.5.2",
     "report-todo": "^1.0.1"
