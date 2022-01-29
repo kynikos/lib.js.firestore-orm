@@ -3,10 +3,10 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {fn, WriteBatch, CollectionGroup} = require('./index')
+const {fn, WriteBatch, CollectionGroup, _CollectionParent} = require('./index')
 
 
-module.exports = class Database {
+module.exports = class Database extends _CollectionParent {
   constructor({
     firebaseAdminApp, collections, structure, userData, options = {},
   }) {
@@ -21,6 +21,8 @@ module.exports = class Database {
       defaultEnableBatchUpdate = true,
       hooks = {},
     } = options
+
+    super()
 
     this.__app = firebaseAdminApp
 
@@ -83,16 +85,8 @@ module.exports = class Database {
     return batch.commit()
   }
 
-  collection(...pathSegments) {
-    return fn.getCollectionStructureFromDocument(this, pathSegments)
-  }
-
   collectionGroup(collectionId, pathSetups) {
     return new CollectionGroup({id: collectionId, database: this, pathSetups})
-  }
-
-  doc(...pathSegments) {
-    return fn.getDocumentStructureFromDocument(this, pathSegments)
   }
 
   // It wouldn't make sense for merge() to accept generic iterators, since it

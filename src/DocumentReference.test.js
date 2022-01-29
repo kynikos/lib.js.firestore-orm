@@ -823,4 +823,10 @@ describe('a DocumentReference object', () => {
       })
     },
   ))
+
+  test.todo('countCollections()')
+
+  test.todo('iterCollections()')
+
+  test.todo('listCollections()')
 })

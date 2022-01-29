@@ -362,4 +362,10 @@ describe('a Database object', () => {
       ])
     },
   ))
+
+  test.todo('countCollections()')
+
+  test.todo('iterCollections()')
+
+  test.todo('listCollections()')
 })

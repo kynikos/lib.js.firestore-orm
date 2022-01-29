@@ -3,10 +3,11 @@
 // Licensed under MIT
 // https://github.com/kynikos/lib.js.firestore-orm/blob/master/LICENSE
 
-const {DEFAULT, fn, DocumentSnapshot, WriteResults} = require('./index')
+const {DEFAULT, fn, DocumentSnapshot, WriteResults, _CollectionParent} =
+  require('./index')
 
 
-module.exports = class DocumentReference {
+module.exports = class DocumentReference extends _CollectionParent {
   constructor({
     id, __fsDocument, parent, schema, collectionSetups, structure,
     snapshotFunctions, enableDirectCreate, enableDirectDelete, enableDirectSet,
@@ -21,6 +22,8 @@ module.exports = class DocumentReference {
     if (id && id.includes('/')) {
       throw new Error("'id' cannot be a path of segments separated by '/'")
     }
+
+    super()
 
     // The children CollectionReference objects need this.structure to be already
     // defined, or their 'parent' property will be undefined
@@ -77,16 +80,12 @@ module.exports = class DocumentReference {
 
   __installSnapshotFunctions(documentSnapshot) {
     return Object.entries(this.__snapshotFunctions).reduce(
-      (acc, [fnName, fn]) => {
-        acc[fnName] = (...args) => fn(...args, documentSnapshot)
+      (acc, [fnName, fn2]) => {
+        acc[fnName] = (...args) => fn2(...args, documentSnapshot)
         return acc
       },
       {},
     )
-  }
-
-  collection(...pathSegments) {
-    return fn.getCollectionStructureFromDocument(this, pathSegments)
   }
 
   create(data) {
@@ -109,10 +108,6 @@ module.exports = class DocumentReference {
         return new WriteResults({__fsWriteResults, serializedData: null})
       },
     })
-  }
-
-  doc(...pathSegments) {
-    return fn.getDocumentStructureFromDocument(this, pathSegments)
   }
 
   async get() {
