@@ -31,6 +31,8 @@ exports.FieldDocumentReference = require('./FieldDocumentReference')
 exports.FieldDocumentReferenceArray =
   require('./FieldDocumentReferenceArray')
 exports.FieldFixed = require('./FieldFixed')
+exports.FieldFloat = require('./FieldFloat')
+exports.FieldFloatArray = require('./FieldFloatArray')
 exports.FieldInteger = require('./FieldInteger')
 exports.FieldIntegerArray = require('./FieldIntegerArray')
 exports.FieldIntegerMap = require('./FieldIntegerMap')

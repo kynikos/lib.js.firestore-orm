@@ -3,9 +3,9 @@ const axios = require('axios')
 const firebaseAdmin = require('firebase-admin')
 const {IGNORE, Database, CollectionSetup, DocumentSetup,
   DocumentSchema, FieldArray, FieldBoolean, FieldDate, FieldDateTimeArray,
-  FieldDateTime, FieldDateArray, FieldInteger, FieldIntegerArray,
-  FieldIntegerMap, FieldMap, FieldString, FieldStringArray, FieldStringMap,
-  FieldChoice, FieldChoiceArray, FieldCollectionReference,
+  FieldDateTime, FieldDateArray, FieldFloat, FieldFloatArray, FieldInteger,
+  FieldIntegerArray, FieldIntegerMap, FieldMap, FieldString, FieldStringArray,
+  FieldStringMap, FieldChoice, FieldChoiceArray, FieldCollectionReference,
   FieldCollectionReferenceArray, FieldDateTimeCreation, FieldDateTimeLastUpdate,
   FieldDocumentReference, FieldDocumentReferenceArray, FieldFixed, FieldJson,
   FieldSchema, FieldSchemaArray, FieldSchemaMap} = require('../index')
@@ -208,6 +208,8 @@ exports.initDatabaseStatic = function initDatabaseStatic(overrideProps = {}) {
                 }),
               }),
               new FieldFixed('fixed', {digits: 2}),
+              new FieldFloat('float'),
+              new FieldFloatArray('floatArray'),
               new FieldInteger('integer'),
               new FieldIntegerArray('integerArray'),
               new FieldIntegerMap('integerMap'),

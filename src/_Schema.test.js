@@ -245,6 +245,8 @@ describe('a document schema', () => {
         documentReference: database.structure.coll2.allFields.ref(),
         documentReferenceArray: [database.structure.coll2.allFields.ref()],
         fixed: 3.14,
+        float: 123.456,
+        floatArray: [7, 89.01, 234.56789],
         integer: 42,
         integerArray: [11, 13, 17],
         integerMap: {c: 3, k: 6},
@@ -284,6 +286,8 @@ describe('a document schema', () => {
         documentReferenceArray:
           [database.structure.coll2.allFields.ref().__fsDocument],
         fixed: 314,
+        float: 123.456,
+        floatArray: [7, 89.01, 234.56789],
         integer: 42,
         integerArray: [11, 13, 17],
         integerMap: {c: 3, k: 6},
