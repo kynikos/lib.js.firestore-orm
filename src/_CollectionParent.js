@@ -28,7 +28,7 @@ module.exports = class _CollectionParent {
     for (const __fsCollection of __fsCollections) {
       const setup = fn.makeSetup(chooseSetup, __fsCollection.id)
       const collection = setup.__makeFromReference(
-        this.collectionRef,
+        this,
         __fsCollection,
       )
       yield collection.structure
