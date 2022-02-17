@@ -206,10 +206,10 @@ exports.getDocumentStructureFromDocument = function getDocumentStructureFromDocu
 exports.getAncestors = function getAncestors(
   database,
   pathSetups,
-  __fsDocument,
+  __fsDocumentOrCollection,
 ) {
   const fsReversePath = []
-  let fsRef = __fsDocument
+  let fsRef = __fsDocumentOrCollection
 
   while (fsRef.parent) {
     fsReversePath.push(fsRef.parent)
