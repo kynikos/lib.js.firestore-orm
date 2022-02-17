@@ -19,6 +19,9 @@ module.exports = class _Schema {
     data, shouldHandleFound, handleFound, shouldHandleNotFound, handleNotFound,
     onlyTheseFields, ignoreExtraneousFields,
   }) {
+    // {...null} returns an empty object otherwise
+    if (data == null) return data
+
     const cData = {...data}
 
     const sData = Object.values(this.fields).reduce(
