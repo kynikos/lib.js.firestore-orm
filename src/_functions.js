@@ -226,6 +226,86 @@ exports.getAncestors = function getAncestors(
 }
 
 
+async function *walkFsCollectionDescendants(__fsCollection, {
+  yieldDocuments = true,
+  yieldCollections = true,
+}) {
+  const __fsDocuments = await __fsCollection.listDocuments()
+
+  for (const __fsDocument of __fsDocuments) {
+    if (yieldDocuments) {
+      yield __fsDocument
+    }
+    yield* walkFsDocumentDescendants(__fsDocument, {
+      yieldDocuments,
+      yieldCollections,
+    })
+  }
+}
+
+
+async function *walkFsDocumentDescendants(__fsDocument, {
+  yieldDocuments = true,
+  yieldCollections = true,
+}) {
+  const __fsCollections = await __fsDocument.listCollections()
+
+  for (const __fsCollection of __fsCollections) {
+    if (yieldCollections) {
+      yield __fsCollection
+    }
+    yield* walkFsCollectionDescendants(__fsCollection, {
+      yieldDocuments,
+      yieldCollections,
+    })
+  }
+}
+
+
+async function DANGEROUS__forceDeleteRecursive(batch, walkFn) {
+  // This function is DANGEROUS because it operates directly on the native
+  // Firestore document references, so for example without checking the
+  // enableBatch* options, and also needs to use the batch's native
+  // __fsWriteBatch object
+  const promises = []
+
+  for await (const __fsDocument of walkFn({
+    yieldDocuments: true,
+    yieldCollections: false,
+  })) {
+    promises.push(batch.__fsWriteBatch.delete(__fsDocument))
+  }
+
+  return Promise.all(promises)
+}
+
+
+exports.DANGEROUS__forceDeleteCollectionRecursive = function DANGEROUS__forceDeleteCollectionRecursive(
+  collection, batch,
+) {
+  // This function is DANGEROUS because it operates directly on the native
+  // Firestore document references, so for example without checking the
+  // enableBatch* options, and also needs to use the batch's native
+  // __fsWriteBatch object
+  return DANGEROUS__forceDeleteRecursive(batch, (options) => {
+    return walkFsCollectionDescendants(collection.__fsCollection, options)
+  })
+}
+
+
+exports.DANGEROUS__forceDeleteDocumentRecursive = function DANGEROUS__forceDeleteDocumentRecursive(
+  document, batch,
+) {
+  // This function is DANGEROUS because it operates directly on the native
+  // Firestore document references, so for example without checking the
+  // enableBatch* options, and also needs to use the batch's native
+  // __fsWriteBatch object
+  return DANGEROUS__forceDeleteRecursive(batch, (options) => {
+    return walkFsDocumentDescendants(document.__fsDocument, options)
+  })
+}
+
+
 exports.createDocument = async function createDocument({
   docRef, data, batch, createFn,
 }) {

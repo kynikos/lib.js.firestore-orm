@@ -54,13 +54,13 @@ module.exports = class CollectionReference extends Query {
       'method, then either create() or set() the document reference')
   }
 
-  async deleteAllDocuments(chooseSetup) {
-    const res = await this.get(chooseSetup)
-
+  DANGEROUS__forceDeleteRecursive() {
+    // This function is DANGEROUS because it operates directly on the native
+    // Firestore document references, so for example without checking the
+    // enableBatch* options, and also needs to use the batch's native
+    // __fsWriteBatch object
     return this.__database.batchCommit((batch) => {
-      return Promise.all(res.docs.map((doc) => {
-        return batch.delete(doc.__ref)
-      }))
+      return fn.DANGEROUS__forceDeleteCollectionRecursive(this, batch)
     })
   }
 

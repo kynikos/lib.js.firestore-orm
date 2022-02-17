@@ -59,6 +59,22 @@ module.exports = class WriteBatch {
     })
   }
 
+  DANGEROUS__forceDeleteCollectionRecursive(collection) {
+    // This function is DANGEROUS because it operates directly on the native
+    // Firestore document references, so for example without checking the
+    // enableBatch* options, and also needs to use the batch's native
+    // __fsWriteBatch object
+    return fn.DANGEROUS__forceDeleteCollectionRecursive(collection, this)
+  }
+
+  DANGEROUS__forceDeleteDocumentRecursive(document) {
+    // This function is DANGEROUS because it operates directly on the native
+    // Firestore document references, so for example without checking the
+    // enableBatch* options, and also needs to use the batch's native
+    // __fsWriteBatch object
+    return fn.DANGEROUS__forceDeleteDocumentRecursive(document, this)
+  }
+
   // Note that this function is synchronous in the native API, but it returns
   // a Promise here, since setDocument() is asynchronous
   set(document, data, options) {

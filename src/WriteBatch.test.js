@@ -157,6 +157,10 @@ describe('a WriteBatch object', () => {
     },
   ))
 
+  test.todo('DANGEROUS__forceDeleteCollectionRecursive()')
+
+  test.todo('DANGEROUS__forceDeleteDocumentRecursive()')
+
   test("needs options 'merge' or 'mergeFields' for set()", () => withFreshDatabase(
     2,
     initDatabaseStatic,

@@ -110,6 +110,16 @@ module.exports = class DocumentReference extends _CollectionParent {
     })
   }
 
+  DANGEROUS__forceDeleteRecursive() {
+    // This function is DANGEROUS because it operates directly on the native
+    // Firestore document references, so for example without checking the
+    // enableBatch* options, and also needs to use the batch's native
+    // __fsWriteBatch object
+    return this.__database.batchCommit((batch) => {
+      return fn.DANGEROUS__forceDeleteDocumentRecursive(this, batch)
+    })
+  }
+
   async get() {
     const __fsDocumentSnapshot = await this.__fsDocument.get()
     return new DocumentSnapshot({

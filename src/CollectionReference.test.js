@@ -301,7 +301,7 @@ describe('a CollectionReference object', () => {
     },
   ))
 
-  test('deletes all contained documents with deleteAllDocuments()', () => withFreshDatabase(
+  test.skip('deletes all contained documents with deleteAllDocuments()', () => withFreshDatabase(
     4,
     initDatabaseStatic,
     async (database) => {

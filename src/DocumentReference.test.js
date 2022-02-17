@@ -271,6 +271,8 @@ describe('a DocumentReference object', () => {
     },
   ))
 
+  test.todo('DANGEROUS__forceDeleteRecursive()')
+
   test("needs options 'merge' or 'mergeFields' for set()", () => withFreshDatabase(
     2,
     initDatabaseStatic,
